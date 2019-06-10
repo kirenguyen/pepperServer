@@ -2,7 +2,6 @@ console.log("init started");
 const WebSocket = require("ws");
 
 const server = new WebSocket.Server({
-    "host" : "172.31.37.215", // private instance IP of 'perpperServer' AWS EC2
     "port" : 3000
 });
 
@@ -10,7 +9,7 @@ server.on("connection", function (client){
     console.log("client connection open!!!!!!");
 
     client.on("message", function (data){
-        console.log("client message received~! hi bitch <3");
+        console.log("client message received~! hi bitch <3 " + data);
     });
 });
 
