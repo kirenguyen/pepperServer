@@ -7,7 +7,7 @@ const redisPort = 6379;
 
 const server = new WebSocket.Server({
     // 'Private DNS' of EC2 instance
-    'host': 'ip-172-31-37-215.ap-northeast-1.compute.internal/',
+    'host': 'ip-172-31-37-215.ap-northeast-1.compute.internal',
     'port' : 3000,
 });
 
