@@ -2,7 +2,7 @@ console.log("init started");
 const WebSocket = require("ws");
 
 const server = new WebSocket.Server({
-    "port" : 8080
+    "port" : 3000
 });
 
 server.on("connection", function (client){
