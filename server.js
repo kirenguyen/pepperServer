@@ -6,7 +6,7 @@ const redisEndpoint = 'pepper-redis.ajwjwr.clustercfg.apne1.cache.amazonaws.com:
 const redisPort = 6379;
 
 const server = new WebSocket.Server({
-    // 'Private DNS' of EC2 instance, must NOT contain a slash at the end
+    // 'Private DNS' of EC2 instance; nothing at beginning ('http') or end ('/')
     'host': 'ip-172-31-37-215.ap-northeast-1.compute.internal',
     'port' : 3000,
 });
@@ -14,10 +14,9 @@ const server = new WebSocket.Server({
 server.on('connection', function (client){
     console.log('Client connection opened!');
 
-    server.emit('ping', 'Pinging the client');
-
     client.on('message', function (data){
-        console.log('Client message received: ' + data);
+        console.log('Client message received:');
+        console.log(data);
     });
 
 });
