@@ -71,7 +71,7 @@ wsServer.on('request', function(request) {
         return;
     }
 
-    let connection = request.accept('TBD-protocol', request.origin);
+    let connection = request.accept('echo-protocol', request.origin);
     console.log((new Date()) + ' Connection accepted.');
 
     connection.on('message', function(message) {
