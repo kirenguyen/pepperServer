@@ -4,7 +4,7 @@ const WebSocket = require("ws");
 
 const server = new WebSocket.Server({
     // private internal hostname/private DNS
-    "host": "wss://ip-172-31-37-215.ap-northeast-1.compute.internal/",
+    "host": "ip-172-31-37-215.ap-northeast-1.compute.internal/",
     "port" : 3000
 });
 
