@@ -1,33 +1,27 @@
-const WebSocket = require('ws');
 
-// Amazon Elasticache
-const redis = require('redis');
-const redisEndpoint = 'pepper-redis.ajwjwr.clustercfg.apne1.cache.amazonaws.com:6379';
-const redisPort = 6379;
+console.log("init started");
+const WebSocket = require("ws");
 
 const server = new WebSocket.Server({
-    // 'Private DNS' of EC2 instance
+    // private internal hostname/private DNS
     "host": "ip-172-31-37-215.ap-northeast-1.compute.internal/",
-    "port" : 3000,
+    "port" : 3000
 });
 
-server.on('connection', function (client){
-    console.log('Client connection opened!');
+server.on("connection", function (client){
+    console.log("client connection open!!!!!!");
 
-    client.emit('ping', 'Pinging the client');
-
-    client.on('message', function (data){
-        console.log('Client message received: ' + data);
+    client.on("message", function (data){
+        console.log("client message received~! hi bitch <3 " + data);
     });
-
 });
 
-server.on('listening', function (){
-    console.log('Server listening...');
+server.on("listening", function (){
+    console.log("server listening");
 });
 
-server.on('error', function (err){
-    console.log('Server error', err);
+server.on("error", function (e){
+    console.log("server error", e);
 });
 
-console.log('Initialization done');
+console.log("init done");
