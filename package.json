@@ -2,7 +2,7 @@
   "name": "pepperserver",
   "version": "1.0.0",
   "description": "Server for micro:bit and pepper connection",
-  "main": "server.js",
+  "main": "wsServer.js",
   "scripts": {
     "test": "mocha"
   },
