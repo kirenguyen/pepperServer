@@ -12,5 +12,6 @@
     <orderEntry type="library" name="@types/node" level="application" />
     <orderEntry type="library" name="@types/ws" level="application" />
     <orderEntry type="library" name="@types/request" level="application" />
+    <orderEntry type="library" name="@types/websocket" level="application" />
   </component>
 </module>

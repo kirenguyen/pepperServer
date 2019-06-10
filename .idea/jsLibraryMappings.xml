@@ -2,7 +2,7 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{pepperServer/node_modules}" />
-    <file url="PROJECT" libraries="{@types/express, @types/node, @types/request, @types/ws, pepperServer/node_modules}" />
+    <file url="PROJECT" libraries="{@types/express, @types/node, @types/request, @types/websocket, @types/ws, pepperServer/node_modules}" />
     <includedPredefinedLibrary name="HTTP Response Handler" />
   </component>
 </project>

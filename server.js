@@ -55,7 +55,7 @@ wsServer = new WebSocketServer({
     // facilities built into the protocol and the browser.  You should
     // *always* verify the connection's origin and decide whether or not
     // to accept it.
-    autoAcceptConnections: true,
+    autoAcceptConnections: false,
 });
 
 function originIsAllowed(origin) {
@@ -63,15 +63,15 @@ function originIsAllowed(origin) {
     return true;
 }
 
-wsServer.on('connect', function(req) {
-    // if (!originIsAllowed(req.origin)) {
-    //     // Make sure we only accept requests from an allowed origin
-    //     req.reject();
-    //     console.log((new Date()) + ' Connection from origin ' + req.origin + ' rejected.');
-    //     return;
-    // }
+wsServer.on('request', function(request) {
+    if (!originIsAllowed(request.origin)) {
+        // Make sure we only accept requests from an allowed origin
+        request.reject();
+        console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+        return;
+    }
 
-    let connection = req.accept('TBD-protocol', req.origin);
+    let connection = request.accept('TBD-protocol', request.origin);
     console.log((new Date()) + ' Connection accepted.');
 
     connection.on('message', function(message) {
