@@ -2,7 +2,7 @@ console.log("init started");
 const WebSocket = require("ws");
 
 const server = new WebSocket.Server({
-    "host": "13.231.146.167",
+    "host": "ip-172-31-37-215.ap-northeast-1.compute.internal",
     "port" : 3000
 });
 
