@@ -1,0 +1,22 @@
+{
+  "name": "pepperserver",
+  "version": "1.0.0",
+  "description": "Server for micro:bit and pepper connection",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kirenguyen/pepperServer.git"
+  },
+  "author": "kirenguyen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kirenguyen/pepperServer/issues"
+  },
+  "homepage": "https://github.com/kirenguyen/pepperServer#readme",
+  "dependencies": {
+    "ws": "^7.0.0"
+  }
+}
