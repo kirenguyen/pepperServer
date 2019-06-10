@@ -32,8 +32,6 @@ server.on('message', function(data){
    console.log('Message from client: ' + data);
 });
 
-server.listen(3000);
-
 console.log('Initialization done');
 
 ////////////
