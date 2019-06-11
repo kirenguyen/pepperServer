@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 
 // Amazon Elasticache
 const redis = require('redis');
-const redisURL = 'pepper-redis.ajwjwr.clustercfg.apne1.cache.amazonaws.com';
+const redisURL = 'pepperredis.ajwjwr.ng.0001.apne1.cache.amazonaws.com'; //no port at the end
 const redisPort = 6379;
 
 const redisClient = redis.createClient(redisPort, redisURL);
@@ -14,8 +14,8 @@ redisClient.get('foo_rand000000000000', function (err, reply) {
     console.log(reply.toString()); // Will print `hi mom`
 });
 
-redisClient.get('tranList', function(err, reply){
-    console.log(reply.toString()); // should print
+redisClient.get('tranSet', function(err, reply){
+    console.log(reply.toString()); // should print smth...
 })
 
 
