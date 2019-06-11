@@ -9,10 +9,10 @@ const redisPort = 6379;
 const redisClient = redis.createClient(redisPort, redisURL);
 
 
-let testObject = {
-    mom: 'yen',
-    dad: 'chau',
-    children: ['ngoc', 'tran'],
+let serverTwoObject = {
+    mom: 'ty',
+    dad: 'chuck',
+    children: ['jodie', 'kire'],
     pets: ['ninja'],
     ages: {
         mom: 48,
@@ -23,18 +23,17 @@ let testObject = {
     },
 };
 
-redisClient.set('jsonObject', JSON.stringify(testObject));
+redisClient.set('jsonObject2', JSON.stringify(serverTwoObject));
 
 // This will return a JavaScript String
 redisClient.get('jsonObject', function (err, reply) {
     console.log(reply.toString()); // Will print `hi mom`
-    redisClient.del('jsonObject');
 });
 
 
 const server = new WebSocket.Server({
     // 'Private DNS' of EC2 instance; nothing at beginning ('http') or end ('/')
-    'host': 'ip-172-31-37-215.ap-northeast-1.compute.internal',
+    'host': 'ip-172-31-34-41.ap-northeast-1.compute.internal',
     'port' : 3000,
 });
 
