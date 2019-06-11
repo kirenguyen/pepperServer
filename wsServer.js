@@ -8,16 +8,28 @@ const redisPort = 6379;
 
 const redisClient = redis.createClient(redisPort, redisURL);
 
-redisClient.set('foo_rand000000000000', 'REDIS CONNECTED YAAAAASSSSS');
+
+let testObject = {
+    mom: 'yen',
+    dad: 'chau',
+    children: ['ngoc', 'tran'],
+    pets: ['ninja'],
+    ages: {
+        mom: 48,
+        dad: 60,
+        jodie: 18,
+        tran: 21,
+        ninja: 9,
+    },
+};
+
+redisClient.set('jsonObject', JSON.stringify(testObject));
 
 // This will return a JavaScript String
-redisClient.get('foo_rand000000000000', function (err, reply) {
+redisClient.get('jsonObject', function (err, reply) {
     console.log(reply.toString()); // Will print `hi mom`
+    redisClient.del('jsonObject');
 });
-
-redisClient.smembers('tranSet', function(err, reply){
-    console.log(reply); // should print smth...
-})
 
 
 const server = new WebSocket.Server({
