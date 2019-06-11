@@ -3,6 +3,36 @@ const http = require('http');
 const request = require('request');
 const serverPort = 3000;
 
+// Amazon Elasticache
+const redis = require('redis');
+// must be an unclustered version
+const redisURL = 'pepperredis.ajwjwr.ng.0001.apne1.cache.amazonaws.com'; //no port at the end
+const redisPort = 6379;
+
+const redisClient = redis.createClient(redisPort, redisURL);
+
+let testObject = {
+    mom: 'yen',
+    dad: 'chau',
+    children: ['ngoc', 'tran'],
+    pets: ['ninja'],
+    ages: {
+        mom: 48,
+        dad: 60,
+        jodie: 18,
+        tran: 21,
+        ninja: 9,
+    },
+};
+
+redisClient.set('jsonObject', JSON.stringify(testObject));
+
+// This will return a JavaScript String
+redisClient.get('jsonObject', function (err, reply) {
+    console.log(reply.toString()); // Will print `hi mom`
+    redisClient.del('jsonObject');
+});
+
 
 let server = http.createServer(function(request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'})
