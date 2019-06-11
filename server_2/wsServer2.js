@@ -26,8 +26,8 @@ let serverTwoObject = {
 redisClient.set('jsonObject2', JSON.stringify(serverTwoObject));
 
 // This will return a JavaScript String
-redisClient.get('jsonObject', function (err, reply) {
-    console.log(reply.toString()); // Will print `hi mom`
+redisClient.get('jsonObject2', function (err, reply) {
+    console.log(reply);
 });
 
 
