@@ -15,7 +15,7 @@ redisClient.get('foo_rand000000000000', function (err, reply) {
     console.log(reply.toString()); // Will print `hi mom`
 });
 
-redisClient.get('tranSet', function(err, reply){
+redisClient.smembers('tranSet', function(err, reply){
     console.log(reply); // should print smth...
 })
 
