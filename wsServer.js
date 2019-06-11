@@ -2,8 +2,22 @@ const WebSocket = require('ws');
 
 // Amazon Elasticache
 const redis = require('redis');
-const redisEndpoint = 'pepper-redis.ajwjwr.clustercfg.apne1.cache.amazonaws.com:6379';
+const redisURL = 'pepper-redis.ajwjwr.clustercfg.apne1.cache.amazonaws.com:6379';
 const redisPort = 6379;
+
+const redisClient = redis.createClient(redisPort, redisURL);
+
+redisClient.set('foo_rand000000000000', 'hi mom');
+
+// This will return a JavaScript String
+redisClient.get('foo_rand000000000000', function (err, reply) {
+    console.log(reply.toString()); // Will print `hi mom`
+});
+
+redisClient.get('tranList', function(err, reply){
+    console.log(reply.toString()); // should print
+})
+
 
 const server = new WebSocket.Server({
     // 'Private DNS' of EC2 instance; nothing at beginning ('http') or end ('/')
