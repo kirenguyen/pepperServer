@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 
 // Amazon Elasticache
 const redis = require('redis');
-const redisURL = 'pepper-redis.ajwjwr.clustercfg.apne1.cache.amazonaws.com:6379';
+const redisURL = 'pepper-redis.ajwjwr.clustercfg.apne1.cache.amazonaws.com';
 const redisPort = 6379;
 
 const redisClient = redis.createClient(redisPort, redisURL);
