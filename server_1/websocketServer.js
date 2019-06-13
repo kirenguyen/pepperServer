@@ -21,7 +21,7 @@ let testMicrobitLogin = {
     microbit_name: 'puppy eyes',
 };
 
-publisher.publish('socket', JSON.stringify(testMicrobitLogin));
+setTimeout(() => {publisher.publish('socket', JSON.stringify(testMicrobitLogin))}, 3000);
 
 subscriber.on('message', function(channel, message){
     console.log('Server1 received msg: ' + message);
