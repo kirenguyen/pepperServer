@@ -9,7 +9,10 @@ const redis = require('redis');
 const redisURL = 'pepperredis.ajwjwr.ng.0001.apne1.cache.amazonaws.com'; //no port at the end
 const redisPort = 6379;
 
-const redisClient = redis.createClient(redisPort, redisURL);
+const publisher = redis.createClient(redisPort, redisURL);
+const subscriber = redis.createClient(redisPort, redisURL);
+subscriber.subscribe('socket') //name of channel
+
 
 let testObject = {
     mom: 'yen',
@@ -25,13 +28,12 @@ let testObject = {
     },
 };
 
-redisClient.set('jsonObject', JSON.stringify(testObject));
-
-// This will return a JavaScript String
-redisClient.get('jsonObject', function (err, reply) {
-    console.log(reply.toString()); // Will print `hi mom`
-    redisClient.del('jsonObject');
+subscriber.on('message', function(channel, message){
+    console.log('Message received from channel: ' + channel);
+    console.log(message);
 });
+
+publisher.publish('socket', 'hi my name is jake im 19 years old and never learned how to read');
 
 
 let server = http.createServer(function(request, response) {
