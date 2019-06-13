@@ -1,0 +1,2 @@
+# Ignore all modules, fresh install on every server
+node_modules/
