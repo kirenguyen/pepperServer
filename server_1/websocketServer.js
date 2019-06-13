@@ -18,10 +18,10 @@ subscriber.subscribe('socket'); //name of channel
 let testMicrobitLogin = {
     room_name: 'room1',
     password: 'test1234',
-    microbitName: 'heart eyes',
+    microbitName: 'puppy eyes',
 };
 
-publisher.publish('socket', 'there is very little use in living this is server 1 btw');
+publisher.publish('socket', JSON.stringify(testMicrobitLogin));
 
 subscriber.on('message', function(channel, message){
     console.log('Server1 received msg: ' + message);
