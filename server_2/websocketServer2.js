@@ -14,26 +14,26 @@ const subscriber = redis.createClient(redisPort, redisURL);
 subscriber.subscribe('socket') //name of channel
 
 
-let testObject = {
-    mom: 'yen',
-    dad: 'chau',
-    children: ['ngoc', 'tran'],
-    pets: ['ninja'],
-    ages: {
-        mom: 48,
-        dad: 60,
-        jodie: 18,
-        tran: 21,
-        ninja: 9,
-    },
+let testMicrobitLogin = {
+    room_name: 'room1',
+    password: 'test1234',
+    microbit_name: 'heart eyes',
 };
 
+publisher.publish('socket', JSON.stringify(testMicrobitLogin));
+
 subscriber.on('message', function(channel, message){
-    console.log('Message received from channel: ' + channel);
-    console.log(message);
+    console.log('Server2 received msg from: ' + message);
+    try{
+        let data = JSON.parse(message)
+        console.log('room name' + data.room_name);
+        console.log('password: ' + data.password);
+        console.log('microbit name' + data.microbit_name);
+    } catch (err) {
+        console.log(err);
+    }
 });
 
-publisher.publish('socket', 'hi my name is jake im 19 years old and never learned how to read');
 
 
 let server = http.createServer(function(request, response) {

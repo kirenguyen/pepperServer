@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="07f76310-8687-4d61-80c6-b63bc7f380ff" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/server_1/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/trannguyen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/trannguyen.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_1/websocketServer.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_1/websocketServer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_2/websocketServer2.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_2/websocketServer2.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -16,11 +17,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server_2/websocketServer2.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="318">
-              <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
+            <state relative-caret-position="278">
+              <caret line="33" column="5" lean-forward="true" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -28,17 +29,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server_1/websocketServer.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="20">
-              <caret line="30" selection-start-line="30" selection-end-line="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/server_1/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="51" selection-start-column="51" selection-end-column="51" />
+            <state relative-caret-position="230">
+              <caret line="26" column="52" lean-forward="true" selection-start-line="26" selection-start-column="52" selection-end-line="26" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -66,15 +58,15 @@
         <option value="$PROJECT_DIR$/server_2/wsServer2.js" />
         <option value="$PROJECT_DIR$/main.js" />
         <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/server_2/websocketServer2.js" />
-        <option value="$PROJECT_DIR$/server_1/websocketServer.js" />
         <option value="$PROJECT_DIR$/server_1/.gitignore" />
+        <option value="$PROJECT_DIR$/server_1/websocketServer.js" />
+        <option value="$PROJECT_DIR$/server_2/websocketServer2.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="279" />
-    <option name="y" value="103" />
+    <option name="x" value="142" />
+    <option name="y" value="176" />
     <option name="width" value="1060" />
     <option name="height" value="724" />
   </component>
@@ -90,11 +82,6 @@
             <path>
               <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
               <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
-              <item name="server_1" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
@@ -128,12 +115,12 @@
     <property name="settings.editor.selected.configurable" value="JavaScript.Libraries" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/server_1" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/server_2" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/server_1" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -165,12 +152,12 @@
       <workItem from="1560215143182" duration="7023000" />
       <workItem from="1560228152186" duration="1968000" />
       <workItem from="1560388214564" duration="886000" />
-      <workItem from="1560393730787" duration="775000" />
+      <workItem from="1560393730787" duration="1842000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25356000" />
+    <option name="totallyTimeSpent" value="26423000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -182,10 +169,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="279" y="103" width="1060" height="724" extended-state="0" />
+    <frame x="142" y="176" width="1060" height="724" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24181117" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24181117" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -197,7 +184,7 @@
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32961586" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.24405706" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.24405706" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -240,24 +227,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server_2/websocketServer2.js">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
+        <state>
+          <caret column="51" selection-start-column="51" selection-end-column="51" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server_1/websocketServer.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
+        <state relative-caret-position="230">
+          <caret line="26" column="52" lean-forward="true" selection-start-line="26" selection-start-column="52" selection-end-line="26" selection-end-column="52" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server_1/.gitignore">
+    <entry file="file://$PROJECT_DIR$/server_2/websocketServer2.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="51" selection-start-column="51" selection-end-column="51" />
+        <state relative-caret-position="278">
+          <caret line="33" column="5" lean-forward="true" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
         </state>
       </provider>
     </entry>
