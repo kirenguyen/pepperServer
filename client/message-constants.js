@@ -1,4 +1,4 @@
-const deviceType = Object.freeze({robot: 'robot', microbit: 'microbit', browser: 'browser'});
+const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
 const messageType = Object.freeze({login: 1, handshake: 2, action: 3});
 
 module.exports.deviceType = deviceType;

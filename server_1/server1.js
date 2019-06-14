@@ -76,13 +76,13 @@ wss.on('request', function(req) {
     connection.on('message', function(message) {
         console.log('MESSAGE RECEIVED FROM CLIENT');
         let data = parseJSON(message.utf8Data);
-
         if(!data) {
             return false;
         }
 
         console.log('Parsed message: ');
         console.log(data);
+
         switch(data['message_type']){
             case messageType.login:
                 login(data, connection);
@@ -173,8 +173,8 @@ function registerDevice(roomID, type, deviceName, connection) {
             [deviceType.microbit, new Map()],
             [deviceType.browser, new Map()]
         ]);
-        devices_map.set(roomID, room_map);
 
+        devices_map.set(roomID, room_map);
         devices_map.get(roomID).get(type).set(deviceName, connection);
 
         // TODO: register to REDIS
@@ -186,30 +186,17 @@ function registerDevice(roomID, type, deviceName, connection) {
 }
 
 /**
- * Handles login attempts of different devices
+ * Handles login attempts of different devices (currently just micro:bit)
  * @param data message object of micro:bit containing device_type, room_id, microbit_name, password, etc.
  * @param connection socket connection object
  */
 function login(data, connection) {
-    switch (data['device_type']) {
-        case deviceType.microbit:
-            console.log('device type is microbit');
-            let response = authenticate(data);  // {room_id: ##, response: "000"}
-            if (response) {
-                registerDevice(response['room_id'], deviceType.microbit, data['microbit_name'], connection);
-                console.log('Registered a microbit, devices_map: ');
-                console.log(devices_map);
-                //TODO: alert peppers in correct room that a microbit has been successfully added
-
-            }
-            break;
-        case deviceType.robot:
-            break;
-        case deviceType.browser:
-            break;
-        default:
-            console.log('device type failed to match');
-            break;
+    let response = authenticate(data);  // {room_id: ##, response: "000"}
+    if (response) {
+        registerDevice(response['room_id'], deviceType.microbit, data['microbit_name'], connection);
+        console.log('Registered a microbit, devices_map: ');
+        console.log(devices_map);
+        //TODO: alert peppers in correct room that a microbit has been successfully added
     }
 }
 
@@ -239,6 +226,9 @@ function handshake(data, connection) {
 
     request.post(options, function (error, response, body) {
         // console.log(error,response,body)
+
+        console.log('RESPONSE of POST response');
+        console.log(response);
 
         console.log('BODY of POST response: ');
         console.log(body);

@@ -40,7 +40,7 @@ socket.addEventListener('message', function (event) {
 
 console.log("bottom of dist script");
 },{"./message-constants":2,"./microbit-login-message":3,"./robo-connector-message":4}],2:[function(require,module,exports){
-const deviceType = Object.freeze({robot: 'robot', microbit: 'microbit', browser: 'browser'});
+const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
 const messageType = Object.freeze({login: 1, handshake: 2, action: 3});
 
 module.exports.deviceType = deviceType;
