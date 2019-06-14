@@ -139,6 +139,7 @@ function registerDevice(roomID, type, connection, deviceName) {
             [deviceType.microbit, new Map()],
             [deviceType.browser, new Map()]
         ]);
+        devices_map.set(roomID, room_map);
     }
 
         //identifying information to unregister device on closing
@@ -148,8 +149,6 @@ function registerDevice(roomID, type, connection, deviceName) {
             name: deviceName,
             uuid: uuidv4(),
         };
-
-        devices_map.set(roomID, room_map);
         devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
 
         // TODO: register to REDIS???
