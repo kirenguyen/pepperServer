@@ -139,6 +139,7 @@ function registerDevice(roomID, type, connection, deviceName) {
             [deviceType.microbit, new Map()],
             [deviceType.browser, new Map()]
         ]);
+    }
 
         //identifying information to unregister device on closing
         connection.id = {
@@ -159,7 +160,6 @@ function registerDevice(roomID, type, connection, deviceName) {
         console.log(connection.id);
         console.log('!!!! Devices map: ');
         console.log(devices_map);
-    }
 }
 
 /**
