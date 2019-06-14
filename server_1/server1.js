@@ -203,6 +203,9 @@ function registerDevice(roomID, type, connection, deviceName) {
  * @param connection websocket connection object that was previously registered
  */
 function unregisterDevice(connection){
+    if(connection['map'])
+
+
     if (!devices_map.has(connection.id.room_id)){
         console.log('Room does not exist');
     }
@@ -224,11 +227,13 @@ function unregisterDevice(connection){
 function login(data, connection) {
     let response = authenticate(data);  // {room_id: ##, response: "000"}
     if (response) {
-        registerDevice(response['room_id'], deviceType.microbit, connection, data['microbit_name']);
         console.log('Registered a microbit, devices_map: ');
-        console.log(devices_map);
+        registerDevice(response['room_id'], deviceType.microbit, connection, data['microbit_name']);
         //TODO: alert peppers in correct room that a microbit has been successfully added on both servers
         alertPeppers();
+    }
+    else {
+        console.log('response was a failure for some reason??');
     }
 }
 
