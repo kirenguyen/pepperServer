@@ -6,6 +6,7 @@
       <change afterPath="$PROJECT_DIR$/client/client.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/client/message-constants.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/client/microbit-login-message.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/bundle.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/server_1/server1.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/server_2/server2.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -37,8 +38,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server_1/server1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="8" column="24" selection-start-line="8" selection-start-column="24" selection-end-line="8" selection-end-column="24" />
+            <state relative-caret-position="300">
+              <caret line="15" column="18" lean-forward="true" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -127,21 +128,6 @@
             <path>
               <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
               <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
-              <item name="client" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
-              <item name="dist" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
-              <item name="server_1" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
               <item name="server_2" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -212,12 +198,12 @@
       <workItem from="1560228152186" duration="1968000" />
       <workItem from="1560388214564" duration="886000" />
       <workItem from="1560393730787" duration="3327000" />
-      <workItem from="1560479415326" duration="1620000" />
+      <workItem from="1560479415326" duration="1875000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="29528000" />
+    <option name="totallyTimeSpent" value="29783000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -229,10 +215,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="142" y="60" width="1131" height="779" extended-state="0" />
-    <editor active="true" />
+    <frame x="278" y="60" width="1131" height="779" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22633003" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22633003" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -244,7 +229,7 @@
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32961586" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.2244898" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.2244898" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -345,8 +330,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server_1/server1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="8" column="24" selection-start-line="8" selection-start-column="24" selection-end-line="8" selection-end-column="24" />
+        <state relative-caret-position="300">
+          <caret line="15" column="18" lean-forward="true" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
         </state>
       </provider>
     </entry>
