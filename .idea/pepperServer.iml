@@ -16,5 +16,6 @@
     <orderEntry type="library" name="@types/redis" level="application" />
     <orderEntry type="library" name="@types/browserify" level="application" />
     <orderEntry type="library" name="@types/watchify" level="application" />
+    <orderEntry type="library" name="@types/uuid" level="application" />
   </component>
 </module>

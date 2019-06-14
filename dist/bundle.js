@@ -10,7 +10,6 @@ const socket = new WebSocket('ws://ec2-13-113-153-136.ap-northeast-1.compute.ama
 // const socket = new WebSocket('ws://ec2-13-231-5-239.ap-northeast-1.compute.amazonaws.com:3000', 'rb');
 
 
-
 // Connection opened
 socket.addEventListener('open', function (event) {
     // socket.send("hi hi hi hi hi hi hi hi");
@@ -35,7 +34,7 @@ socket.addEventListener('open', function (event) {
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
-    console.log('Message from server ', event.data);
+    console.log('Message from server ' + event.data);
 });
 
 console.log("bottom of dist script");

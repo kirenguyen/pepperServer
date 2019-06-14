@@ -3,6 +3,7 @@ const http = require('http');
 const request = require('request');
 const redis = require("redis");
 const ip = require("ip");
+const uuidv4 = require("uuid/v4");
 
 const domain = 'https://roboblocks.xyz/';
 const messageConstants = require('../client/message-constants');
@@ -96,8 +97,11 @@ wss.on('request', function(req) {
     });
 
     connection.on('close', function(reasonCode, description) {
+
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
         console.log('desc: ' + description);
+        //TODO: close connection, save information of the respective connection to unregister device from device_maps
+        unregisterDevice(connection);
     });
 });
 
@@ -136,10 +140,6 @@ function authenticate(data){
             console.log('Failed to authenticate: ' + body);
             return false;
         }
-        /* After parsing: {
-         result: '000',
-        room_id: 1 }
-         */
     });
     return responseBody;
 }
@@ -160,13 +160,15 @@ function parseJSON(data) {
 
 /**
  * Registers successful connection of device to redis and local memory
- * @param roomID ID of room that the device logged in to
- * @param type type of device (DeviceType.robot, DeviceType.microbit, DeviceType.browser)
- * @param deviceName device's name, must be unique to the device
- * @param connection socket connection object
+ * The devices are stored by room id, then by device type,
+ * then their respective connection id (uuid v4).
  *
+ * @param roomID ID of room that the device logged in to, unique to room
+ * @param type type of device (DeviceType.robot, DeviceType.microbit, DeviceType.browser)
+ * @param connection socket connection object
+ * @param deviceName device name, not necessarily unique
  */
-function registerDevice(roomID, type, deviceName, connection) {
+function registerDevice(roomID, type, connection, deviceName) {
     if (!devices_map.has(roomID)) {
         let room_map = new Map([
             [deviceType.robot, new Map()],
@@ -174,16 +176,45 @@ function registerDevice(roomID, type, deviceName, connection) {
             [deviceType.browser, new Map()]
         ]);
 
-        devices_map.set(roomID, room_map);
-        devices_map.get(roomID).get(type).set(deviceName, connection);
+        //identifying information to unregister device on closing
+        connection.id = {
+            room_id: roomID,
+            device_type: type,
+            name: deviceName,
+            uuid: uuidv4(),
+        };
 
-        // TODO: register to REDIS
+        devices_map.set(roomID, room_map);
+        devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
+
+        // TODO: register to REDIS???
         // save microbit's ID to redis for _this_ server's runtime
         // 1. use union of _this_ server's runtime and other server's runtime redis-data to return all registered microbits
         // 2. save microbit to set that represent everything among all servers; upon startup,
         //    take difference between previous runtime redis and global to update global
+        console.log(connection.id);
+        console.log('!!!! Devices map: ');
+        console.log(devices_map);
     }
 }
+
+/**
+ * Unregisters device's connection from local memory upon closing of connection
+ * @param connection websocket connection object that was previously registered
+ */
+function unregisterDevice(connection){
+    if (!devices_map.has(connection.id.room_id)){
+        console.log('Room does not exist');
+    }
+    let success = devices_map.get(connection.id.room_id).get(connection.id.device_type).delete(connection.id.uuid);
+    if (!success) {
+        console.log('Device was not registered; unregister unsuccessful');
+    } else {
+        console.log('Successfully unregistered.');
+    }
+}
+
+
 
 /**
  * Handles login attempts of micro:bit
@@ -193,11 +224,22 @@ function registerDevice(roomID, type, deviceName, connection) {
 function login(data, connection) {
     let response = authenticate(data);  // {room_id: ##, response: "000"}
     if (response) {
-        registerDevice(response['room_id'], deviceType.microbit, data['microbit_name'], connection);
+        registerDevice(response['room_id'], deviceType.microbit, connection, data['microbit_name']);
         console.log('Registered a microbit, devices_map: ');
         console.log(devices_map);
-        //TODO: alert peppers in correct room that a microbit has been successfully added
+        //TODO: alert peppers in correct room that a microbit has been successfully added on both servers
+        alertPeppers();
     }
+}
+
+/**
+ * Alerts Peppers in the same room as a newly registered micro:bit
+ * that it has been added.
+ *
+ *
+ */
+function alertPeppers(){
+
 }
 
 /**
@@ -243,7 +285,7 @@ function handshake(data, connection) {
         if (!body) {
             connection.sendUTF('room is full.');
         } else {
-            registerDevice(data.room_id, deviceType.robot, data.robot_id, connection);
+            registerDevice(data.room_id, deviceType.robot, connection, );
             connection.sendUTF(body);
         }
     });
