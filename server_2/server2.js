@@ -5,7 +5,7 @@ const redis = require("redis");
 const ip = require("ip");
 
 const domain = 'https://roboblocks.xyz/';
-const deviceType = require('./message-constants').deviceType;
+const deviceType = require('../client/message-constants').deviceType;
 const serverPort = 3000;
 const redisPort = 6379;
 
