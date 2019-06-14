@@ -23,6 +23,7 @@ let server = http.createServer(function(request, response) {
 
 const publisher = redis.createClient(redisPort, redisURL); // 送信用 (そうしんよう) : for sending
 const subscriber = redis.createClient(redisPort, redisURL); // 受け取り用 （うけとりよう） : for accepting
+const writer = redis.createClient(redisPort, redisURL); // for writing information to persist on redis DB
 subscriber.subscribe('socket');
 
 
@@ -36,10 +37,8 @@ wss = new WebSocketServer({
  * Removes 'zombie' micro:bits from redis (micro:bits accepted from server's previous runtime).
  */
 function serverStartup() {
-    console.log('ip of this server: ' + ip.address());
+    console.log('ip of this server: ' + ip.address());  //constant even after rebooting
 
-//TODO: check if that ip is the private one/if that one changes...
-//otherwise we could probably have the two server files store 'current' ip and check upon start if current has become old
 
 }
 

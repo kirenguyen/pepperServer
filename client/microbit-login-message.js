@@ -5,7 +5,7 @@ class MicrobitLoginMessage {
         this._message = {
             room_name: null,
             password: null,
-            device_name: null,
+            microbit_name: null,
             device_type: deviceType.microbit,
             message_type: 'login'
         }
@@ -18,8 +18,8 @@ class MicrobitLoginMessage {
         this._message.password = password;
         return this;
     }
-    setDeviceName(microbitName) {
-        this._message.device_name = microbitName;
+    setMicrobitName(microbitName) {
+        this._message.microbit_name = microbitName;
         return this;
     }
     build() {

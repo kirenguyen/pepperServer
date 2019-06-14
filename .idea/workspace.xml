@@ -2,6 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="07f76310-8687-4d61-80c6-b63bc7f380ff" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/client/robo-connector-message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/trannguyen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/trannguyen.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/client.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/message-constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/message-constants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/microbit-login-message.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/microbit-login-message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/bundle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_1/server1.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_1/server1.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server_2/server2.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_2/server2.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -15,47 +25,38 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/server_2/server2.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server_1/server1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="11" column="16" selection-start-line="11" selection-end-line="12" />
+            <state relative-caret-position="429">
+              <caret line="227" column="6" lean-forward="true" selection-start-line="227" selection-start-column="6" selection-end-line="227" selection-end-column="6" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="365">
-              <caret line="22" column="37" selection-start-line="22" selection-start-column="37" selection-end-line="22" selection-end-column="37" />
+            <state relative-caret-position="180">
+              <caret line="9" selection-start-line="9" selection-end-line="9" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/package.json">
+        <entry file="file://$PROJECT_DIR$/client/microbit-login-message.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
+            <state>
+              <caret column="61" selection-start-column="61" selection-end-column="61" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server_1/websocketServer.js">
+        <entry file="file://$PROJECT_DIR$/client/message-constants.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="20" column="27" selection-start-line="20" selection-start-column="27" selection-end-line="20" selection-end-column="27" />
+            <state relative-caret-position="40">
+              <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
             </state>
           </provider>
         </entry>
@@ -89,16 +90,18 @@
         <option value="$PROJECT_DIR$/server_2/websocketServer2.js" />
         <option value="$PROJECT_DIR$/message-constants.js" />
         <option value="$PROJECT_DIR$/client/browser.html" />
-        <option value="$PROJECT_DIR$/client/client.js" />
-        <option value="$PROJECT_DIR$/client/microbit-login-message.js" />
-        <option value="$PROJECT_DIR$/server_1/server1.js" />
         <option value="$PROJECT_DIR$/server_2/server2.js" />
+        <option value="$PROJECT_DIR$/client/message-constants.js" />
+        <option value="$PROJECT_DIR$/client/microbit-login-message.js" />
+        <option value="$PROJECT_DIR$/client/robo-connector-message.js" />
+        <option value="$PROJECT_DIR$/server_1/server1.js" />
+        <option value="$PROJECT_DIR$/client/client.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="278" />
-    <option name="y" value="60" />
+    <option name="x" value="181" />
+    <option name="y" value="41" />
     <option name="width" value="1131" />
     <option name="height" value="779" />
   </component>
@@ -113,6 +116,11 @@
             <path>
               <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
               <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
@@ -187,12 +195,12 @@
       <workItem from="1560228152186" duration="1968000" />
       <workItem from="1560388214564" duration="886000" />
       <workItem from="1560393730787" duration="3327000" />
-      <workItem from="1560479415326" duration="2183000" />
+      <workItem from="1560479415326" duration="4330000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30091000" />
+    <option name="totallyTimeSpent" value="32238000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -204,11 +212,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="278" y="60" width="1131" height="779" extended-state="0" />
+    <frame x="181" y="41" width="1131" height="779" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4981203" visible="true" weight="0.22633003" />
-      <window_info active="true" id="Structure" order="1" sideWeight="0.5018797" side_tool="true" visible="true" weight="0.22633003" />
+      <window_info id="Structure" order="1" sideWeight="0.5018797" side_tool="true" weight="0.22633003" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -219,7 +227,7 @@
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32961586" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.2244898" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.2244898" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -262,17 +270,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server_1/websocketServer.js">
+    <entry file="file://$PROJECT_DIR$/server_2/websocketServer2.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="20" column="27" selection-start-line="20" selection-start-column="27" selection-end-line="20" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/message-constants.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+        <state relative-caret-position="900">
+          <caret line="45" selection-start-line="45" selection-end-line="45" />
         </state>
       </provider>
     </entry>
@@ -283,10 +284,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server_2/websocketServer2.js">
+    <entry file="file://$PROJECT_DIR$/server_1/websocketServer.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
-          <caret line="45" selection-start-line="45" selection-end-line="45" />
+        <state relative-caret-position="305">
+          <caret line="87" column="62" lean-forward="true" selection-start-line="87" selection-start-column="62" selection-end-line="87" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server_2/server2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="27" lean-forward="true" selection-start-line="12" selection-start-column="27" selection-end-line="12" selection-end-column="27" />
         </state>
       </provider>
     </entry>
@@ -297,31 +305,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/microbit-login-message.js">
+    <entry file="file://$PROJECT_DIR$/client/message-constants.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="620">
-          <caret line="31" column="38" selection-start-line="31" selection-start-column="38" selection-end-line="31" selection-end-column="38" />
+        <state relative-caret-position="40">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/client.js">
+    <entry file="file://$PROJECT_DIR$/client/microbit-login-message.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="365">
-          <caret line="22" column="37" selection-start-line="22" selection-start-column="37" selection-end-line="22" selection-end-column="37" />
+        <state>
+          <caret column="61" selection-start-column="61" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/robo-connector-message.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-415">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server_1/server1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="11" column="16" selection-start-line="11" selection-end-line="12" />
+        <state relative-caret-position="429">
+          <caret line="227" column="6" lean-forward="true" selection-start-line="227" selection-start-column="6" selection-end-line="227" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server_2/server2.js">
+    <entry file="file://$PROJECT_DIR$/client/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="180">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
         </state>
       </provider>
     </entry>

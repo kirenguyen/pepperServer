@@ -18,12 +18,13 @@ let server = http.createServer(function(request, response) {
     response.end('Just sent the headers');
 }).listen(serverPort, function() {
     console.log('Server 1 listening on port: ' + serverPort);
-    serverStartup()
+    serverStartup();
 });
 
 
 const publisher = redis.createClient(redisPort, redisURL); // 送信用 (そうしんよう) : for sending
 const subscriber = redis.createClient(redisPort, redisURL); // 受け取り用 （うけとりよう） : for accepting
+const writer = redis.createClient(redisPort, redisURL); // for writing information to persist on redis DB
 subscriber.subscribe('socket');
 
 
@@ -37,10 +38,7 @@ wss = new WebSocketServer({
  * Removes 'zombie' micro:bits from redis (micro:bits accepted from server's previous runtime).
  */
 function serverStartup() {
-    console.log('ip of this server: ' + ip.address());
-
-//TODO: check if that ip is the private one/if that one changes...
-//otherwise we could probably have the two server files store 'current' ip and check upon start if current has become old
+    console.log('ip of this server: ' + ip.address());  //constant, even after rebooting
 
 }
 
@@ -75,14 +73,13 @@ wss.on('request', function(req) {
 
     connection.on('message', function(message) {
         console.log('MESSAGE RECEIVED FROM CLIENT');
-        console.log(message);
-
         let data = parseJSON(message.utf8Data);
 
         if(!data) {
             return false;
         }
 
+        console.log('Parsed message: ');
         console.log(data);
         switch(data['message_type']){
             case 'login':
@@ -98,7 +95,6 @@ wss.on('request', function(req) {
 
     connection.on('close', function(reasonCode, description) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-        console.log('reason code: ' + reasonCode);
         console.log('desc: ' + description);
     });
 });
@@ -217,13 +213,10 @@ function login(data, connection) {
 
 /**
  * Saves the robot to this room (handshake procedure)
- * @param req //TODO: not sure why this parameter is needed
  * @param connection socket connection object
  * @param data parsed message object sent from Pepper
  */
-function handshake(req, connection, data) {
-    //TODO: change device_type in robot handshake message; check that 'data' has all of the correct params (RoboConnectorMessage)
-
+function handshake(connection, data) {
     registerDevice(data.room_id, deviceType.robot, data.robot_id, connection);
 
     let body = {
@@ -244,6 +237,10 @@ function handshake(req, connection, data) {
 
     request.post(options, function (error, response, body) {
         // console.log(error,response,body)
+
+        console.log('BODY of POST response: ');
+        console.log(body);
+
         if (error) {
             console.error(error);
             connection.sendUTF('database connection failed');
