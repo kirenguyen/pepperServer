@@ -101,7 +101,9 @@ wss.on('request', function(req) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
         console.log('desc: ' + description);
         //TODO: close connection, save information of the respective connection to unregister device from device_maps
-        unregisterDevice(connection);
+        if(connection.hasOwnProperty('id'){
+            unregisterDevice(connection);
+        }
     });
 });
 
@@ -213,7 +215,8 @@ function login(data, connection) {
             console.log('Failed to authenticate: ' + body);
             return false;
         }
-        registerDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name)
+        registerDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name);
+        console.log('registerDevice function has been called for microbit');
     });
 
 }
