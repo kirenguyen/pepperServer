@@ -141,24 +141,22 @@ function registerDevice(roomID, type, connection, deviceName) {
         ]);
         devices_map.set(roomID, room_map);
     }
+    //identifying information to unregister device on closing
+    connection.id = {
+        room_id: roomID,
+        device_type: type,
+        name: deviceName,
+        uuid: uuidv4(),
+    };
+    devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
 
-        //identifying information to unregister device on closing
-        connection.id = {
-            room_id: roomID,
-            device_type: type,
-            name: deviceName,
-            uuid: uuidv4(),
-        };
-        devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
-
-        // TODO: register to REDIS???
-        // save microbit's ID to redis for _this_ server's runtime
-        // 1. use union of _this_ server's runtime and other server's runtime redis-data to return all registered microbits
-        // 2. save microbit to set that represent everything among all servers; upon startup,
-        //    take difference between previous runtime redis and global to update global
-        console.log(connection.id);
-        console.log('!!!! Devices map: ');
-        console.log(devices_map);
+    // TODO: register to REDIS???
+    // save microbit's ID to redis for _this_ server's runtime
+    // 1. use union of _this_ server's runtime and other server's runtime redis-data to return all registered microbits
+    // 2. save microbit to set that represent everything among all servers; upon startup,
+    //    take difference between previous runtime redis and global to update global
+    console.log('!!!! Devices map: ');
+    console.log(devices_map);
 }
 
 /**
@@ -175,7 +173,8 @@ function unregisterDevice(connection){
     if (!success) {
         console.log('Device was not registered; unregister unsuccessful');
     } else {
-        console.log('Successfully unregistered.');
+        console.log('Successfully unregistered. Updated local mem: ');
+        console.log(devices_map);
     }
 }
 
