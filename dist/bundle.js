@@ -41,13 +41,15 @@ socket.addEventListener('message', function (event) {
 console.log("bottom of dist script");
 },{"./message-constants":2,"./microbit-login-message":3,"./robo-connector-message":4}],2:[function(require,module,exports){
 const deviceType = Object.freeze({robot: 'robot', microbit: 'microbit', browser: 'browser'});
-const messageType = Object.freeze({handshake: 1, action: 2});
+const messageType = Object.freeze({login: 1, handshake: 2, action: 3});
 
 module.exports.deviceType = deviceType;
 module.exports.messageType = messageType;
 
 },{}],3:[function(require,module,exports){
-const deviceType = require('./message-constants').deviceType;
+const messageConstants = require('./message-constants');
+const deviceType = messageConstants.deviceType;
+const messageType = messageConstants.messageType;
 
 class MicrobitLoginMessage {
     constructor() {
@@ -56,7 +58,7 @@ class MicrobitLoginMessage {
             password: null,
             microbit_name: null,
             device_type: deviceType.microbit,
-            message_type: 'login'
+            message_type: messageType.login
         }
     }
     setRoomName(roomName) {

@@ -1,4 +1,6 @@
-const deviceType = require('./message-constants').deviceType;
+const messageConstants = require('./message-constants');
+const deviceType = messageConstants.deviceType;
+const messageType = messageConstants.messageType;
 
 class MicrobitLoginMessage {
     constructor() {
@@ -7,7 +9,7 @@ class MicrobitLoginMessage {
             password: null,
             microbit_name: null,
             device_type: deviceType.microbit,
-            message_type: 'login'
+            message_type: messageType.login
         }
     }
     setRoomName(roomName) {

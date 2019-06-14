@@ -5,7 +5,9 @@ const redis = require("redis");
 const ip = require("ip");
 
 const domain = 'https://roboblocks.xyz/';
-const deviceType = require('../client/message-constants').deviceType;
+const messageConstants = require('../client/message-constants');
+const deviceType = messageConstants.deviceType;
+const messageType = messageConstants.messageType;
 const serverPort = 3000;
 
 const redisPort = 6379;
@@ -82,13 +84,13 @@ wss.on('request', function(req) {
         console.log('Parsed message: ');
         console.log(data);
         switch(data['message_type']){
-            case 'login':
+            case messageType.login:
                 login(data, connection);
                 break;
-            case 'handshake':
+            case messageType.handshake:
                 handshake(req, connection, data);
                 break;
-            case 'action':
+            case messageType.action:
                 break;
         }
     });
