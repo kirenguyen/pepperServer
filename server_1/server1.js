@@ -186,7 +186,7 @@ function registerDevice(roomID, type, deviceName, connection) {
 }
 
 /**
- * Handles login attempts of different devices (currently just micro:bit)
+ * Handles login attempts of micro:bit
  * @param data message object of micro:bit containing device_type, room_id, microbit_name, password, etc.
  * @param connection socket connection object
  */
@@ -206,7 +206,9 @@ function login(data, connection) {
  * @param connection socket connection object
  */
 function handshake(data, connection) {
-    registerDevice(data.room_id, deviceType.robot, data.robot_id, connection);
+    if (data['device_type'] !== deviceType.robot){
+        return false;
+    }
 
     let body = {
         "room_id": data.room_id,
@@ -215,6 +217,9 @@ function handshake(data, connection) {
         "device_type": data.device_type,
         "robot_id": data.robot_id
     };
+
+    console.log('to send: ');
+    console.log(body);
 
     let options = {
         uri: domain + 'project/node/save_user',
@@ -225,22 +230,20 @@ function handshake(data, connection) {
     };
 
     request.post(options, function (error, response, body) {
-        // console.log(error,response,body)
-
-        console.log('RESPONSE of POST response');
-        console.log(response);
+        if (error) {
+            console.error(error);
+            connection.sendUTF('database connection failed');
+        }
 
         console.log('BODY of POST response: ');
         console.log(body);
         console.log('---------------------------------');
 
-        if (error) {
-            console.error(error);
-            connection.sendUTF('database connection failed');
-        }
-        if (data.device_type === deviceType.robot && !body) {
+
+        if (!body) {
             connection.sendUTF('room is full.');
         } else {
+            registerDevice(data.room_id, deviceType.robot, data.robot_id, connection);
             connection.sendUTF(body);
         }
     });

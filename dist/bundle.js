@@ -24,10 +24,10 @@ socket.addEventListener('open', function (event) {
 
     const roboMessage = new RoboConnectorMessage();
     roboMessage.setRoomId('1');
-    roboMessage.setUserId('tran nguyen');
+    roboMessage.setUserId(0);
     roboMessage.setMessageType(messageType.handshake);
-    roboMessage.setMessage('yo wassup it me spicy boi');
-    roboMessage.setRobotId('test');
+    roboMessage.setMessage('no message');
+    roboMessage.setRobotId('');
     let jsonMessage = roboMessage.build().toJson();
     console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
     socket.send(jsonMessage);
