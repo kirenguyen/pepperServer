@@ -132,6 +132,7 @@ function parseJSON(data) {
  * @param deviceName device name, not necessarily unique
  */
 function registerDevice(roomID, type, connection, deviceName) {
+    console.log('REGISTERING DEVICE');
     if (!devices_map.has(roomID)) {
         let room_map = new Map([
             [deviceType.robot, new Map()],
@@ -215,6 +216,7 @@ function login(data, connection) {
             console.log('Failed to authenticate: ' + body);
             return false;
         }
+
         registerDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name);
         console.log('registerDevice function has been called for microbit');
     });
