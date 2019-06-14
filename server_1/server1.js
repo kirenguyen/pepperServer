@@ -1,7 +1,7 @@
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 const request = require('request');
-// const redis = require("redis");
+const redis = require("redis");
 const ip = require("ip");
 
 const domain = 'https://roboblocks.xyz/';

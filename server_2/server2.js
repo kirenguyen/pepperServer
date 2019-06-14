@@ -1,15 +1,16 @@
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 const request = require('request');
-// const redis = require("redis");
+const redis = require("redis");
 const ip = require("ip");
 
 const domain = 'https://roboblocks.xyz/';
 const deviceType = require('./message-constants').deviceType;
 const serverPort = 3000;
-// const redisPort = 6379;
+const redisPort = 6379;
 
 const devices_map = new Map();
+const redisURL = 'pepperredis.ajwjwr.ng.0001.apne1.cache.amazonaws.com';
 
 let server = http.createServer(function(request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'})
@@ -20,9 +21,9 @@ let server = http.createServer(function(request, response) {
 });
 
 
-// const publisher = redis.createClient(redisPort, redis_client); // 送信用 (そうしんよう) : for sending
-// const subscriber = redis.createClient(redisPort, redis_client); // 受け取り用 （うけとりよう） : for accepting
-// subscriber.subscribe('socket');
+const publisher = redis.createClient(redisPort, redisURL); // 送信用 (そうしんよう) : for sending
+const subscriber = redis.createClient(redisPort, redisURL); // 受け取り用 （うけとりよう） : for accepting
+subscriber.subscribe('socket');
 
 
 wss = new WebSocketServer({
