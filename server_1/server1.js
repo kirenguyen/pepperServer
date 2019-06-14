@@ -106,45 +106,6 @@ wss.on('request', function(req) {
 });
 
 /**
- * Determines if the micro:bit successfully logged into the server
- * @param data parsed JSON object of microbit's initial message
- * @returns {boolean} json object of micro:bit message if successfully authenticated,
- *          false otherwise
- */
-function authenticate(data){
-    let body = {
-        'room_name': data.room_name,
-        'password': data.password,
-    };
-
-    let options = {
-        uri: domain + 'project/login',
-        headers: {
-            'Content-type': 'application/x-www-form-urlencoded',
-        },
-        form: body
-    };
-
-    let responseBody = null;
-    request.post(options, function(error, response, body){
-        if (error){
-            console.error(error);
-        }
-
-        responseBody = parseJSON(body);
-        console.log('Parsed POST body:');
-        console.log(responseBody);
-
-        const failedLogin = '900';
-        if(!responseBody || responseBody.result === failedLogin) {
-            console.log('Failed to authenticate: ' + body);
-            return false;
-        }
-    });
-    return responseBody;
-}
-
-/**
  * Attempts to parse a string into a JSON object
  * @param data JSON string that can be parsed back into an object
  * @returns JSON object if data was parsable, false otherwise
@@ -224,20 +185,37 @@ function unregisterDevice(connection){
  * @param connection socket connection object
  */
 function login(data, connection) {
-    new Promise(function(resolve, reject) {
-        let response = authenticate(data);
-        console.log('RESPONSEEEE: ' + response);
-        resolve(response);
-    }).then(
-        function(result) {
-            registerDevice(response['room_id'], deviceType.microbit, connection, data['microbit_name']);
-            //TODO: alert peppers in correct room that a microbit has been successfully added on both servers
-            alertPeppers();
+    let body = {
+        'room_name': data.room_name,
+        'password': data.password,
+    };
+
+    let options = {
+        uri: domain + 'project/login',
+        headers: {
+            'Content-type': 'application/x-www-form-urlencoded',
         },
-        function(error) {
-            console.log('response was a failure for some reason??');
+        form: body
+    };
+
+    let responseBody = null;
+    request.post(options, function(error, response, body){
+        if (error){
+            console.error(error);
         }
-    )
+
+        responseBody = parseJSON(body);
+        console.log('Parsed POST body:');
+        console.log(responseBody);
+
+        const failedLogin = '900';
+        if(!responseBody || responseBody.result === failedLogin) {
+            console.log('Failed to authenticate: ' + body);
+            return false;
+        }
+        registerDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name)
+    });
+
 }
 
 /**
@@ -293,7 +271,7 @@ function handshake(data, connection) {
         if (!body) {
             connection.sendUTF('room is full.');
         } else {
-            registerDevice(data.room_id, deviceType.robot, connection, );
+            registerDevice(data.room_id, deviceType.robot, connection);
             connection.sendUTF(body);
         }
     });
