@@ -164,12 +164,17 @@ function registerDevice(roomID, type, connection, deviceName) {
  * @param connection websocket connection object that was previously registered
  */
 function unregisterDevice(connection){
-    if(connection['map'])
+    if(!connection.hasOwnProperty('id')){
+        console.log('This connection was not registered');
+        return false;
+    }
 
     if (!devices_map.has(connection.id.room_id)){
         console.log('Room does not exist');
     }
     let success = devices_map.get(connection.id.room_id).get(connection.id.device_type).delete(connection.id.uuid);
+
+    //debug lines
     if (!success) {
         console.log('Device was not registered; unregister unsuccessful');
     } else {
