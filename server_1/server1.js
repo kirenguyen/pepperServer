@@ -28,7 +28,8 @@ let server = http.createServer(function(request, response) {
 const publisher = redis.createClient(redisPort, redisURL); // 送信用 (そうしんよう) : for sending
 const subscriber = redis.createClient(redisPort, redisURL); // 受け取り用 （うけとりよう） : for accepting
 const writer = redis.createClient(redisPort, redisURL); // for writing information to persist on redis DB
-subscriber.subscribe('socket');
+subscriber.subscribe('request');
+subscriber.subscribe('reply');
 
 
 wss = new WebSocketServer({
@@ -37,14 +38,12 @@ wss = new WebSocketServer({
 });
 
 /**
- * Handles server cleanup upon server startup (or rebooting after failure).
+ * Handles server cleanup upon server startup (or rebooting after failure). //TODO: rewrite this
  * Removes 'zombie' micro:bits from redis (micro:bits accepted from server's previous runtime).
  */
 function serverStartup() {
     console.log('ip of this server: ' + ip.address());  //constant, even after rebooting
-
 }
-
 
 
 /**
@@ -106,6 +105,69 @@ wss.on('request', function(req) {
         }
     });
 });
+
+
+subscriber.on('message', function(channel, message){
+    let msgObject = parseJSON(message);
+
+    //TODO: what happens when there's no response???? Do we want to do a timer to for how long it may take to respond???
+    switch(channel){
+        case 'request':
+            if(msgObject['origin_ip'] === ip.address()){
+                // same server reading the request for the first time
+            } else {
+                // different server requested, fill object with this server's local micro:bits
+            }
+            break;
+        case 'reply':
+            if(msgObject['origin_ip'] === ip.address()){
+                // same server reading the response from request originally sent from this server
+            } else {
+
+            }
+            break;
+        default:
+            break;
+    }
+
+});
+
+
+/**
+ * Sends message to other servers to collect
+ * @param roomID
+ */
+function getAllMicrobits(roomID) {
+    let microbitsMessage = {
+        message_type: messageType.microbitRequest,
+        room_id: roomID,
+        origin_ip: ip.address(),
+        reply_ip: null,
+        microbits: []
+    };
+
+    devices_map.get(roomID).get(deviceType.microbit).forEach((value, key, map) => {
+        let microbit = {key: value.id['name']}; //uuid: user-chosen name
+        microbitsMessage.microbits.push(microbit);
+    });
+
+    publisher.publish('request', JSON.stringify((microbitsMessage)));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////
 
 /**
  * Attempts to parse a string into a JSON object
@@ -184,7 +246,6 @@ function unregisterDevice(connection){
 }
 
 
-
 /**
  * Handles login attempts of micro:bit
  * @param data message object of micro:bit containing device_type, room_id, microbit_name, password, etc.
@@ -226,15 +287,6 @@ function login(data, connection) {
 
 }
 
-/**
- * Alerts Peppers in the same room as a newly registered micro:bit
- * that it has been added.
- *
- *
- */
-function alertPeppers(){
-
-}
 
 /**
  * Saves the robot to this room (handshake procedure)
@@ -254,9 +306,6 @@ function handshake(data, connection) {
         "robot_id": data.robot_id
     };
 
-    console.log('to send: ');
-    console.log(body);
-
     let options = {
         uri: domain + 'project/node/save_user',
         headers: {
@@ -275,7 +324,6 @@ function handshake(data, connection) {
         console.log(body);
         console.log('---------------------------------');
 
-
         if (!body) {
             connection.sendUTF('room is full.');
         } else {
@@ -284,6 +332,18 @@ function handshake(data, connection) {
         }
     });
 }
+
+
+/**
+ * Alerts Peppers in the same room as a newly registered micro:bit
+ * that it has been added.
+ *
+ *
+ */
+function alertPeppers(){
+
+}
+
 
 module.exports.login = login;
 
