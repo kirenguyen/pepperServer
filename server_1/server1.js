@@ -101,7 +101,7 @@ wss.on('request', function(req) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
         console.log('desc: ' + description);
         //TODO: close connection, save information of the respective connection to unregister device from device_maps
-        if(connection.hasOwnProperty('id'){
+        if(connection.hasOwnProperty('id')){
             unregisterDevice(connection);
         }
     });
