@@ -29,7 +29,7 @@ socket.addEventListener('open', function (event) {
     roboMessage.setRobotId('test');
     let jsonMessage = roboMessage.build().toJson();
     console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
-
+    socket.send(jsonMessage);
 });
 
 // Listen for messages

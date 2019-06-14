@@ -88,7 +88,7 @@ wss.on('request', function(req) {
                 login(data, connection);
                 break;
             case messageType.handshake:
-                handshake(req, connection, data);
+                handshake(data, connection);
                 break;
             case messageType.action:
                 break;
@@ -215,10 +215,10 @@ function login(data, connection) {
 
 /**
  * Saves the robot to this room (handshake procedure)
- * @param connection socket connection object
  * @param data parsed message object sent from Pepper
+ * @param connection socket connection object
  */
-function handshake(connection, data) {
+function handshake(data, connection) {
     registerDevice(data.room_id, deviceType.robot, data.robot_id, connection);
 
     let body = {
@@ -242,6 +242,7 @@ function handshake(connection, data) {
 
         console.log('BODY of POST response: ');
         console.log(body);
+        console.log('---------------------------------');
 
         if (error) {
             console.error(error);
@@ -252,7 +253,6 @@ function handshake(connection, data) {
         } else {
             connection.sendUTF(body);
         }
-
     });
 }
 
