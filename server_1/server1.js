@@ -278,5 +278,4 @@ function handshake(data, connection) {
 }
 
 module.exports.login = login;
-module.exports.authenticate = authenticate;
 
