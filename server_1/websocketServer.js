@@ -18,7 +18,7 @@ subscriber.subscribe('socket'); //name of channel
 let testMicrobitLogin = {
     room_name: 'room1',
     password: 'test1234',
-    microbit_name: 'puppy eyes',
+    microbit_name: 'server1',
 };
 
 setTimeout(() => {publisher.publish('socket', JSON.stringify(testMicrobitLogin))}, 3000);
