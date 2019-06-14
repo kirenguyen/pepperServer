@@ -226,10 +226,10 @@ function unregisterDevice(connection){
 function login(data, connection) {
     new Promise(function(resolve, reject) {
         let response = authenticate(data);
+        console.log('RESPONSEEEE: ' + response);
         resolve(response);
     }).then(
         function(result) {
-            console.log('Registered a microbit, devices_map: ');
             registerDevice(response['room_id'], deviceType.microbit, connection, data['microbit_name']);
             //TODO: alert peppers in correct room that a microbit has been successfully added on both servers
             alertPeppers();
