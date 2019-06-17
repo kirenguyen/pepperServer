@@ -24,7 +24,7 @@ let params = {
     InstanceIds: [ 'i-090615b4ec9481926',
         'i-0c309c24f45825f36'
     ],
-    DryRun: true
+    DryRun: true || false
 };
 
 ec2.monitorInstances(params, function(err, data){
