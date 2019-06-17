@@ -4,7 +4,6 @@ const request = require('request');
 const redis = require("redis");
 const RedisMessage = require('../client/redis-publisher-message');
 const ip = require('ip');
-const isReachable = require('is-reachable');
 const uuidv4 = require("uuid/v4");
 
 const domain = 'https://roboblocks.xyz/';
@@ -70,26 +69,7 @@ function originIsAllowed(origin) {
  * Check if the other server is alive.
  */
 function checkAlive() {
-    let aliveServerIP = '3.112.203.97'; //server1
-    let deadServerIP = '192.168.1.1';
 
-
-    isReachable(aliveServerIP).then(function(result) { // (**)
-
-        console.log('alive server result: ' + result); // 1
-    });
-    // (async () => {
-    //
-    //     console.log(await isReachable(deadServerIP));
-    //     //=> false
-    //
-    //     console.log(await isReachable(aliveServerIP));
-    //     //=> true
-    //
-    //
-    //     console.log(await isReachable('google.com:80'));
-    //     //=> true
-    // })();
 }
 
 
@@ -157,7 +137,7 @@ wss.on('request', function(req) {
     });
 });
 
-/*
+
 subscriber.on('message', function(channel, message){
     let msgObject = parseJSON(message);
 
@@ -173,7 +153,8 @@ subscriber.on('message', function(channel, message){
             if(msgObject['origin_ip'] === ip.address()){
                 // same server reading the request for the first time
             } else {
-                // different server requested, fill object with this server's local micro:bits
+                alertPeppers(msgObject['room_id'], msgObject['microbit_info']['uuid'],
+                    msgObject['microbit_info']['name'], false);
             }
             break;
         case messageType.microbitAction:
@@ -182,7 +163,7 @@ subscriber.on('message', function(channel, message){
             break;
     }
 });
-*/
+
 
 /**
  * Sends message to other servers to collect micro:bits???
@@ -192,7 +173,7 @@ function getAllMicrobits(roomID) {
     let microbitsMessage = new RedisMessage();
     microbitsMessage.setMessageType(messageType.microbitRequest);
     microbitsMessage.setRoomId(roomID);
-    microbitsMessage['origin_ip'] = ip.address();
+    microbitsMessage.setOriginIP(ip.address());
     microbitsMessage['microbits']  = [];
 
     devices_map.get(roomID).get(deviceType.microbit).forEach((value, key) => {
@@ -204,6 +185,17 @@ function getAllMicrobits(roomID) {
 
     // publisher.publish('socket', JSON.stringify((microbitsMessage)));
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -264,7 +256,7 @@ function registerDevice(roomID, type, connection, deviceName) {
 
     // notify all peppers that a microbit was added on this server
     if (type === deviceType.microbit){
-        alertPeppers(connection, true);
+        alertPeppers(roomID, connection.id.uuid, deviceName, true);
     }
 }
 
@@ -368,8 +360,6 @@ function handshake(data, connection) {
             connection.sendUTF('database connection failed');
         }
 
-
-
         let responseBody = parseJSON(body);
 
         console.log('BODY of POST response: ');
@@ -397,14 +387,15 @@ function handshake(data, connection) {
  * Alerts Peppers in the same room that a newly registered micro:bit
  * has been added onto a server and notify other server as well.
  *
- * @param connection object of micro:bit that was newly registered with registerDevice()
+ * @param roomID room ID of micro:bit that was newly registered with registerDevice()
+ * @param uuid the value of the ID the micro:bit is uniquely mapped to assigned during registerDevice()
+ * @param name (s) of the micro:bit assigned to by the user
  * @param broadcast true for alerting other server (micro:bit was added to this server), false otherwise
  */
-function alertPeppers(connection){
-    let roomID = connection.id['room_id'];
+function alertPeppers(roomID, uuid, name, broadcast){
 
-    let microbitInfo = {};
-    microbitInfo[connection.id['uuid']] = connection.id['name'];
+    let microbitInfo = {uuid: uuid,
+    name: name};
 
     // alert on this server
     devices_map.get(roomID).get(deviceType.robot).forEach((value) => {
@@ -423,7 +414,6 @@ function alertPeppers(connection){
         publisher.publish('socket', JSON.stringify(message));
     }
      */
-
 }
 
 
