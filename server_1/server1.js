@@ -208,7 +208,6 @@ function registerDevice(roomID, type, connection, deviceName) {
         let room_map = new Map([
             [deviceType.robot, new Map()],
             [deviceType.microbit, new Map()],
-            [deviceType.browser, new Map()]
         ]);
         devices_map.set(roomID, room_map);
     }
@@ -349,8 +348,9 @@ function handshake(data, connection) {
         } else if (!responseBody) {
             connection.sendUTF('Room is full.');
         } else {
-            //TODO: what's the device name parameter???
-            registerDevice(data.room_id, deviceType.robot, connection);
+            let names = {jp: response['robot_name_ja'],
+                        eng: response['robot_name_en']}
+            registerDevice(data.room_id, deviceType.robot, connection, names);
             connection.sendUTF(body);
         }
     });
