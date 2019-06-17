@@ -4,9 +4,6 @@ const AWS = require('aws-sdk');
 // Create EC2 service object
 const ec2 = new AWS.EC2({apiVersion: '2016-11-15', region: 'ap-northeast-1'});
 
-let params = {
-    DryRun: false
-};
 
 // Call EC2 to retrieve policy for selected bucket
 // ec2.describeInstances(params, function(err, data) {
