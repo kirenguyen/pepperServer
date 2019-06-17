@@ -4,7 +4,7 @@ const request = require('request');
 const redis = require("redis");
 const RedisMessage = require('../client/redis-publisher-message');
 const ip = require('ip');
-const ping = require('ping');
+const isReachable = require('is-reachable');
 const uuidv4 = require("uuid/v4");
 
 const domain = 'https://roboblocks.xyz/';
@@ -73,13 +73,19 @@ function checkAlive() {
     let aliveServerIP = '3.112.203.97'; //server1
     let deadServerIP = '192.168.1.1';
 
-    let hosts = [aliveServerIP, 'google.com', deadServerIP, 'roboblocks.xyz'];
-    hosts.forEach(function(host){
-        ping.sys.probe(host, function(isAlive){
-            let msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
-            console.log(msg);
-        });
-    });
+
+    (async () => {
+
+        console.log(await 'deadserver ' + isReachable(deadServerIP));
+        //=> false
+
+        console.log(await 'aliveserver' + isReachable(aliveServerIP));
+        //=> true
+
+
+        console.log(await 'google' + isReachable('google.com:80'));
+        //=> true
+    })();
 }
 
 
