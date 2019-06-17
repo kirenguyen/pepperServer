@@ -23,8 +23,7 @@ const ec2 = new AWS.EC2({apiVersion: '2016-11-15', region: 'ap-northeast-1'});
 let params = {
     InstanceIds: [ 'i-090615b4ec9481926',
         'i-0c309c24f45825f36'
-    ],
-    DryRun: true || false
+    ]
 };
 
 ec2.monitorInstances(params, function(err, data){
