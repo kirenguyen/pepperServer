@@ -70,10 +70,10 @@ function originIsAllowed(origin) {
  * Check if the other server is alive.
  */
 function checkAlive() {
-    let aliveServerIP = 'ec2-3-112-203-97.ap-northeast-1.compute.amazonaws.com'; //server1
+    let aliveServerIP = '3.112.203.97'; //server1
     let deadServerIP = '192.168.1.1';
 
-    let hosts = [aliveServerIP, 'google.com', deadServerIP];
+    let hosts = [aliveServerIP, 'google.com', deadServerIP, 'roboblocks.xyz'];
     hosts.forEach(function(host){
         ping.sys.probe(host, function(isAlive){
             let msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
