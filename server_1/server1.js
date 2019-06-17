@@ -74,18 +74,22 @@ function checkAlive() {
     let deadServerIP = '192.168.1.1';
 
 
-    (async () => {
+    isReachable(aliveServerIP).then(function(result) { // (**)
 
-        console.log(await isReachable(deadServerIP));
-        //=> false
-
-        console.log(await isReachable(aliveServerIP));
-        //=> true
-
-
-        console.log(await isReachable('google.com:80'));
-        //=> true
-    })();
+        console.log('alive server result: ' + result); // 1
+    });
+    // (async () => {
+    //
+    //     console.log(await isReachable(deadServerIP));
+    //     //=> false
+    //
+    //     console.log(await isReachable(aliveServerIP));
+    //     //=> true
+    //
+    //
+    //     console.log(await isReachable('google.com:80'));
+    //     //=> true
+    // })();
 }
 
 
