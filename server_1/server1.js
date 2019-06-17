@@ -147,7 +147,7 @@ wss.on('request', function(req) {
     });
 });
 
-
+/*
 subscriber.on('message', function(channel, message){
     let msgObject = parseJSON(message);
 
@@ -172,7 +172,7 @@ subscriber.on('message', function(channel, message){
             break;
     }
 });
-
+*/
 
 /**
  * Sends message to other servers to collect micro:bits???
