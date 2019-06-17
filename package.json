@@ -29,5 +29,8 @@
     "watchify": "^3.11.1",
     "websocket": "^1.0.28",
     "ws": "^7.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
   }
 }

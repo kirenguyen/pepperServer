@@ -11,8 +11,8 @@ const deviceType = messageConstants.deviceType;
 const messageType = messageConstants.messageType;
 const serverPort = 3000;
 
-const redisPort = 6379;
-const redisURL = 'pepperredis.ajwjwr.ng.0001.apne1.cache.amazonaws.com';
+// const redisPort = 6379;
+// const redisURL = 'pepperredis.ajwjwr.ng.0001.apne1.cache.amazonaws.com';
 
 const devices_map = new Map();
 
@@ -25,11 +25,17 @@ let server = http.createServer(function(request, response) {
 });
 
 
-const publisher = redis.createClient(redisPort, redisURL); // 送信用 (そうしんよう) : for sending
-const subscriber = redis.createClient(redisPort, redisURL); // 受け取り用 （うけとりよう） : for accepting
-const writer = redis.createClient(redisPort, redisURL); // for writing information to persist on redis DB
-subscriber.subscribe('request');
-subscriber.subscribe('reply');
+// const publisher = redis.createClient(redisPort, redisURL); // 送信用 (そうしんよう) : for sending
+// const subscriber = redis.createClient(redisPort, redisURL); // 受け取り用 （うけとりよう） : for accepting
+//
+// subscriber.subscribe('socket');
+//
+// publisher.on('error', function(err) {
+//     console.log('Publisher error:  ' + String(err));
+// });
+// subscriber.on('error', function(err) {
+//     console.log('Subscriber error: ' + String(err));
+// });
 
 
 wss = new WebSocketServer({
@@ -71,17 +77,12 @@ wss.on('request', function(req) {
     let connection = req.accept('rb', req.origin);
     connection.webSocketKey = req.httpRequest.headers["sec-websocket-key"];
 
-    console.log((new Date()) + ': Connection accepted.');
-
     connection.on('message', function(message) {
         console.log('MESSAGE RECEIVED FROM CLIENT');
         let data = parseJSON(message.utf8Data);
         if(!data) {
             return false;
         }
-
-        console.log('Parsed message: ');
-        console.log(data);
 
         switch(data['message_type']){
             case messageType.login:
@@ -103,38 +104,46 @@ wss.on('request', function(req) {
         if(connection.hasOwnProperty('id')){
             unregisterDevice(connection);
         }
+        try {
+            let url = domain + 'project/node/delete_user';
+            let options = {
+                uri: url,
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded",
+                },
+                form: {
+                    "socket_id": connection.webSocketKey
+                }
+            };
+            request.post(options, function (error, response, body) {
+                console.log('Deleting user, post request unparsed body: ');
+                console.log(body);
+                let users = JSON.parse(body).notification;
+                console.log('what users means: ');
+                console.log(users);
+            });
+        } catch (err) {
+            console.log(err);
+        }
     });
 });
 
 
-subscriber.on('message', function(channel, message){
-    let msgObject = parseJSON(message);
-
-    //TODO: what happens when there's no response???? Do we want to do a timer to for how long it may take to respond???
-    switch(channel){
-        case 'request':
-            if(msgObject['origin_ip'] === ip.address()){
-                // same server reading the request for the first time
-            } else {
-                // different server requested, fill object with this server's local micro:bits
-            }
-            break;
-        case 'reply':
-            if(msgObject['origin_ip'] === ip.address()){
-                // same server reading the response from request originally sent from this server
-            } else {
-
-            }
-            break;
-        default:
-            break;
-    }
-
-});
+// subscriber.on('message', function(channel, message){
+//     let msgObject = parseJSON(message);
+//
+//     //TODO: what happens when there's no response???? Do we want to do a timer to for how long it may take to respond???
+//     if(msgObject['origin_ip'] === ip.address()){
+//         // same server reading the request for the first time
+//     } else {
+//         // different server requested, fill object with this server's local micro:bits
+//     }
+//
+// });
 
 
 /**
- * Sends message to other servers to collect
+ * Sends message to other servers to collect micro:bits???
  * @param roomID
  */
 function getAllMicrobits(roomID) {
@@ -146,12 +155,12 @@ function getAllMicrobits(roomID) {
         microbits: []
     };
 
-    devices_map.get(roomID).get(deviceType.microbit).forEach((value, key, map) => {
+    devices_map.get(roomID).get(deviceType.microbit).forEach((value, key) => {
         let microbit = {key: value.id['name']}; //uuid: user-chosen name
         microbitsMessage.microbits.push(microbit);
     });
 
-    publisher.publish('request', JSON.stringify((microbitsMessage)));
+    // publisher.publish('request', JSON.stringify((microbitsMessage)));
 }
 
 
@@ -219,6 +228,10 @@ function registerDevice(roomID, type, connection, deviceName) {
     //    take difference between previous runtime redis and global to update global
     console.log('!!!! Devices map: ');
     console.log(devices_map);
+
+    if (devices_map.get(roomID).get(type).size() >= 2){
+        alertPeppers();
+    }
 }
 
 /**
@@ -289,7 +302,8 @@ function login(data, connection) {
 
 
 /**
- * Saves the robot to this room (handshake procedure)
+ * Saves the robot to a room/this server (handshake procedure)
+ *
  * @param data parsed message object sent from Pepper
  * @param connection socket connection object
  */
@@ -320,30 +334,41 @@ function handshake(data, connection) {
             connection.sendUTF('database connection failed');
         }
 
+
+
+        let responseBody = parseJSON(body);
+
         console.log('BODY of POST response: ');
-        console.log(body);
+        console.log(responseBody);
         console.log('---------------------------------');
 
-        if (!body) {
-            connection.sendUTF('room is full.');
+        const failedLogin = '900';
+        if(responseBody.result === failedLogin) {
+            console.log('Failed handshake ' + body);
+            return false;
+        } else if (!responseBody) {
+            connection.sendUTF('Room is full.');
         } else {
+            //TODO: what's the device name parameter???
             registerDevice(data.room_id, deviceType.robot, connection);
             connection.sendUTF(body);
         }
     });
+
 }
 
 
 /**
- * Alerts Peppers in the same room as a newly registered micro:bit
+ * Alerts Peppers in the same room that a newly registered micro:bit
  * that it has been added.
  *
- *
+ * @param roomID the unique room ID to alert the peppers in. Must be the
+ * same ID as the micro:bit
  */
-function alertPeppers(){
-
+function alertPeppers(roomID){
+    devices_map.get(roomID).get(deviceType.robot).forEach((value, key) => {
+        value.sendUTF('This is how we would alert all the Peppers! If only I knew how...');
+    });
 }
 
-
-module.exports.login = login;
 
