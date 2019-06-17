@@ -33,4 +33,4 @@ class RedisMessage {
         return JSON.stringify(this._message);
     }
 }
-module.exports = RoboConnectorMessage;
+module.exports = RedisMessage;
