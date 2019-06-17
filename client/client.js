@@ -28,13 +28,13 @@ socket.addEventListener('open', function (event) {
     roboMessage.setMessage('no message');
     roboMessage.setRobotId('');
     let jsonMessage = roboMessage.build().toJson();
-    console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
     socket.send(jsonMessage);
+    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 });
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
-    console.log('Message from server ' + event.data);
+    console.log('Message from server: ');
+    console.log(' >> ' + event.data);
 });
 
-console.log("bottom of dist script");

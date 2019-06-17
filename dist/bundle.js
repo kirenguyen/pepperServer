@@ -29,19 +29,26 @@ socket.addEventListener('open', function (event) {
     roboMessage.setMessage('no message');
     roboMessage.setRobotId('');
     let jsonMessage = roboMessage.build().toJson();
-    console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
     socket.send(jsonMessage);
+    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 });
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
-    console.log('Message from server ' + event.data);
+    console.log('Message from server: ');
+    console.log(' >> ' + event.data);
 });
 
-console.log("bottom of dist script");
+
 },{"./message-constants":2,"./microbit-login-message":3,"./robo-connector-message":4}],2:[function(require,module,exports){
 const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
-const messageType = Object.freeze({login: 'login', handshake: 'handshake', action: 'action', microbitRequest: 'microbitRequest', microbitAction: 'microbitAction'});
+const messageType = Object.freeze({login: 'login',
+    handshake: 'handshake',
+    action: 'action',
+    microbitRequest: 'microbitRequest',
+    microbitAction: 'microbitAction',
+    addMicrobit: 'addMicrobit',
+});
 
 
 
@@ -86,7 +93,6 @@ module.exports = MicrobitLoginMessage;
 },{"./message-constants":2}],4:[function(require,module,exports){
 const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
-const messageType = messageConstants.messageType;
 
 class RoboConnectorMessage {
     constructor() {

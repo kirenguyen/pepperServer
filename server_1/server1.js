@@ -2,7 +2,9 @@ const WebSocketServer = require('websocket').server;
 const http = require('http');
 const request = require('request');
 const redis = require("redis");
-const ip = require("ip");
+const RedisMessage = require('./redis-publisher-message');
+const ip = require('ip');
+const ping = require('ping');
 const uuidv4 = require("uuid/v4");
 
 const domain = 'https://roboblocks.xyz/';
@@ -22,6 +24,7 @@ let server = http.createServer(function(request, response) {
 }).listen(serverPort, function() {
     console.log('Server 1 listening on port: ' + serverPort);
     serverStartup();
+    checkAlive();
 });
 
 
@@ -61,6 +64,22 @@ function originIsAllowed(origin) {
     console.log('origin of request: ');
     console.log(origin);
     return true;
+}
+
+/**
+ * Check if the other server is alive.
+ */
+function checkAlive() {
+    let aliveServerIP = '172.31.37.215'; //server1
+    let deadServerIP = '172.31.34.41';
+
+    let hosts = [aliveServerIP, 'google.com', deadServerIP];
+    hosts.forEach(function(host){
+        ping.sys.probe(host, function(isAlive){
+            let msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
+            console.log(msg);
+        });
+    });
 }
 
 
@@ -129,17 +148,30 @@ wss.on('request', function(req) {
 });
 
 
-// subscriber.on('message', function(channel, message){
-//     let msgObject = parseJSON(message);
-//
-//     //TODO: what happens when there's no response???? Do we want to do a timer to for how long it may take to respond???
-//     if(msgObject['origin_ip'] === ip.address()){
-//         // same server reading the request for the first time
-//     } else {
-//         // different server requested, fill object with this server's local micro:bits
-//     }
-//
-// });
+subscriber.on('message', function(channel, message){
+    let msgObject = parseJSON(message);
+
+    switch(msgObject['message_type']) {
+        case messageType.microbitRequest:
+            if(msgObject['origin_ip'] === ip.address()){
+                // same server reading the request for the first time
+            } else {
+                // different server requested, fill object with this server's local micro:bits
+            }
+            break;
+        case messageType.addMicrobit:
+            if(msgObject['origin_ip'] === ip.address()){
+                // same server reading the request for the first time
+            } else {
+                // different server requested, fill object with this server's local micro:bits
+            }
+            break;
+        case messageType.microbitAction:
+            break;
+        default:
+            break;
+    }
+});
 
 
 /**
@@ -147,29 +179,21 @@ wss.on('request', function(req) {
  * @param roomID
  */
 function getAllMicrobits(roomID) {
-    let microbitsMessage = {
-        message_type: messageType.microbitRequest,
-        room_id: roomID,
-        origin_ip: ip.address(),
-        reply_ip: null,
-        microbits: []
-    };
+    let microbitsMessage = new RedisMessage();
+    microbitsMessage.setMessageType(messageType.microbitRequest);
+    microbitsMessage.setRoomId(roomID);
+    microbitsMessage['origin_ip'] = ip.address();
+    microbitsMessage['microbits']  = [];
 
     devices_map.get(roomID).get(deviceType.microbit).forEach((value, key) => {
-        let microbit = {key: value.id['name']}; //uuid: user-chosen name
+        let microbit = {paired: false};   //TODO: add more parameters for each microbit (ex: whether or not it's already paired)
+        microbit[key] = value.id['name']; //uuid: user-chosen name
+
         microbitsMessage.microbits.push(microbit);
     });
 
-    // publisher.publish('request', JSON.stringify((microbitsMessage)));
+    // publisher.publish('socket', JSON.stringify((microbitsMessage)));
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -200,7 +224,7 @@ function parseJSON(data) {
  * @param roomID ID of room that the device logged in to, unique to room
  * @param type type of device (DeviceType.robot, DeviceType.microbit, DeviceType.browser)
  * @param connection socket connection object
- * @param deviceName device name, not necessarily unique
+ * @param deviceName device name(s), not necessarily unique
  */
 function registerDevice(roomID, type, connection, deviceName) {
     console.log('REGISTERING DEVICE');
@@ -228,8 +252,9 @@ function registerDevice(roomID, type, connection, deviceName) {
     console.log('!!!! Devices map: ');
     console.log(devices_map);
 
-    if (devices_map.get(roomID).get(type).size >= 2){
-        alertPeppers(roomID);
+    // notify all peppers that a microbit was added on this server
+    if (type === deviceType.microbit){
+        alertPeppers(connection, true);
     }
 }
 
@@ -360,15 +385,35 @@ function handshake(data, connection) {
 
 /**
  * Alerts Peppers in the same room that a newly registered micro:bit
- * that it has been added.
+ * has been added onto a server and notify other server as well.
  *
- * @param roomID the unique room ID to alert the peppers in. Must be the
- * same ID as the micro:bit
+ * @param connection object of micro:bit that was newly registered with registerDevice()
+ * @param broadcast true for alerting other server (micro:bit was added to this server), false otherwise
  */
-function alertPeppers(roomID){
-    devices_map.get(roomID).get(deviceType.robot).forEach((value, key) => {
-        value.sendUTF('This is how we would alert all the Peppers! If only I knew how...');
+function alertPeppers(connection){
+    let roomID = connection.id['room_id'];
+
+    let microbitInfo = {};
+    microbitInfo[connection.id['uuid']] = connection.id['name'];
+
+    // alert on this server
+    devices_map.get(roomID).get(deviceType.robot).forEach((value) => {
+        value.sendUTF('This is how we would alert all the Peppers! If only I knew how to exactly...');
+        value.sendUTF(JSON.stringify(microbitInfo))
     });
+
+    /*
+    if (broadcast) {
+        let message = new RedisMessage();
+        message.setMessageType(messageType.addMicrobit);
+        message.setRoomId(roomID);
+        message.setMessage(microbitInfo);
+        message.setOriginIp(ip.address());
+
+        publisher.publish('socket', JSON.stringify(message));
+    }
+     */
+
 }
 
 
