@@ -229,7 +229,7 @@ function registerDevice(roomID, type, connection, deviceName) {
     console.log('!!!! Devices map: ');
     console.log(devices_map);
 
-    if (devices_map.get(roomID).get(type).size() >= 2){
+    if (devices_map.get(roomID).get(type).size >= 2){
         alertPeppers();
     }
 }
