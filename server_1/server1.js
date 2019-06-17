@@ -81,7 +81,7 @@ function checkAlive() {
         //=> true
 
 
-        console.log( 'google' + isReachable('google.com:80');
+        console.log( 'google' + isReachable('google.com:80'));
         //=> true
 }
 
