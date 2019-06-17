@@ -70,8 +70,8 @@ function originIsAllowed(origin) {
  * Check if the other server is alive.
  */
 function checkAlive() {
-    let aliveServerIP = '172.31.37.215'; //server1
-    let deadServerIP = '172.31.34.41';
+    let aliveServerIP = '3.112.203.97'; //server1
+    let deadServerIP = '192.168.1.1';
 
     let hosts = [aliveServerIP, 'google.com', deadServerIP];
     hosts.forEach(function(host){
