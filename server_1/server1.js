@@ -74,15 +74,18 @@ function checkAlive() {
     let deadServerIP = '192.168.1.1';
 
 
-        console.log('deadserver ' + isReachable(deadServerIP));
+    (async () => {
+
+        console.log(await isReachable(deadServerIP));
         //=> false
 
-        console.log( 'aliveserver' + isReachable(aliveServerIP));
+        console.log(await isReachable(aliveServerIP));
         //=> true
 
 
-        console.log( 'google' + isReachable('google.com:80'));
+        console.log(await isReachable('google.com:80'));
         //=> true
+    })();
 }
 
 
