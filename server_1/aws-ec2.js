@@ -2,7 +2,7 @@
 const AWS = require('aws-sdk');
 
 // Create EC2 service object
-let ec2 = new AWS.EC2({apiVersion: '2016-11-15', region: 'ap-northeast-1a'});
+const ec2 = new AWS.EC2({apiVersion: '2016-11-15', region: 'ap-northeast-1'});
 
 let params = {
     DryRun: false
