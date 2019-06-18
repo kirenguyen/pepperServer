@@ -447,15 +447,14 @@ function alertPeppers(roomID, uuid, name, broadcast){
     // what the other server will get about this microbit's information
     let microbitInfo = {uuid: uuid, name: name, room_id:roomID};
 
-    if(!devices_map.hasOwnProperty(roomID)){
-        return false;
+    if(devices_map.hasOwnProperty(roomID)){
+        // alert on this server
+        devices_map.get(roomID).get(deviceType.robot).forEach((value) => {
+            value.sendUTF('This is how we would alert all the Peppers! If only I knew how to exactly...');
+            value.sendUTF(JSON.stringify(microbitInfo))
+        });
     }
 
-    // alert on this server
-    devices_map.get(roomID).get(deviceType.robot).forEach((value) => {
-        value.sendUTF('This is how we would alert all the Peppers! If only I knew how to exactly...');
-        value.sendUTF(JSON.stringify(microbitInfo))
-    });
 
     if (broadcast) {
         let message = new RedisMessage();

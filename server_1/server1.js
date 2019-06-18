@@ -153,8 +153,8 @@ subscriber.on('message', function(channel, message){
             if(msgObject.origin === SERVER_ID){
                 console.log('RECEIVED REQUEST TO ADD ROBOT FROM OG SERVER');
             } else{
-            registerGlobalDevice(msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
-                msgObject.message['name'])
+                registerGlobalDevice(msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
+                    msgObject.message['name'])
             }
             break;
         case messageType.microbitAction:
@@ -410,22 +410,22 @@ function handshake(data, connection) {
             let names = {robot_name_ja: response['robot_name_ja'],
                 robot_name_en: response['robot_name_en']};
             registerDevice(data.room_id, deviceType.robot, connection, names).then(
-            success => {
-                let robotInfo = {
-                    name: names,
-                    room_id: data.room_id,
-                    uuid: connection.id['uuid'],
-                };
+                success => {
+                    let robotInfo = {
+                        name: names,
+                        room_id: data.room_id,
+                        uuid: connection.id['uuid'],
+                    };
 
-                let message = new RedisMessage();
-                message.setMessageType(messageType.addRobot);
-                message.setRoomId(data.room_id);
-                message.setMessage(robotInfo);
-                message.setOrigin(SERVER_ID);
+                    let message = new RedisMessage();
+                    message.setMessageType(messageType.addRobot);
+                    message.setRoomId(data.room_id);
+                    message.setMessage(robotInfo);
+                    message.setOrigin(SERVER_ID);
 
-                publisher.publish('socket', message.toJson());
-                console.log(success, ': sent message to add pepper globally');
-            });
+                    publisher.publish('socket', message.toJson());
+                    console.log(success, ': sent message to add pepper globally');
+                });
         }
     });
 
@@ -447,15 +447,14 @@ function alertPeppers(roomID, uuid, name, broadcast){
     // what the other server will get about this microbit's information
     let microbitInfo = {uuid: uuid, name: name, room_id:roomID};
 
-    if(!devices_map.hasOwnProperty(roomID)){
-        return false;
+    if(devices_map.hasOwnProperty(roomID)){
+        // alert on this server
+        devices_map.get(roomID).get(deviceType.robot).forEach((value) => {
+            value.sendUTF('This is how we would alert all the Peppers! If only I knew how to exactly...');
+            value.sendUTF(JSON.stringify(microbitInfo))
+        });
     }
 
-    // alert on this server
-    devices_map.get(roomID).get(deviceType.robot).forEach((value) => {
-        value.sendUTF('This is how we would alert all the Peppers! If only I knew how to exactly...');
-        value.sendUTF(JSON.stringify(microbitInfo))
-    });
 
     if (broadcast) {
         let message = new RedisMessage();
