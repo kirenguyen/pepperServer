@@ -2,24 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="07f76310-8687-4d61-80c6-b63bc7f380ff" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/browser.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/browser.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/bundle.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/message-constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/messages/message-constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/microbit-login-message.js" beforeDir="false" afterPath="$PROJECT_DIR$/messages/microbit-login-message.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/redis-publisher-message.js" beforeDir="false" afterPath="$PROJECT_DIR$/messages/redis-publisher-message.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/robo-connector-message.js" beforeDir="false" afterPath="$PROJECT_DIR$/messages/robo-connector-message.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/bundle.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_1/aws-ec2.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_1/aws-ec2.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server_1/server1.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_1/server1.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_1/websocketServer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_1/wsServer.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/server_2/server2.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_2/server2.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_2/websocketServer2.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_2/wsServer2.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test.js" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -35,11 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server_1/server1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="20">
-              <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
+            <state relative-caret-position="309">
+              <caret line="167" column="17" lean-forward="true" selection-start-line="166" selection-start-column="12" selection-end-line="167" selection-end-column="35" />
               <folding>
                 <element signature="n#!!doc;n#registerDevice#0" />
                 <element signature="n#!!doc;n#registerGlobalDevice#0" />
@@ -49,10 +35,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client/client.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-164">
+              <caret line="9" column="2" lean-forward="true" selection-start-line="9" selection-start-column="2" selection-end-line="9" selection-end-column="2" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server_2/server2.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="620">
-              <caret line="31" column="3" lean-forward="true" selection-start-line="31" selection-start-column="3" selection-end-line="31" selection-end-column="3" />
+            <state relative-caret-position="304">
+              <caret line="164" column="18" lean-forward="true" selection-start-line="164" selection-start-column="18" selection-end-line="164" selection-end-column="18" />
               <folding>
                 <element signature="n#!!doc;n#registerDevice#0" />
                 <element signature="n#!!doc;n#registerGlobalDevice#0" />
@@ -129,13 +124,13 @@
         <option value="$PROJECT_DIR$/client/message-constants.js" />
         <option value="$PROJECT_DIR$/client/robo-connector-message.js" />
         <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/client/client.js" />
         <option value="$PROJECT_DIR$/server_1/aws-ec2.js" />
         <option value="$PROJECT_DIR$/client/redis-publisher-message.js" />
         <option value="$PROJECT_DIR$/messages/redis-publisher-message.js" />
         <option value="$PROJECT_DIR$/messages/message-constants.js" />
-        <option value="$PROJECT_DIR$/server_2/server2.js" />
+        <option value="$PROJECT_DIR$/client/client.js" />
         <option value="$PROJECT_DIR$/server_1/server1.js" />
+        <option value="$PROJECT_DIR$/server_2/server2.js" />
       </list>
     </option>
   </component>
@@ -145,8 +140,8 @@
     <bower.json value="" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="143" />
-    <option name="y" value="6" />
+    <option name="x" value="234" />
+    <option name="y" value="4" />
     <option name="width" value="1218" />
     <option name="height" value="896" />
   </component>
@@ -250,12 +245,12 @@
       <workItem from="1560388214564" duration="886000" />
       <workItem from="1560393730787" duration="3327000" />
       <workItem from="1560479415326" duration="22960000" />
-      <workItem from="1560734497229" duration="41334000" />
+      <workItem from="1560734497229" duration="41741000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="92202000" />
+    <option name="totallyTimeSpent" value="92609000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -267,7 +262,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="143" y="6" width="1218" height="896" extended-state="0" />
+    <frame x="234" y="4" width="1218" height="896" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4981203" visible="true" weight="0.21153846" />
@@ -370,13 +365,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/client.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-364">
-          <caret line="1" column="35" selection-start-line="1" selection-start-column="35" selection-end-line="1" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server_1/aws-ec2.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -398,10 +386,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server_2/server2.js">
+    <entry file="file://$PROJECT_DIR$/server_1/server1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="620">
-          <caret line="31" column="3" lean-forward="true" selection-start-line="31" selection-start-column="3" selection-end-line="31" selection-end-column="3" />
+        <state relative-caret-position="309">
+          <caret line="167" column="17" lean-forward="true" selection-start-line="166" selection-start-column="12" selection-end-line="167" selection-end-column="35" />
           <folding>
             <element signature="n#!!doc;n#registerDevice#0" />
             <element signature="n#!!doc;n#registerGlobalDevice#0" />
@@ -409,10 +397,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server_1/server1.js">
+    <entry file="file://$PROJECT_DIR$/client/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
+        <state relative-caret-position="-164">
+          <caret line="9" column="2" lean-forward="true" selection-start-line="9" selection-start-column="2" selection-end-line="9" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server_2/server2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="164" column="18" lean-forward="true" selection-start-line="164" selection-start-column="18" selection-end-line="164" selection-end-column="18" />
           <folding>
             <element signature="n#!!doc;n#registerDevice#0" />
             <element signature="n#!!doc;n#registerGlobalDevice#0" />

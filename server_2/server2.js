@@ -164,7 +164,8 @@ subscriber.on('message', function(channel, message){
             // if microbit or robot is on this server (depending on what the action is), do the action, else ignore
             break;
         default:
-            console.log('Message pubbed that fell into default case: ' + msgObject);
+            console.log('Message pubbed that fell into default case: ');
+            console.log(msgObject);
             break;
     }
 });
