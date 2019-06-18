@@ -5,9 +5,9 @@ const messageConstants = require('./message-constants');
 const messageType = messageConstants.messageType;
 
 // Create WebSocket connection.
-// const socket = new WebSocket('ws://ec2-13-113-153-136.ap-northeast-1.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-112-203-97.ap-northeast-1.compute.amazonaws.com:3000', 'rb');
 
-const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
+// const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
 
 
 // Connection opened

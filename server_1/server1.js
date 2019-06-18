@@ -214,6 +214,7 @@ function getAllMicrobits(roomID) {
  * @returns JSON object if data was parsable, false otherwise
  */
 function parseJSON(data) {
+    console.log(data);
     try {
         return JSON.parse(data);
     } catch (err) {
