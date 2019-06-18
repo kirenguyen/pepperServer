@@ -457,7 +457,6 @@ function alertPeppers(roomID, uuid, name, broadcast){
         message.setOrigin(SERVER_ID);
 
         console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
-        console.log(message.build().toJSON());
 
         publisher.publish('socket', message.build().toJSON());
     }
