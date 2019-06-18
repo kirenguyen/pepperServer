@@ -3,6 +3,7 @@ const http = require('http');
 const request = require('request');
 const redis = require("redis");
 const RedisMessage = require('../client/redis-publisher-message');
+const checkServerState = require('aws-ec2');   // just a function
 const ip = require('ip');
 const uuidv4 = require("uuid/v4");
 
@@ -18,12 +19,10 @@ const serverPort = 3000;
 const devices_map = new Map();
 
 let server = http.createServer(function(request, response) {
-    response.writeHead(200, {'Content-Type': 'text/plain'})
+    response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end('Just sent the headers');
 }).listen(serverPort, function() {
     console.log('Server 1 listening on port: ' + serverPort);
-    serverStartup();
-    checkAlive();
 });
 
 
@@ -45,14 +44,6 @@ wss = new WebSocketServer({
     autoAcceptConnections: false,
 });
 
-/**
- * Handles server cleanup upon server startup (or rebooting after failure). //TODO: rewrite this
- * Removes 'zombie' micro:bits from redis (micro:bits accepted from server's previous runtime).
- */
-function serverStartup() {
-    console.log('ip of this server: ' + ip.address());  //constant, even after rebooting
-}
-
 
 /**
  * Determines whether dist connection is valid/allowed
@@ -63,13 +54,6 @@ function originIsAllowed(origin) {
     console.log('origin of request: ');
     console.log(origin);
     return true;
-}
-
-/**
- * Check if the other server is alive.
- */
-function checkAlive() {
-
 }
 
 
@@ -101,6 +85,11 @@ wss.on('request', function(req) {
                 handshake(data, connection);
                 break;
             case messageType.action:
+                break;
+            case messageType.microbitRequest:
+                getAllMicrobits(data, connection);
+                break;
+            default:
                 break;
         }
     });
@@ -142,6 +131,7 @@ subscriber.on('message', function(channel, message){
     let msgObject = parseJSON(message);
 
     switch(msgObject['message_type']) {
+
         case messageType.microbitRequest:
             if(msgObject['origin_ip'] === ip.address()){
                 // same server reading the request for the first time
@@ -149,16 +139,22 @@ subscriber.on('message', function(channel, message){
                 // different server requested, fill object with this server's local micro:bits
             }
             break;
+
         case messageType.addMicrobit:
             if(msgObject['origin_ip'] === ip.address()){
-                // same server reading the request for the first time
+                // same server reading the request for the first time, ignore
             } else {
                 alertPeppers(msgObject['room_id'], msgObject['microbit_info']['uuid'],
                     msgObject['microbit_info']['name'], false);
             }
             break;
+
         case messageType.microbitAction:
+            // if microbit or robot is on this server (depending on what the action is), do the action, else ignore
+
+
             break;
+
         default:
             break;
     }
@@ -166,22 +162,30 @@ subscriber.on('message', function(channel, message){
 
 
 /**
- * Sends message to other servers to collect micro:bits???
+ * Checks if other server is alive to sends message to other servers to collect micro:bits.
  * @param roomID
  */
 function getAllMicrobits(roomID) {
-    let microbitsMessage = new RedisMessage();
-    microbitsMessage.setMessageType(messageType.microbitRequest);
-    microbitsMessage.setRoomId(roomID);
-    microbitsMessage.setOriginIP(ip.address());
-    microbitsMessage['microbits']  = [];
+    const tokyoRegion = 'ap-northeast-1';
+    const otherInstanceID = 'i-090615b4ec9481926';
 
-    devices_map.get(roomID).get(deviceType.microbit).forEach((value, key) => {
-        let microbit = {paired: false};   //TODO: add more parameters for each microbit (ex: whether or not it's already paired)
-        microbit[key] = value.id['name']; //uuid: user-chosen name
+    checkServerState(otherInstanceID, tokyoRegion).then(
+        state => console.log(otherInstanceID + ' is ' + state),
+        error => console.log(error)
+    );
 
-        microbitsMessage.microbits.push(microbit);
-    });
+    // let microbitsMessage = new RedisMessage();
+    // microbitsMessage.setMessageType(messageType.microbitRequest);
+    // microbitsMessage.setRoomId(roomID);
+    // microbitsMessage.setOriginIP(ip.address());
+    // microbitsMessage['microbits']  = [];
+    //
+    // devices_map.get(roomID).get(deviceType.microbit).forEach((value, key) => {
+    //     let microbit = {paired: false};   //TODO: add more parameters for each microbit (ex: whether or not it's already paired)
+    //     microbit[key] = value.id['name']; //uuid: user-chosen name
+    //
+    //     microbitsMessage.microbits.push(microbit);
+    // });
 
     // publisher.publish('socket', JSON.stringify((microbitsMessage)));
 }
@@ -246,16 +250,12 @@ function registerDevice(roomID, type, connection, deviceName) {
     };
     devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
 
-    // TODO: register to REDIS???
-    // save microbit's ID to redis for _this_ server's runtime
-    // 1. use union of _this_ server's runtime and other server's runtime redis-data to return all registered microbits
-    // 2. save microbit to set that represent everything among all servers; upon startup,
-    //    take difference between previous runtime redis and global to update global
     console.log('!!!! Devices map: ');
     console.log(devices_map);
 
     // notify all peppers that a microbit was added on this server
     if (type === deviceType.microbit){
+        getAllMicrobits(roomID); //TODO: for testing, o.w. remove this line
         alertPeppers(roomID, connection.id.uuid, deviceName, true);
     }
 }
@@ -394,8 +394,7 @@ function handshake(data, connection) {
  */
 function alertPeppers(roomID, uuid, name, broadcast){
 
-    let microbitInfo = {uuid: uuid,
-    name: name};
+    let microbitInfo = {uuid: uuid, name: name};
 
     // alert on this server
     devices_map.get(roomID).get(deviceType.robot).forEach((value) => {

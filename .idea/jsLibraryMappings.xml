@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$" libraries="{pepperServer/node_modules}" />
     <file url="PROJECT" libraries="{@types/browserify, @types/express, @types/node, @types/ping, @types/redis, @types/request, @types/uuid, @types/watchify, @types/websocket, @types/ws, pepperServer/node_modules}" />
     <includedPredefinedLibrary name="HTTP Response Handler" />
+    <includedPredefinedLibrary name="Node.js Core" />
   </component>
 </project>
