@@ -284,9 +284,6 @@ function registerDevice(roomID, type, connection, deviceName) {
 function registerGlobalDevice(roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
 
-    console.log(secondary_devices);
-    console.log(typeof roomID);
-
     if (!secondary_devices.has(roomID)) {
         console.log('RESETTING');
         let room_map = new Map([
@@ -453,7 +450,7 @@ function alertPeppers(roomID, uuid, name, broadcast){
     // what the other server will get about this microbit's information
     let microbitInfo = {uuid: uuid, name: name, room_id:roomID};
 
-    if(devices_map.hasOwnProperty(roomID)){
+    if(devices_map.has(roomID)){
         // alert on this server
         devices_map.get(roomID).get(deviceType.robot).forEach((value) => {
             value.sendUTF('This is how we would alert all the Peppers! If only I knew how to exactly...');
