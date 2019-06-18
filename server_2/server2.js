@@ -282,6 +282,12 @@ function registerDevice(roomID, type, connection, deviceName) {
  */
 function registerGlobalDevice(roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
+
+    console.log(secondary_devices);
+    console.log(secondary_devices.get(roomID));
+
+    console.log(typeof roomID);
+
     if (!secondary_devices.hasOwnProperty(roomID)) {
         console.log('RESETTING');
         let room_map = new Map([
