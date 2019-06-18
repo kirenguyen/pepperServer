@@ -21,8 +21,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server_1/server1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="379">
-              <caret line="422" column="75" selection-start-line="422" selection-start-column="75" selection-end-line="422" selection-end-column="75" />
+            <state relative-caret-position="474">
+              <caret line="458" column="37" lean-forward="true" selection-start-line="458" selection-start-column="37" selection-end-line="458" selection-end-column="37" />
               <folding>
                 <element signature="n#!!doc;n#registerDevice#0" />
                 <element signature="n#!!doc;n#registerGlobalDevice#0" />
@@ -43,7 +43,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
+            <state relative-caret-position="-24">
               <caret line="16" column="49" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="49" />
             </state>
           </provider>
@@ -246,12 +246,12 @@
       <workItem from="1560388214564" duration="886000" />
       <workItem from="1560393730787" duration="3327000" />
       <workItem from="1560479415326" duration="22960000" />
-      <workItem from="1560734497229" duration="43699000" />
+      <workItem from="1560734497229" duration="43953000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="94567000" />
+    <option name="totallyTimeSpent" value="94821000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -366,20 +366,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/client.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="16" column="49" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/messages/message-constants.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/messages/redis-publisher-message.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
@@ -405,10 +391,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/messages/message-constants.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/client.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-24">
+          <caret line="16" column="49" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server_1/server1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="422" column="75" selection-start-line="422" selection-start-column="75" selection-end-line="422" selection-end-column="75" />
+        <state relative-caret-position="474">
+          <caret line="458" column="37" lean-forward="true" selection-start-line="458" selection-start-column="37" selection-end-line="458" selection-end-column="37" />
           <folding>
             <element signature="n#!!doc;n#registerDevice#0" />
             <element signature="n#!!doc;n#registerGlobalDevice#0" />

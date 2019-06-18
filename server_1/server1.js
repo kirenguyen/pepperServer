@@ -141,7 +141,7 @@ subscriber.on('message', function(channel, message){
             break;
         case messageType.addMicrobit:
             if(msgObject.origin === SERVER_ID){
-                // same server reading the request for the first time, ignore
+                console.log('RECEIVED REQUEST TO ADD MICROBIT FROM OG SERVER');
             } else {
                 registerGlobalDevice(msgObject.room_id, deviceType.microbit, msgObject.message['uuid'],
                     msgObject.message['name'])
@@ -150,9 +150,11 @@ subscriber.on('message', function(channel, message){
             }
             break;
         case messageType.addRobot:
-            if(msgObject.origin !== SERVER_ID){
-                registerGlobalDevice(msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
-                    msgObject.message['name'])
+            if(msgObject.origin === SERVER_ID){
+                console.log('RECEIVED REQUEST TO ADD ROBOT FROM OG SERVER');
+            } else{
+            registerGlobalDevice(msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
+                msgObject.message['name'])
             }
             break;
         case messageType.microbitAction:
@@ -457,10 +459,8 @@ function alertPeppers(roomID, uuid, name, broadcast){
         message.setOrigin(SERVER_ID);
 
         console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
-        console.log(message);
 
-        console.log(message['_message']);
-        publisher.publish('socket', JSON.stringify(message['_message']));
+        publisher.publish('socket', message.toJson());
     }
 }
 
