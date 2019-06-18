@@ -28,9 +28,6 @@ class RedisMessage {
         this._message.return_to_client = bool;
         return this;
     }
-    build() {
-        return this;
-    }
     toJson(){
         return JSON.stringify(this._message);
     }

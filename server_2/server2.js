@@ -2,7 +2,7 @@ const WebSocketServer = require('websocket').server;
 const http = require('http');
 const request = require('request');
 const redis = require("redis");
-const SERVER_ID = 'SEVER_TWO';
+const SERVER_ID = 'SERVER_TWO';
 
 const RedisMessage = require('../messages/redis-publisher-message');
 const uuidv4 = require("uuid/v4");
@@ -55,8 +55,6 @@ wss = new WebSocketServer({
  * @returns {boolean}
  */
 function originIsAllowed(origin) {
-    console.log('origin of request: ');
-    console.log(origin);
     return true;
 }
 
@@ -138,15 +136,12 @@ wss.on('request', function(req) {
 subscriber.on('message', function(channel, message){
     let msgObject = parseJSON(message);
 
-    console.log('Subscriber heard this message: ');
-    console.log(msgObject);
-
     switch(msgObject.message_type) {
         case messageType.microbitRequest:
             break;
         case messageType.addMicrobit:
             if(msgObject.origin === SERVER_ID){
-                // same server reading the request for the first time, ignore
+                console.log('RECEIVED REQUEST TO ADD MICROBIT FROM OG SERVER');
             } else {
                 registerGlobalDevice(msgObject.room_id, deviceType.microbit, msgObject.message['uuid'],
                     msgObject.message['name'])
@@ -155,7 +150,9 @@ subscriber.on('message', function(channel, message){
             }
             break;
         case messageType.addRobot:
-            if(msgObject.origin !== SERVER_ID){
+            if(msgObject.origin === SERVER_ID){
+                console.log('RECEIVED REQUEST TO ADD ROBOT FROM OG SERVER');
+            } else{
                 registerGlobalDevice(msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
                     msgObject.message['name'])
             }
@@ -292,8 +289,10 @@ function registerGlobalDevice(roomID, type, uuid, deviceName) {
         ]);
         secondary_devices.set(roomID, room_map);
     }
+    secondary_devices.get(roomID).get(type).set(uuid, deviceName);
 
-
+    console.log('UPDATED SECONDARY MAP: ');
+    console.log(secondary_devices);
 }
 
 /**
@@ -424,7 +423,7 @@ function handshake(data, connection) {
                     message.setMessage(robotInfo);
                     message.setOrigin(SERVER_ID);
 
-                    publisher.publish('socket', JSON.stringify(message));
+                    publisher.publish('socket', message.toJson());
                     console.log(success, ': sent message to add pepper globally');
                 });
         }
@@ -461,6 +460,10 @@ function alertPeppers(roomID, uuid, name, broadcast){
         message.setMessage(microbitInfo);
         message.setOrigin(SERVER_ID);
 
-        publisher.publish('socket', JSON.stringify(message));
+        console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
+
+        publisher.publish('socket', message.toJson());
     }
 }
+
+

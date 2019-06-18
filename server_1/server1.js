@@ -289,8 +289,10 @@ function registerGlobalDevice(roomID, type, uuid, deviceName) {
         ]);
         secondary_devices.set(roomID, room_map);
     }
+    secondary_devices.get(roomID).get(type).set(uuid, deviceName);
 
-
+    console.log('UPDATED SECONDARY MAP: ');
+    console.log(secondary_devices);
 }
 
 /**
@@ -421,7 +423,7 @@ function handshake(data, connection) {
                 message.setMessage(robotInfo);
                 message.setOrigin(SERVER_ID);
 
-                publisher.publish('socket', JSON.stringify(message['_message']));
+                publisher.publish('socket', message.toJson());
                 console.log(success, ': sent message to add pepper globally');
             });
         }
