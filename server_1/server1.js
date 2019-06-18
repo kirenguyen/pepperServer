@@ -138,8 +138,11 @@ wss.on('request', function(req) {
 subscriber.on('message', function(channel, message){
     let msgObject = parseJSON(message);
 
-    console.log('Subscriber heard this message: ');
-    console.log(msgObject);
+    console.log('Subscriber heard this message type: ');
+    console.log(msgObject.message_type);
+
+    console.log('WHY IS THIS THE CASE:');
+    console.log(msgObject.message_type === messageType.addMicrobit);
 
     switch(msgObject.message_type) {
         case messageType.microbitRequest:

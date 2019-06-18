@@ -43,7 +43,8 @@ socket.addEventListener('message', function (event) {
 
 },{"../messages/message-constants":2,"../messages/microbit-login-message":3,"../messages/robo-connector-message":4}],2:[function(require,module,exports){
 const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
-const messageType = Object.freeze({login: 'login',
+const messageType = Object.freeze({
+    login: 'login',
     handshake: 'handshake',
     action: 'action',
     microbitRequest: 'microbitRequest',
