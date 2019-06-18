@@ -283,6 +283,7 @@ function registerDevice(roomID, type, connection, deviceName) {
 function registerGlobalDevice(roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
     if (!secondary_devices.hasOwnProperty(roomID)) {
+        console.log('RESETTING');
         let room_map = new Map([
             [deviceType.robot, new Map()],
             [deviceType.microbit, new Map()],
