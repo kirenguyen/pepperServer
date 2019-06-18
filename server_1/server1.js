@@ -3,7 +3,7 @@ const http = require('http');
 const request = require('request');
 const redis = require("redis");
 const RedisMessage = require('../client/redis-publisher-message');
-const checkServerState = require('aws-ec2');   // just a function
+const checkServerState = require('./aws-ec2');   // just a function
 const ip = require('ip');
 const uuidv4 = require("uuid/v4");
 
@@ -163,7 +163,7 @@ subscriber.on('message', function(channel, message){
 
 /**
  * Checks if other server is alive to sends message to other servers to collect micro:bits.
- * @param roomID
+ * @param roomID the uuid ID of the room in which to collect the micro:bits
  */
 function getAllMicrobits(roomID) {
     const tokyoRegion = 'ap-northeast-1';
