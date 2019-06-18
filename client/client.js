@@ -12,24 +12,24 @@ const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
 
 // Connection opened
 socket.addEventListener('open', function (event) {
-    // socket.send("hi hi hi hi hi hi hi hi");
-    // const loginMessage = new MicrobitLoginMessage();
-    // loginMessage.setRoomName('room1');
-    // loginMessage.setPassword('test1234');
-    // loginMessage.setMicrobitName('kirererere');
-    // let jsonMessage = loginMessage.build().toJson();
-    // console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
-    // socket.send(jsonMessage);
-
-    const roboMessage = new RoboConnectorMessage();
-    roboMessage.setRoomId(1);
-    roboMessage.setUserId(129);
-    roboMessage.setMessageType(messageType.handshake);
-    roboMessage.setMessage('no message');
-    roboMessage.setRobotId('');
-    let jsonMessage = roboMessage.build().toJson();
+    socket.send("hi hi hi hi hi hi hi hi");
+    const loginMessage = new MicrobitLoginMessage();
+    loginMessage.setRoomName('room1');
+    loginMessage.setPassword('test1234');
+    loginMessage.setMicrobitName('kirererere');
+    let jsonMessage = loginMessage.build().toJson();
+    console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
     socket.send(jsonMessage);
-    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+
+    // const roboMessage = new RoboConnectorMessage();
+    // roboMessage.setRoomId(1);
+    // roboMessage.setUserId(129);
+    // roboMessage.setMessageType(messageType.handshake);
+    // roboMessage.setMessage('no message');
+    // roboMessage.setRobotId('');
+    // let jsonMessage = roboMessage.build().toJson();
+    // socket.send(jsonMessage);
+    // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 });
 
 // Listen for messages

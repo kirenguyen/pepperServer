@@ -127,38 +127,38 @@ wss.on('request', function(req) {
 });
 
 
-subscriber.on('message', function(channel, message){
-    let msgObject = parseJSON(message);
-
-    switch(msgObject['message_type']) {
-
-        case messageType.microbitRequest:
-            if(msgObject['origin_ip'] === ip.address()){
-                // same server reading the request for the first time
-            } else {
-                // different server requested, fill object with this server's local micro:bits
-            }
-            break;
-
-        case messageType.addMicrobit:
-            if(msgObject['origin_ip'] === ip.address()){
-                // same server reading the request for the first time, ignore
-            } else {
-                alertPeppers(msgObject['room_id'], msgObject['microbit_info']['uuid'],
-                    msgObject['microbit_info']['name'], false);
-            }
-            break;
-
-        case messageType.microbitAction:
-            // if microbit or robot is on this server (depending on what the action is), do the action, else ignore
-
-
-            break;
-
-        default:
-            break;
-    }
-});
+// subscriber.on('message', function(channel, message){
+//     let msgObject = parseJSON(message);
+//
+//     switch(msgObject['message_type']) {
+//
+//         case messageType.microbitRequest:
+//             if(msgObject['origin_ip'] === ip.address()){
+//                 // same server reading the request for the first time
+//             } else {
+//                 // different server requested, fill object with this server's local micro:bits
+//             }
+//             break;
+//
+//         case messageType.addMicrobit:
+//             if(msgObject['origin_ip'] === ip.address()){
+//                 // same server reading the request for the first time, ignore
+//             } else {
+//                 alertPeppers(msgObject['room_id'], msgObject['microbit_info']['uuid'],
+//                     msgObject['microbit_info']['name'], false);
+//             }
+//             break;
+//
+//         case messageType.microbitAction:
+//             // if microbit or robot is on this server (depending on what the action is), do the action, else ignore
+//
+//
+//             break;
+//
+//         default:
+//             break;
+//     }
+// });
 
 
 /**
