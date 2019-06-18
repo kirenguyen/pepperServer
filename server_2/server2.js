@@ -101,7 +101,7 @@ wss.on('request', function(req) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
         console.log('desc: ' + description);
 
-        if(connection.hasOwnProperty('id')){
+        if(connection.has('id')){
             unregisterDevice(connection);
         }
         try {
@@ -285,11 +285,9 @@ function registerGlobalDevice(roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
 
     console.log(secondary_devices);
-    console.log(secondary_devices.get(roomID));
-
     console.log(typeof roomID);
 
-    if (!secondary_devices.hasOwnProperty(roomID)) {
+    if (!secondary_devices.has(roomID)) {
         console.log('RESETTING');
         let room_map = new Map([
             [deviceType.robot, new Map()],
@@ -308,7 +306,7 @@ function registerGlobalDevice(roomID, type, uuid, deviceName) {
  * @param connection websocket connection object that was previously registered
  */
 function unregisterDevice(connection){
-    if(!connection.hasOwnProperty('id')){
+    if(!connection.has('id')){
         console.log('This connection was not registered');
         return false;
     }
