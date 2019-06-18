@@ -136,9 +136,7 @@ wss.on('request', function(req) {
  * All messages received by subscriber must be children of 'RedisMessage' class.
  */
 subscriber.on('message', function(channel, message){
-    console.log('!!! MESSAGESSSSS');
-    console.log(message);
-    let msgObject = parseJSON(message);
+    let msgObject = parseJSON(message['_message']);
 
     switch(msgObject.message_type) {
         case messageType.microbitRequest:
