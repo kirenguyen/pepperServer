@@ -419,7 +419,7 @@ function handshake(data, connection) {
                 message.setMessage(robotInfo);
                 message.setOrigin(SERVER_ID);
 
-                publisher.publish('socket', JSON.stringify(message, ['_message']));
+                publisher.publish('socket', JSON.stringify(message['_message']);
                 console.log(success, ': sent message to add pepper globally');
             });
         }
@@ -458,7 +458,9 @@ function alertPeppers(roomID, uuid, name, broadcast){
 
         console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
         console.log(message);
-        publisher.publish('socket', JSON.stringify(message, ['_message']));
+
+        console.log(message['_message']);
+        publisher.publish('socket', JSON.stringify(message['_message']));
     }
 }
 
