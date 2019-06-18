@@ -24,14 +24,11 @@ function checkServerState(instanceID, region){
         // Call EC2 to retrieve policy for selected bucket
         ec2.describeInstances(params, function(err, data) {
             if (err) {
-                console.log("Error in retrieving state", err.stack);
+                // console.log("Error in retrieving state", err.stack);
                 reject(err.stack);
             } else {
-                // data['Reservations'].forEach((value) => {
-                //     console.log(instanceID + " is " + value['Instances'][0]['State']['Name']);
-                // })
                 let state = data['Reservations'][0]['Instances'][0]['State']['Name'];
-                console.log(instanceID + " is " + state);
+                // console.log(instanceID + " is " + state);
                 resolve(state);
             }
         });
@@ -46,13 +43,13 @@ let alive = 'i-0c309c24f45825f36';
 const tokyoRegion = 'ap-northeast-1';
 
 checkServerState(dead, tokyoRegion).then(
-    state => console.log(state),
+    state => console.log(dead,'is',state),
     error => console.log(error),
 );
 
 
 checkServerState(alive, tokyoRegion).then(
-    state => console.log(state),
+    state => console.log(alive,'is',state),
     error => console.log(error)
 );
 
