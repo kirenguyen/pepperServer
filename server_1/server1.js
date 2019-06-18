@@ -419,7 +419,7 @@ function handshake(data, connection) {
                 message.setMessage(robotInfo);
                 message.setOrigin(SERVER_ID);
 
-                publisher.publish('socket', JSON.stringify(message['_message']);
+                publisher.publish('socket', JSON.stringify(message['_message']));
                 console.log(success, ': sent message to add pepper globally');
             });
         }

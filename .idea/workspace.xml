@@ -21,8 +21,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server_1/server1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="458" column="70" lean-forward="true" selection-start-line="458" selection-start-column="70" selection-end-line="458" selection-end-column="70" />
+            <state relative-caret-position="379">
+              <caret line="422" column="75" selection-start-line="422" selection-start-column="75" selection-end-line="422" selection-end-column="75" />
               <folding>
                 <element signature="n#!!doc;n#registerDevice#0" />
                 <element signature="n#!!doc;n#registerGlobalDevice#0" />
@@ -246,12 +246,12 @@
       <workItem from="1560388214564" duration="886000" />
       <workItem from="1560393730787" duration="3327000" />
       <workItem from="1560479415326" duration="22960000" />
-      <workItem from="1560734497229" duration="43676000" />
+      <workItem from="1560734497229" duration="43699000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="94544000" />
+    <option name="totallyTimeSpent" value="94567000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -407,8 +407,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server_1/server1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="458" column="70" lean-forward="true" selection-start-line="458" selection-start-column="70" selection-end-line="458" selection-end-column="70" />
+        <state relative-caret-position="379">
+          <caret line="422" column="75" selection-start-line="422" selection-start-column="75" selection-end-line="422" selection-end-column="75" />
           <folding>
             <element signature="n#!!doc;n#registerDevice#0" />
             <element signature="n#!!doc;n#registerGlobalDevice#0" />
