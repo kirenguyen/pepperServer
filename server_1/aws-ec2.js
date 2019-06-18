@@ -31,9 +31,14 @@ ec2.monitorInstances(params, function(err, data){
 
 
     else {
-        for(let instance in data['InstanceMonitorings']){
-            console.log(instance['Monitoring']);
-        }
+        // for(let instance in data['InstanceMonitorings']){
+        //     console.log(instance['Monitoring']);
+        // }
+        console.log(data['InstanceMonitorings']);
+        console.log(data['InstanceMonitorings'][0]);
+        console.log(data['InstanceMonitorings'][1]);
+        console.log(data['InstanceMonitorings'][0]['Monitoring']);
+        console.log(data['InstanceMonitorings'][1]['Monitoring']);
     }
 });
 
