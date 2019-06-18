@@ -1,13 +1,11 @@
-const messageConstants = require('./message-constants');
-const deviceType = messageConstants.deviceType;
-
 class RedisMessage {
-    constructor() {
+    constructor(roomID, messageType, message, origin) {
         this._message = {
-            room_id: null,
-            message_type: null,
-            message: null,
-            origin_ip: null,
+            room_id: roomID,
+            message_type: messageType,
+            message: message,
+            origin: origin,
+            return_to_client: false,
         }
     }
     setRoomId(roomId) {
@@ -22,8 +20,12 @@ class RedisMessage {
         this._message.message = message;
         return this;
     }
-    setOriginIP(ip) {
-        this._message.origin_ip = ip;
+    setOrigin(origin) {
+        this._message.origin = origin;
+        return this;
+    }
+    setReturnToClient(bool){
+        this._message.return_to_client = bool;
         return this;
     }
     build() {

@@ -5,6 +5,7 @@ const messageType = Object.freeze({login: 'login',
     microbitRequest: 'microbitRequest',
     microbitAction: 'microbitAction',
     addMicrobit: 'addMicrobit',
+    addRobot: 'addRobot',
 });
 
 

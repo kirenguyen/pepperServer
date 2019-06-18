@@ -2,7 +2,7 @@
   "name": "pepperserver",
   "version": "1.0.0",
   "description": "Server for micro:bit and pepper connection",
-  "main": "server_1/wsServer.js",
+  "main": "server_1/server1.js",
   "scripts": {
     "test": "mocha"
   },
@@ -23,10 +23,7 @@
     "express": "^4.17.1",
     "http": "0.0.0",
     "ip": "^1.1.5",
-    "is-port-reachable": "^2.0.1",
-    "is-reachable": "^3.1.0",
     "mocha": "^6.1.4",
-    "ping": "^0.2.2",
     "redis": "^2.8.0",
     "request": "^2.88.0",
     "uuid": "^3.3.2",

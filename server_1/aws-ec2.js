@@ -1,3 +1,9 @@
+/**
+ * Requires AWS CLI to have been set up on the Amazon server
+ * (~/.aws directory on server needs to be instantiated with access key/secret access key pair)
+ */
+
+
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 
@@ -30,19 +36,23 @@ function checkServerState(instanceID, region){
     });
 }
 
-// let dead = 'i-090615b4ec9481926';
-// let alive = 'i-0c309c24f45825f36';
-// const tokyoRegion = 'ap-northeast-1';
-//
-// checkServerState(dead, tokyoRegion).then(
-//     state => console.log(dead,'is',state),
-//     error => console.log(error),
-// );
-//
-//
-// checkServerState(alive, tokyoRegion).then(
-//     state => console.log(alive,'is',state),
-//     error => console.log(error)
-// );
 
+// Sample usage:
+
+/*
+let deadServer = 'i-090615b4ec9481926';
+let aliveServer = 'i-0c309c24f45825f36';
+const tokyoRegion = 'ap-northeast-1';
+
+checkServerState(dead, tokyoRegion).then(
+    state => console.log(dead,'is',state),  //'i-090615b4ec9481926 is stopped'
+    error => console.log(error),
+);
+
+
+checkServerState(alive, tokyoRegion).then(
+    state => console.log(alive,'is',state), //'i-0c309c24f45825f36 is running'
+    error => console.log(error)
+);
+*/
 module.exports = checkServerState;
