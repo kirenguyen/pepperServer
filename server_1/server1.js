@@ -134,7 +134,7 @@ wss.on('request', function(req) {
  * All messages received by subscriber must be children of 'RedisMessage' class.
  */
 subscriber.on('message', function(channel, message){
-    let msgObject = parseJSON(message['_message']);
+    let msgObject = parseJSON(message);
 
     switch(msgObject.message_type) {
         case messageType.microbitRequest:
@@ -419,7 +419,7 @@ function handshake(data, connection) {
                 message.setMessage(robotInfo);
                 message.setOrigin(SERVER_ID);
 
-                publisher.publish('socket', JSON.stringify(message));
+                publisher.publish('socket', message.build().toJSON());
                 console.log(success, ': sent message to add pepper globally');
             });
         }
@@ -457,9 +457,9 @@ function alertPeppers(roomID, uuid, name, broadcast){
         message.setOrigin(SERVER_ID);
 
         console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
-        console.log(JSON.stringify(message));
+        console.log(message.build().toJSON());
 
-        publisher.publish('socket', JSON.stringify(message));
+        publisher.publish('socket', message.build().toJSON());
     }
 }
 
