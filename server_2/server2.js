@@ -143,6 +143,7 @@ subscriber.on('message', function(channel, message){
             if(msgObject.origin === SERVER_ID){
                 console.log('RECEIVED REQUEST TO ADD MICROBIT FROM OG SERVER');
             } else {
+                console.log('THE ROOM_ID OF THE MESSAGE OBJECT IS: ', msgObject.room_id);
                 registerGlobalDevice(msgObject.room_id, deviceType.microbit, msgObject.message['uuid'],
                     msgObject.message['name'])
                 alertPeppers(msgObject.room_id, msgObject.message['uuid'],
