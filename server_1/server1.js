@@ -55,8 +55,6 @@ wss = new WebSocketServer({
  * @returns {boolean}
  */
 function originIsAllowed(origin) {
-    console.log('origin of request: ');
-    console.log(origin);
     return true;
 }
 
@@ -457,6 +455,9 @@ function alertPeppers(roomID, uuid, name, broadcast){
         message.setRoomId(roomID);
         message.setMessage(microbitInfo);
         message.setOrigin(SERVER_ID);
+
+        console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
+        console.log(JSON.stringify(message));
 
         publisher.publish('socket', JSON.stringify(message));
     }
