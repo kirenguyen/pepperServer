@@ -5,10 +5,11 @@ const AWS = require('aws-sdk');
 const ec2 = new AWS.EC2({apiVersion: '2016-11-15', region: 'ap-northeast-1'});
 
 let params = {
-    InstanceIds: [ 'i-090615b4ec9481926',
-        'i-0c309c24f45825f36'
-    ]
+    InstanceIds: [ 'i-090615b4ec9481926']
 };
+
+// ,    dead:    'i-090615b4ec9481926'
+//      alive:   'i-0c309c24f45825f36'
 
 // Call EC2 to retrieve policy for selected bucket
 ec2.describeInstances(params, function(err, data) {
