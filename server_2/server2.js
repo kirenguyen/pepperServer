@@ -282,7 +282,7 @@ function registerDevice(roomID, type, connection, deviceName) {
  */
 function registerGlobalDevice(roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
-    if (!secondary_devices.has(roomID)) {
+    if (!secondary_devices.hasOwnProperty(roomID)) {
         let room_map = new Map([
             [deviceType.robot, new Map()],
             [deviceType.microbit, new Map()],
@@ -446,6 +446,10 @@ function alertPeppers(roomID, uuid, name, broadcast){
 
     // what the other server will get about this microbit's information
     let microbitInfo = {uuid: uuid, name: name, room_id:roomID};
+
+    if(!devices_map.hasOwnProperty(roomID)){
+        return false;
+    }
 
     // alert on this server
     devices_map.get(roomID).get(deviceType.robot).forEach((value) => {

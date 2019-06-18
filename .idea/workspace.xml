@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="07f76310-8687-4d61-80c6-b63bc7f380ff" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/messages/redis-publisher-message.js" beforeDir="false" afterPath="$PROJECT_DIR$/messages/redis-publisher-message.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server_1/server1.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_1/server1.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server_2/server2.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_2/server2.js" afterDir="false" />
     </list>
@@ -24,7 +23,7 @@
         <entry file="file://$PROJECT_DIR$/server_1/server1.js">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="3" selection-end-line="469" />
+              <caret selection-end-line="473" />
               <folding>
                 <element signature="n#!!doc;n#registerDevice#0" />
                 <element signature="n#!!doc;n#registerGlobalDevice#0" />
@@ -36,8 +35,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server_2/server2.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="262">
-              <caret line="31" column="3" lean-forward="true" selection-start-line="31" selection-start-column="3" selection-end-line="31" selection-end-column="3" />
+            <state relative-caret-position="258">
+              <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
               <folding>
                 <element signature="n#!!doc;n#registerDevice#0" />
                 <element signature="n#!!doc;n#registerGlobalDevice#0" />
@@ -94,7 +93,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>subscriber.on(</find>
       <find>PrivateIp</find>
       <find>Reservations</find>
       <find>Reservations&quot;</find>
@@ -124,6 +122,7 @@
       <find>.publish(</find>
       <find>registerDevice function</find>
       <find>registerGlobalDevice</find>
+      <find>updated</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -270,12 +269,12 @@
       <workItem from="1560388214564" duration="886000" />
       <workItem from="1560393730787" duration="3327000" />
       <workItem from="1560479415326" duration="22960000" />
-      <workItem from="1560734497229" duration="44138000" />
+      <workItem from="1560734497229" duration="44424000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="95006000" />
+    <option name="totallyTimeSpent" value="95292000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -421,7 +420,7 @@
     <entry file="file://$PROJECT_DIR$/server_1/server1.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="3" selection-end-line="469" />
+          <caret selection-end-line="473" />
           <folding>
             <element signature="n#!!doc;n#registerDevice#0" />
             <element signature="n#!!doc;n#registerGlobalDevice#0" />
@@ -431,8 +430,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server_2/server2.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="31" column="3" lean-forward="true" selection-start-line="31" selection-start-column="3" selection-end-line="31" selection-end-column="3" />
+        <state relative-caret-position="258">
+          <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
           <folding>
             <element signature="n#!!doc;n#registerDevice#0" />
             <element signature="n#!!doc;n#registerGlobalDevice#0" />
