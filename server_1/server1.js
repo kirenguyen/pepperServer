@@ -322,6 +322,9 @@ function unregisterLocalDevice(connection) {
  * @param uuid
  */
 function unregisterGlobalDevice(roomID, type, uuid) {
+    console.log(roomID);
+    console.log(type);
+    console.log(uuid);
     try {
         secondary_devices.get(roomID).get(type).delete(uuid);
     } catch (err) {
