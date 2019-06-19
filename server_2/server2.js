@@ -128,9 +128,16 @@ wss.on('request', function (req) {
 
         try {
             // disconnect a robot from the server
-            if(connection.id.device_type === deviceType.microbit){
+
+            //TODO: delete this later
+            if(connection.hasOwnProperty('id')){
+                if(connection.id.device_type === deviceType.microbit){
+                    return true;
+                }
+            } else {
                 return true;
             }
+
 
             let url = domain + 'project/node/delete_user';
             let options = {
