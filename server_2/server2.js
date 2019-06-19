@@ -40,7 +40,6 @@ let server = http.createServer(function (request, response) {
     serverStartCleanup();
 });
 
-
 wss = new WebSocketServer({
     httpServer: server,
     autoAcceptConnections: false,
@@ -67,7 +66,6 @@ function serverStartCleanup(){
     message.setMessageType(messageType.serverStart);
     publisher.publish('socket', message.toJson());
 }
-
 
 /**
  * Called upon client connection attempt
@@ -98,8 +96,10 @@ wss.on('request', function (req) {
                 break;
             case messageType.action:
                 break;
-            case messageType.microbitRequest:
-                //TODO
+            case messageType.pairing:
+                pairDevices();
+                break;
+            case messageType.requestMicrobits:
                 requestAllMicrobits(connection);
                 break;
             default:
@@ -128,7 +128,7 @@ wss.on('request', function (req) {
 
         try {
             // disconnect a robot from the server
-            if(connection.id.device_type === deviceType.microbit){
+            if(connection.id.device_type === deviceType.robot){
                 return true;
             }
 
@@ -168,8 +168,6 @@ subscriber.on('message', function (channel, message) {
                 secondary_devices.set(msgObject.origin, new Map());
             }
             break;
-        case messageType.microbitRequest:
-            break;
         case messageType.addMicrobit:
             if (msgObject.origin === SERVER_ID) {
                 console.log('RECEIVED REQUEST TO ADD MICROBIT FROM OG SERVER');
@@ -206,68 +204,8 @@ subscriber.on('message', function (channel, message) {
 });
 
 
-/**
- * Sends list of microbits in the same room as the Pepper that requested the list.
- *
- * @param connection the websocket connection object of Pepper that sent the request for all Microbits
- * @return objects with room id and list of microbit info objects; format is as following:
- *  { room_id: <var> ,                       // room ID of the microbits returned (same as the room Pepper is in)
- *    microbit_list: [{
- *          uuid: <uuid version 4>          // uuid assigned to the microbit when it connected to a server
- *          name: <string>                  // user chosen name
- *          paired: true || false           // whether or not the microbit is already paired
- *      }, ... ... ]
- *   }
- */
-function requestAllMicrobits(connection) {
-    let data = {
-        room_id: connection.id.room_id,
-        microbit_list: [],
-    };
 
-    // Collect all microbits on this server in the same room as connection.id.room_id
-    devices_map.get(connection.id.room_id).get(deviceType.microbit).forEach((value) => {
-        // value is the connection object stored after registration of microbit
-        data.microbit_list.push({
-            uuid: value.id.uuid,
-            name: value.id.name,
-            paired: value.id.paired,
-        });
-    });
-
-    // Collect all microbits from other servers in the same room
-    // iterate over all the servers
-    secondary_devices.forEach((serverInfo) => {
-        serverInfo.get(connection.id.room_id).get(deviceType.microbit).forEach((microbit) =>{
-            data.microbit_list.push({
-                uuid: microbit.uuid,
-                name: microbit.name,
-                paired: microbit.paired,
-            });
-        });
-    });
-
-    connection.sendUTF(JSON.stringify(data));
-    console.log('REQUEST FOR ALL MICROBITS PROCESSED: ');
-    console.log(JSON.stringify(data));
-}
-
-
-///////////////////////////////////////////////////
-
-/**
- * Attempts to parse a string into a JSON object
- * @param data JSON string that can be parsed back into an object
- * @returns JSON object if data was parsable, false otherwise
- */
-function parseJSON(data) {
-    try {
-        return JSON.parse(data);
-    } catch (err) {
-        console.log('Data was not a parsable JSON');
-        console.log(err);
-    }
-}
+/////////////////////// LOCAL/GLOBAL MEMORY FUNCTIONS /////////////////////////////
 
 /**
  * Registers successful connection of device to local memory
@@ -370,9 +308,9 @@ function unregisterLocalDevice(connection) {
 /**
  * Removes device connected to a different server from this server's local reference
  * @param serverID the id of the server the device was originally connected to
- * @param roomID
- * @param type
- * @param uuid
+ * @param roomID id of the room of device to remove
+ * @param type type of device to remove
+ * @param uuid uuid v4 associated with device at connection time
  */
 function unregisterGlobalDevice(serverID, roomID, type, uuid) {
     try {
@@ -385,6 +323,17 @@ function unregisterGlobalDevice(serverID, roomID, type, uuid) {
     }
 }
 
+
+
+/////////////////////// WEBSOCKET ACTION FUNCTIONS /////////////////////////////
+
+
+/**
+ *
+ */
+function pairDevices() {
+
+}
 
 /**
  * Handles login attempts of micro:bit.
@@ -498,6 +447,72 @@ function handshake(data, connection) {
 }
 
 /**
+ * Sends list of microbits in the same room as the Pepper that requested the list.
+ *
+ * @param connection the websocket connection object of Pepper that sent the request for all Microbits
+ * @return objects with room id and list of microbit info objects; format is as following:
+ *  { room_id: <var> ,                       // room ID of the microbits returned (same as the room Pepper is in)
+ *    microbit_list: [{
+ *          uuid: <uuid version 4>          // uuid assigned to the microbit when it connected to a server
+ *          name: <string>                  // user chosen name
+ *          paired: true || false           // whether or not the microbit is already paired
+ *      }, ... ... ]
+ *   }
+ */
+function requestAllMicrobits(connection) {
+    let data = {
+        room_id: connection.id.room_id,
+        microbit_list: [],
+    };
+
+    // Collect all microbits on this server in the same room as connection.id.room_id
+    devices_map.get(connection.id.room_id).get(deviceType.microbit).forEach((value) => {
+        // value is the connection object stored after registration of microbit
+        data.microbit_list.push({
+            uuid: value.id.uuid,
+            name: value.id.name,
+            paired: value.id.paired,
+        });
+    });
+
+    // Collect all microbits from other servers in the same room
+    // iterate over all the servers
+    secondary_devices.forEach((serverInfo) => {
+        serverInfo.get(connection.id.room_id).get(deviceType.microbit).forEach((microbit) =>{
+            data.microbit_list.push({
+                uuid: microbit.uuid,
+                name: microbit.name,
+                paired: microbit.paired,
+            });
+        });
+    });
+
+    connection.sendUTF(JSON.stringify(data));
+    console.log('REQUEST FOR ALL MICROBITS PROCESSED: ');
+    console.log(JSON.stringify(data));
+}
+
+
+
+/////////////////////// MISC FUNCTIONS /////////////////////////////
+
+
+
+/**
+ * Attempts to parse a string into a JSON object
+ * @param data JSON string that can be parsed back into an object
+ * @returns JSON object if data was parsable, false otherwise
+ */
+function parseJSON(data) {
+    try {
+        return JSON.parse(data);
+    } catch (err) {
+        console.log('Data was not a parsable JSON');
+        console.log(err);
+    }
+}
+
+/**
  * Alerts all Peppers in the same room as the *newly* added micro:bit
  * that it been added/alerts the other server of the micro:bit's presence for reference.
  *
@@ -520,7 +535,6 @@ function alertPeppers(roomID, uuid, name, broadcast) {
         });
     }
 
-
     if (broadcast) {
         let message = new RedisMessage();
         message.setMessageType(messageType.addMicrobit);
@@ -532,3 +546,4 @@ function alertPeppers(roomID, uuid, name, broadcast) {
         publisher.publish('socket', message.toJson());
     }
 }
+

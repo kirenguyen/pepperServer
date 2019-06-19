@@ -3,12 +3,14 @@ const messageType = Object.freeze({
     login: 'login',
     handshake: 'handshake',
     action: 'action',
-    microbitRequest: 'microbitRequest',
+    pairing: 'pairing',
+    requestMicrobits: 'requestMicrobits',
     microbitAction: 'microbitAction',
     addMicrobit: 'addMicrobit',
     addRobot: 'addRobot',
     removeDevice: 'removeDevice',
     serverStart: 'serverStart',
+
 });
 
 

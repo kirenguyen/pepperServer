@@ -53,7 +53,7 @@ function requestMicrobits(){
     const roboMessage = new RoboConnectorMessage();
     roboMessage.setRoomId(1);
     roboMessage.setUserId(name);
-    roboMessage.setMessageType(messageType.microbitRequest);
+    roboMessage.setMessageType(messageType.requestMicrobits);
     roboMessage.setMessage('no message');
     roboMessage.setRobotId('');
     let jsonMessage = roboMessage.build().toJson();
@@ -65,14 +65,14 @@ msg.addEventListener('keydown', e => {
     if(e.key === "Enter") {
         createMicrobit(msg.value);
         let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Added microbit with name: ' + msg.value + '<br>';
+        paragraph.textContent = 'Added microbit with name: ' + msg.value + '    ';
         box.appendChild(paragraph);
         msg.value = '';
     }
     if(e.key === "=") {
         createPepper();
         let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Added Pepper with name <br>';
+        paragraph.textContent = 'Added Pepper  ';
         box.appendChild(paragraph);
         msg.value = '';
     }
@@ -80,7 +80,7 @@ msg.addEventListener('keydown', e => {
     if(e.key === "`") {
         requestMicrobits();
         let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Requested list of microbits! <br>';
+        paragraph.textContent = 'Requested list of microbits!    ';
         box.appendChild(paragraph);
         msg.value = '';
     }
@@ -92,12 +92,14 @@ const messageType = Object.freeze({
     login: 'login',
     handshake: 'handshake',
     action: 'action',
-    microbitRequest: 'microbitRequest',
+    pairing: 'pairing',
+    requestMicrobits: 'requestMicrobits',
     microbitAction: 'microbitAction',
     addMicrobit: 'addMicrobit',
     addRobot: 'addRobot',
     removeDevice: 'removeDevice',
     serverStart: 'serverStart',
+
 });
 
 
