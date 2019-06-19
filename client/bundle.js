@@ -39,10 +39,10 @@ function createMicrobit(name) {
     socket.send(jsonMessage);
 }
 
-function createPepper(name) {
+function createPepper() {
     const roboMessage = new RoboConnectorMessage();
     roboMessage.setRoomId(1);
-    roboMessage.setUserId(name);
+    roboMessage.setUserId(129);
     roboMessage.setMessageType(messageType.handshake);
     roboMessage.setMessage('no message');
     roboMessage.setRobotId('');
@@ -64,6 +64,8 @@ function requestMicrobits(){
 }
 
 msg.addEventListener('keydown', e => {
+    console.log(e.key);
+
     if(e.key === "Enter") {
         createMicrobit(msg.value);
         let paragraph = document.createElement('paragraph');
@@ -71,15 +73,15 @@ msg.addEventListener('keydown', e => {
         box.appendChild(paragraph);
         msg.value = '';
     }
-    if(e.key === "Equal") {
-        createPepper(msg.value);
+    if(e.key === "=") {
+        createPepper();
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Added Pepper with name: ' + msg.value;
         box.appendChild(paragraph);
         msg.value = '';
     }
 
-    if(e.key === "Backquote") {
+    if(e.key === "`") {
         requestMicrobits();
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Requested list of microbits!';

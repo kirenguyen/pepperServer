@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="07f76310-8687-4d61-80c6-b63bc7f380ff" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/trannguyen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/trannguyen.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/bundle.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/client.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server_1/server1.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_1/server1.js" afterDir="false" />
@@ -25,8 +24,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server_1/server1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="418" column="7" lean-forward="true" selection-end-line="526" selection-end-column="1" />
+            <state relative-caret-position="63">
+              <caret line="213" column="12" lean-forward="true" selection-end-line="526" selection-end-column="1" />
               <folding>
                 <element signature="n#!!doc;n#parseJSON#0" />
                 <element signature="n#!!doc;n#registerLocalDevice#0" />
@@ -38,8 +37,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server_2/server2.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="364">
-              <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+            <state relative-caret-position="263">
+              <caret line="40" column="3" lean-forward="true" selection-start-line="40" selection-start-column="3" selection-end-line="40" selection-end-column="3" />
               <folding>
                 <element signature="n#!!doc;n#parseJSON#0" />
                 <element signature="n#!!doc;n#registerLocalDevice#0" />
@@ -51,8 +50,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="78" column="5" lean-forward="true" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
+            <state relative-caret-position="155">
+              <caret line="75" column="23" lean-forward="true" selection-start-line="75" selection-start-column="23" selection-end-line="75" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -106,8 +105,8 @@
       <find>request</find>
       <find>connection</find>
       <find>TODO</find>
-      <find>requestAllMicrobits</find>
       <find>console.log</find>
+      <find>requestAllMicrobits</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -150,7 +149,8 @@
     <bower.json value="" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="273" />
+    <option name="x" value="408" />
+    <option name="y" value="79" />
     <option name="width" value="1140" />
     <option name="height" value="898" />
   </component>
@@ -254,12 +254,12 @@
       <workItem from="1560388214564" duration="886000" />
       <workItem from="1560393730787" duration="3327000" />
       <workItem from="1560479415326" duration="22960000" />
-      <workItem from="1560734497229" duration="62412000" />
+      <workItem from="1560734497229" duration="62917000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="113280000" />
+    <option name="totallyTimeSpent" value="113785000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -271,10 +271,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="273" y="0" width="1140" height="898" extended-state="0" />
+    <frame x="408" y="79" width="1140" height="898" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4981203" visible="true" weight="0.20304115" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4981203" visible="true" weight="0.20304115" />
       <window_info id="Structure" order="1" sideWeight="0.5018797" side_tool="true" weight="0.22633003" />
       <window_info id="Favorites" order="2" sideWeight="0.5018797" side_tool="true" weight="0.22633003" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -286,7 +286,7 @@
       <window_info anchor="bottom" id="TODO" order="6" weight="0.31801242" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32876712" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.4992236" visible="true" weight="0.17763975" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.4992236" visible="true" weight="0.17763975" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007764" side_tool="true" weight="0.19178082" />
       <window_info anchor="bottom" id="TypeScript" order="11" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -397,15 +397,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="78" column="5" lean-forward="true" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
+        <state relative-caret-position="155">
+          <caret line="75" column="23" lean-forward="true" selection-start-line="75" selection-start-column="23" selection-end-line="75" selection-end-column="23" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server_1/server1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="418" column="7" lean-forward="true" selection-end-line="526" selection-end-column="1" />
+        <state relative-caret-position="63">
+          <caret line="213" column="12" lean-forward="true" selection-end-line="526" selection-end-column="1" />
           <folding>
             <element signature="n#!!doc;n#parseJSON#0" />
             <element signature="n#!!doc;n#registerLocalDevice#0" />
@@ -415,8 +415,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server_2/server2.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="364">
-          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+        <state relative-caret-position="263">
+          <caret line="40" column="3" lean-forward="true" selection-start-line="40" selection-start-column="3" selection-end-line="40" selection-end-column="3" />
           <folding>
             <element signature="n#!!doc;n#parseJSON#0" />
             <element signature="n#!!doc;n#registerLocalDevice#0" />

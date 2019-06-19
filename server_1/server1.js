@@ -213,12 +213,12 @@ subscriber.on('message', function (channel, message) {
  */
 function requestAllMicrobits(connection) {
     let data = {
-        room_id: connection.room_id,
+        room_id: connection.id.room_id,
         microbit_list: [],
     };
 
     // Collect all microbits on this server in the same room as connection.id.room_id
-    devices_map.get(connection.room_id).get(deviceType.microbit).forEach((value) => {
+    devices_map.get(connection.id.room_id).get(deviceType.microbit).forEach((value) => {
         // value is the connection object stored after registration of microbit
         data.microbit_list.push({
             uuid: value.id.uuid,
@@ -230,7 +230,7 @@ function requestAllMicrobits(connection) {
     // Collect all microbits from other servers in the same room
     // iterate over all the servers
     secondary_devices.forEach((serverInfo) => {
-        serverInfo.get(connection.room_id).get(deviceType.microbit).forEach((microbit) =>{
+        serverInfo.get(connection.id.room_id).get(deviceType.microbit).forEach((microbit) =>{
             data.microbit_list.push({
                 uuid: microbit.uuid,
                 name: microbit.name,
