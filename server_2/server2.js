@@ -36,7 +36,7 @@ let server = http.createServer(function (request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end('Just sent the headers');
 }).listen(SERVER_PORT, function () {
-    console.log('Server 2 listening on port: ' + SERVER_PORT);
+    console.log('Server w listening on port: ' + SERVER_PORT);
     serverStartCleanup();
 });
 
@@ -99,8 +99,7 @@ wss.on('request', function (req) {
             case messageType.action:
                 break;
             case messageType.microbitRequest:
-                //data must have room_id of the pepper, TODO
-                requestAllMicrobits(data, connection);
+                requestAllMicrobits(connection);
                 break;
             default:
                 break;
@@ -147,7 +146,8 @@ wss.on('request', function (req) {
 
 
 /**
- * All messages received by subscriber must be children of 'RedisMessage' class.
+ * All messages received by Redis subscriber must be children of 'RedisMessage' class.
+ * All must have at minimum 'messageType', 'room_id', and 'origin' (SERVER_ID) filled.
  */
 subscriber.on('message', function (channel, message) {
     let msgObject = parseJSON(message);
@@ -199,26 +199,49 @@ subscriber.on('message', function (channel, message) {
 
 
 /**
+ * Sends list of microbits in the same room as the Pepper that requested the list.
  *
- *
- * @param data
- * @connection the websocket connection object of Pepper that sent the request for all Microbits
+ * @param connection the websocket connection object of Pepper that sent the request for all Microbits
+ * @return objects with room id and list of microbit info objects; format is as following:
+ *  { room_id: <var> ,                       // room ID of the microbits returned (same as the room Pepper is in)
+ *    microbit_list: [{
+ *          uuid: <uuid version 4>          // uuid assigned to the microbit when it connected to a server
+ *          name: <string>                  // user chosen name
+ *          paired: true || false           // whether or not the microbit is already paired
+ *      }, ... ... ]
+ *   }
  */
-function requestAllMicrobits(data, connection) {
-    const roomID = data['room_id']; //TODO: figure out how to get the correct room ID
+function requestAllMicrobits(connection) {
+    let data = {
+        room_id: connection.room_id,
+        microbit_list: [],
+    };
 
-    let microbitsMessage = new RedisMessage();
-    microbitsMessage.setMessageType(messageType.microbitRequest);
-    microbitsMessage.setRoomId(roomID);
-    microbitsMessage.setOrigin(SERVER_ID);
-    microbitsMessage['microbits'] = [];
-
-    devices_map.get(roomID).get(deviceType.microbit).forEach((value, key) => {
-        let microbit = {paired: false};   //TODO: add more parameters for each microbit (ex: whether or not it's already paired)
-        microbit[key] = value.id['name']; //uuid: user-chosen name
-
-        microbitsMessage.microbits.push(microbit);
+    // Collect all microbits on this server in the same room as connection.id.room_id
+    devices_map.get(connection.room_id).get(deviceType.microbit).forEach((value) => {
+        // value is the connection object stored after registration of microbit
+        data.microbit_list.push({
+            uuid: value.id.uuid,
+            name: value.id.name,
+            paired: value.id.paired,
+        });
     });
+
+    // Collect all microbits from other servers in the same room
+    // iterate over all the servers
+    secondary_devices.forEach((serverInfo) => {
+        serverInfo.get(connection.room_id).get(deviceType.microbit).forEach((microbit) =>{
+            data.microbit_list.push({
+                uuid: microbit.uuid,
+                name: microbit.name,
+                paired: microbit.paired,
+            });
+        });
+    });
+
+    connection.sendUTF(JSON.stringify(data));
+    console.log('REQUEST FOR ALL MICROBITS PROCESSED: ');
+    console.log(JSON.stringify(data));
 }
 
 
@@ -266,7 +289,9 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
             device_type: type,
             name: deviceName,
             uuid: uuidv4(),
+            paired: false,
         };
+
         devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
 
         console.log('!!!! Devices map: ');
@@ -276,7 +301,6 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
         if (type === deviceType.microbit) {
             alertPeppers(roomID, connection.id.uuid, deviceName, true);
         }
-
         resolve('done');
     });
 }
@@ -305,7 +329,16 @@ function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
         ]);
         secondary_devices.get(serverID).set(roomID, room_map);
     }
-    secondary_devices.get(serverID).get(roomID).get(type).set(uuid, deviceName);
+
+    // all of the same data as what is stored in the connection object locally
+    let deviceInfo = {
+        device_type: type,
+        uuid: uuid,
+        name: deviceName,
+        paired: false,
+    };
+
+    secondary_devices.get(serverID).get(roomID).get(type).set(uuid, deviceInfo);
 
     console.log('UPDATED SECONDARY MAP for the server of the registered device: ');
     console.log(secondary_devices.get(serverID));
@@ -329,9 +362,9 @@ function unregisterLocalDevice(connection) {
 /**
  * Removes device connected to a different server from this server's local reference
  * @param serverID the id of the server the device was originally connected to
- * @param roomID
- * @param type
- * @param uuid
+ * @param roomID the id of the room that the device is connected to
+ * @param type deviceType of the
+ * @param uuid uuid v4 that was given to identify the device at registering
  */
 function unregisterGlobalDevice(serverID, roomID, type, uuid) {
     try {
@@ -469,8 +502,6 @@ function handshake(data, connection) {
  *        peppers on the server this function is called.
  */
 function alertPeppers(roomID, uuid, name, broadcast) {
-
-    // what the other server will get about this microbit's information
     let microbitInfo = {uuid: uuid, name: name, room_id: roomID};
 
     if (devices_map.has(roomID)) {
@@ -481,14 +512,12 @@ function alertPeppers(roomID, uuid, name, broadcast) {
         });
     }
 
-
     if (broadcast) {
         let message = new RedisMessage();
         message.setMessageType(messageType.addMicrobit);
         message.setRoomId(roomID);
         message.setMessage(microbitInfo);
         message.setOrigin(SERVER_ID);
-
         // console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
 
         publisher.publish('socket', message.toJson());
