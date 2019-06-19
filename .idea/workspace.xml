@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="07f76310-8687-4d61-80c6-b63bc7f380ff" name="Default Changelist" comment="" />
+=======
+    <list default="true" id="07f76310-8687-4d61-80c6-b63bc7f380ff" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/client/bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/bundle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/client.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_1/server1.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_1/server1.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_2/server2.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_2/server2.js" afterDir="false" />
+    </list>
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -16,11 +25,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server_1/server1.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="149">
               <caret line="82" column="42" lean-forward="true" selection-start-line="82" selection-start-column="42" selection-end-line="82" selection-end-column="42" />
+=======
+            <state relative-caret-position="344">
+              <caret line="40" column="3" lean-forward="true" selection-start-line="40" selection-start-column="3" selection-end-line="40" selection-end-column="3" />
+              <folding>
+                <element signature="n#!!doc;n#parseJSON#0" />
+                <element signature="n#!!doc;n#registerLocalDevice#0" />
+              </folding>
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
             </state>
           </provider>
         </entry>
@@ -28,8 +46,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server_2/server2.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="9000">
               <caret line="450" lean-forward="true" selection-start-line="450" selection-end-line="450" />
+=======
+            <state relative-caret-position="340">
+              <caret line="461" lean-forward="true" selection-end-line="533" selection-end-column="1" />
+              <folding>
+                <element signature="n#!!doc;n#parseJSON#0" />
+                <element signature="n#!!doc;n#registerLocalDevice#0" />
+              </folding>
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
             </state>
           </provider>
         </entry>
@@ -37,8 +64,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/client.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="175">
               <caret line="25" column="25" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
+=======
+            <state relative-caret-position="1460">
+              <caret line="73" column="5" lean-forward="true" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
             </state>
           </provider>
         </entry>
@@ -46,8 +78,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/browser.html">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="-125">
               <caret line="3" column="26" lean-forward="true" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
+=======
+            <state relative-caret-position="155">
+              <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
             </state>
           </provider>
         </entry>
@@ -64,20 +101,21 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+<<<<<<< HEAD
       <find>registerDevice function</find>
       <find>updated</find>
       <find>registerDevice</find>
+=======
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
       <find>has</find>
       <find>secondary_devices</find>
       <find>hasOwnProperty</find>
       <find>connection.</find>
       <find>connection.has</find>
-      <find>console.log</find>
       <find>unregisterLocal</find>
       <find>unregisterGlobalDevice</find>
       <find>registerLocalDevice</find>
       <find>unregister</find>
-      <find>connection</find>
       <find>secondary_devices.get</find>
       <find>SERVER_ONE</find>
       <find>removeDevice</find>
@@ -93,7 +131,16 @@
       <find>registerGlobalDevice(</find>
       <find>setting</find>
       <find>registerGlobalDevice</find>
+<<<<<<< HEAD
       <find>utf8</find>
+=======
+      <find>requestAll</find>
+      <find>request</find>
+      <find>connection</find>
+      <find>TODO</find>
+      <find>console.log</find>
+      <find>requestAllMicrobits</find>
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -113,7 +160,6 @@
         <option value="$PROJECT_DIR$/server_1/websocketServer.js" />
         <option value="$PROJECT_DIR$/server_2/websocketServer2.js" />
         <option value="$PROJECT_DIR$/message-constants.js" />
-        <option value="$PROJECT_DIR$/client/browser.html" />
         <option value="$PROJECT_DIR$/client/microbit-list.js" />
         <option value="$PROJECT_DIR$/client/microbit-login-message.js" />
         <option value="$PROJECT_DIR$/client/microbit-list-message.js" />
@@ -124,9 +170,10 @@
         <option value="$PROJECT_DIR$/client/redis-publisher-message.js" />
         <option value="$PROJECT_DIR$/messages/redis-publisher-message.js" />
         <option value="$PROJECT_DIR$/messages/message-constants.js" />
+        <option value="$PROJECT_DIR$/client/browser.html" />
+        <option value="$PROJECT_DIR$/client/client.js" />
         <option value="$PROJECT_DIR$/server_2/server2.js" />
         <option value="$PROJECT_DIR$/server_1/server1.js" />
-        <option value="$PROJECT_DIR$/client/client.js" />
       </list>
     </option>
   </component>
@@ -136,7 +183,12 @@
     <bower.json value="" />
   </component>
   <component name="ProjectFrameBounds">
+<<<<<<< HEAD
     <option name="x" value="198" />
+=======
+    <option name="x" value="408" />
+    <option name="y" value="23" />
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
     <option name="width" value="1140" />
     <option name="height" value="898" />
   </component>
@@ -240,12 +292,16 @@
       <workItem from="1560388214564" duration="886000" />
       <workItem from="1560393730787" duration="3327000" />
       <workItem from="1560479415326" duration="22960000" />
-      <workItem from="1560734497229" duration="54886000" />
+      <workItem from="1560734497229" duration="63455000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="105762000" />
+=======
+    <option name="totallyTimeSpent" value="114323000" />
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -257,7 +313,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
     <frame x="163" y="0" width="1140" height="898" extended-state="0" />
+=======
+    <frame x="408" y="23" width="1140" height="898" extended-state="0" />
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4981203" visible="true" weight="0.20304115" />
@@ -269,7 +329,7 @@
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32961586" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.31801242" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32876712" />
       <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.4992236" visible="true" weight="0.17763975" />
@@ -296,11 +356,25 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/server_2/websocketServer2.js" />
     <entry file="file://$PROJECT_DIR$/client/browser.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-125">
           <caret line="3" column="26" lean-forward="true" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
+=======
+    <entry file="file://$PROJECT_DIR$/server_2/websocketServer2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="900">
+          <caret line="45" selection-start-line="45" selection-end-line="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server_1/wsServer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="20" column="17" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
         </state>
       </provider>
     </entry>
@@ -351,15 +425,41 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/client/client.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="175">
           <caret line="25" column="25" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
+=======
+    <entry file="file://$PROJECT_DIR$/client/browser.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/client.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1460">
+          <caret line="73" column="5" lean-forward="true" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server_2/server2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="461" lean-forward="true" selection-end-line="533" selection-end-column="1" />
+          <folding>
+            <element signature="n#!!doc;n#parseJSON#0" />
+            <element signature="n#!!doc;n#registerLocalDevice#0" />
+          </folding>
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server_1/server1.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="149">
           <caret line="82" column="42" lean-forward="true" selection-start-line="82" selection-start-column="42" selection-end-line="82" selection-end-column="42" />
         </state>
@@ -372,5 +472,16 @@
         </state>
       </provider>
     </entry>
+=======
+        <state relative-caret-position="344">
+          <caret line="40" column="3" lean-forward="true" selection-start-line="40" selection-start-column="3" selection-end-line="40" selection-end-column="3" />
+          <folding>
+            <element signature="n#!!doc;n#parseJSON#0" />
+            <element signature="n#!!doc;n#registerLocalDevice#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+>>>>>>> c7598f2bd4b06b4c9a3f76b7484abdc5ae0a72da
   </component>
 </project>
