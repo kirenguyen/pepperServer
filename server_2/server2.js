@@ -230,6 +230,10 @@ function requestAllMicrobits(data, connection) {
  * @returns JSON object if data was parsable, false otherwise
  */
 function parseJSON(data) {
+    console.log('WHY CANT WE PARSE THIS FUCKING JSON');
+    console.log(data);
+
+
     try {
         return JSON.parse(data);
     } catch (err) {
