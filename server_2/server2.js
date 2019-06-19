@@ -127,6 +127,11 @@ wss.on('request', function (req) {
         }
 
         try {
+            // disconnect a robot from the server
+            if(connection.id.device_type === deviceType.microbit){
+                return true;
+            }
+
             let url = domain + 'project/node/delete_user';
             let options = {
                 uri: url,
@@ -138,10 +143,11 @@ wss.on('request', function (req) {
                 }
             };
             request.post(options, function (error, response, body) {
-                //TODO: finish up the clean-up
-                let users = JSON.parse(body).notification;
+                console.log('Cutting robots connection; BODY (unparsed):');
+                console.log(body);
             });
         } catch (err) {
+            console.log('Disconnecting a robot from the server failed');
             console.log(err);
         }
     });
@@ -418,7 +424,6 @@ function login(data, connection) {
         registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
             success => console.log('registerLocalDevice function has been called for microbit:', success)
         )
-
     });
 }
 
@@ -490,9 +495,7 @@ function handshake(data, connection) {
             });
 
     });
-
 }
-
 
 /**
  * Alerts all Peppers in the same room as the *newly* added micro:bit
@@ -524,6 +527,7 @@ function alertPeppers(roomID, uuid, name, broadcast) {
         message.setRoomId(roomID);
         message.setMessage(microbitInfo);
         message.setOrigin(SERVER_ID);
+        // console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
 
         publisher.publish('socket', message.toJson());
     }
