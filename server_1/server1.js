@@ -28,6 +28,7 @@ let server = http.createServer(function (request, response) {
     response.end('Just sent the headers');
 }).listen(SERVER_PORT, function () {
     console.log('Server 1 listening on port: ' + SERVER_PORT);
+    serverStartCleanup();
 });
 
 const publisher = redis.createClient(REDIS_PORT, REDIS_ENDPOINT);
@@ -55,6 +56,10 @@ wss = new WebSocketServer({
  */
 function originIsAllowed(origin) {
     return true;
+}
+
+function serverStartCleanup(){
+    //TODO: clear local map of other server
 }
 
 
@@ -103,9 +108,14 @@ wss.on('request', function (req) {
         // if this connection was registered before disconnection
         if (connection.hasOwnProperty('id')) {
             unregisterLocalDevice(connection);
-            unregisterGlobalDevice(connection.id.room_id, connection.id.device_type, connection.id.uuid)
+            let message = new RedisMessage();
+            message.setMessageType(messageType.removeDevice);
+            message.setRoomId(connection.id.room_id);
+            message.setOrigin(SERVER_ID);
+            let deviceInfo = {uuid: connection.id.uuid, device_type: connection.id.device_type};
+            message.setMessage(deviceInfo);
+            publisher.publish('socket', message.toJson());
         }
-
 
         try {
             let url = domain + 'project/node/delete_user';
@@ -155,6 +165,11 @@ subscriber.on('message', function (channel, message) {
                 registerGlobalDevice(msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
                     msgObject.message['name'])
             }
+            break;
+
+        case messageType.removeDevice:
+            unregisterGlobalDevice(msgObject.message['room_id'], msgObject.message['device_type'],
+                msgObject.message['uuid']);
             break;
         case messageType.microbitAction:
             // if microbit or robot is on this server (depending on what the action is), do the action, else ignore

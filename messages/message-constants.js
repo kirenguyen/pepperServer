@@ -7,6 +7,7 @@ const messageType = Object.freeze({
     microbitAction: 'microbitAction',
     addMicrobit: 'addMicrobit',
     addRobot: 'addRobot',
+    removeDevice: 'removeDevice',
 });
 
 
