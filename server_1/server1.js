@@ -2,7 +2,7 @@ const WebSocketServer = require('websocket').server;
 const http = require('http');
 const request = require('request');
 const redis = require("redis");
-const SERVER_ID = 'SERVER_TWO';
+const SERVER_ID = 'SERVER_ONE';
 
 const RedisMessage = require('../messages/redis-publisher-message');
 const uuidv4 = require("uuid/v4");
@@ -36,7 +36,7 @@ let server = http.createServer(function (request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end('Just sent the headers');
 }).listen(SERVER_PORT, function () {
-    console.log('Server 2 listening on port: ' + SERVER_PORT);
+    console.log('Server 1 listening on port: ' + SERVER_PORT);
     serverStartCleanup();
 });
 
