@@ -490,9 +490,7 @@ function handshake(data, connection) {
             });
 
     });
-
 }
-
 
 /**
  * Alerts all Peppers in the same room as the *newly* added micro:bit

@@ -1,94 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-// const MicrobitLoginMessage = require('../messages/microbit-login-message');
-// const RoboConnectorMessage = require('../messages/robo-connector-message');
-//
-// const messageConstants = require('../messages/message-constants');
-// const messageType = messageConstants.messageType;
-//
-// // Create WebSocket connection.
-// // Server 1
-// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
-//
-// // Server 2
-// // const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
-//
-// const msg = document.getElementById('msg');
-// const box = document.getElementById('box');
-//
-//
-// // Connection opened
-// socket.addEventListener('open', function (event) {
-//     console.log('CONNECTION MADE');
-// });
-//
-// // Listen for messages
-// socket.addEventListener('message', function (event) {
-//     console.log('Message from server: ');
-//     console.log(' >> ' + event.data);
-// });
-//
-//
-// function createMicrobit(name) {
-//     const loginMessage = new MicrobitLoginMessage();
-//     loginMessage.setRoomName('room1');
-//     loginMessage.setPassword('test1234');   //all joining room 1
-//     loginMessage.setMicrobitName(name);
-//     let jsonMessage = loginMessage.build().toJson();
-//     console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
-//     socket.send(jsonMessage);
-// }
-//
-// function createPepper() {
-//     const roboMessage = new RoboConnectorMessage();
-//     roboMessage.setRoomId(1);
-//     roboMessage.setUserId(129);
-//     roboMessage.setMessageType(messageType.handshake);
-//     roboMessage.setMessage('no message');
-//     roboMessage.setRobotId('');
-//     let jsonMessage = roboMessage.build().toJson();
-//     socket.send(jsonMessage);
-//     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
-// }
-//
-// function requestMicrobits(){
-//     const roboMessage = new RoboConnectorMessage();
-//     roboMessage.setRoomId(1);
-//     roboMessage.setUserId(name);
-//     roboMessage.setMessageType(messageType.microbitRequest);
-//     roboMessage.setMessage('no message');
-//     roboMessage.setRobotId('');
-//     let jsonMessage = roboMessage.build().toJson();
-//     socket.send(jsonMessage);
-//     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
-// }
-//
-// msg.addEventListener('keydown', e => {
-//     console.log(e.key);
-//
-//     if(e.key === "Enter") {
-//         createMicrobit(msg.value);
-//         let paragraph = document.createElement('paragraph');
-//         paragraph.textContent = 'Added microbit with name: ' + msg.value;
-//         box.appendChild(paragraph);
-//         msg.value = '';
-//     }
-//     if(e.key === "=") {
-//         createPepper();
-//         let paragraph = document.createElement('paragraph');
-//         paragraph.textContent = 'Added Pepper with name';
-//         box.appendChild(paragraph);
-//         msg.value = '';
-//     }
-//
-//     if(e.key === "`") {
-//         requestMicrobits();
-//         let paragraph = document.createElement('paragraph');
-//         paragraph.textContent = 'Requested list of microbits!';
-//         box.appendChild(paragraph);
-//         msg.value = '';
-//     }
-// });
-
 const MicrobitLoginMessage = require('../messages/microbit-login-message');
 const RoboConnectorMessage = require('../messages/robo-connector-message');
 
@@ -97,22 +7,38 @@ const messageType = messageConstants.messageType;
 
 // Create WebSocket connection.
 // Server 1
-// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2
-const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+
+const msg = document.getElementById('msg');
+const box = document.getElementById('box');
 
 
 // Connection opened
 socket.addEventListener('open', function (event) {
-    // const loginMessage = new MicrobitLoginMessage();
-    // loginMessage.setRoomName('room1');
-    // loginMessage.setPassword('test1234');
-    // loginMessage.setMicrobitName('kirererere');
-    // let jsonMessage = loginMessage.build().toJson();
-    // console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
-    // socket.send(jsonMessage);
+    console.log('CONNECTION MADE');
+});
 
+// Listen for messages
+socket.addEventListener('message', function (event) {
+    console.log('Message from server: ');
+    console.log(' >> ' + event.data);
+});
+
+
+function createMicrobit(name) {
+    const loginMessage = new MicrobitLoginMessage();
+    loginMessage.setRoomName('room1');
+    loginMessage.setPassword('test1234');   //all joining room 1
+    loginMessage.setMicrobitName(name);
+    let jsonMessage = loginMessage.build().toJson();
+    console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
+    socket.send(jsonMessage);
+}
+
+function createPepper() {
     const roboMessage = new RoboConnectorMessage();
     roboMessage.setRoomId(1);
     roboMessage.setUserId(129);
@@ -122,14 +48,88 @@ socket.addEventListener('open', function (event) {
     let jsonMessage = roboMessage.build().toJson();
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+}
 
+function requestMicrobits(){
+    const roboMessage = new RoboConnectorMessage();
+    roboMessage.setRoomId(1);
+    roboMessage.setUserId(name);
+    roboMessage.setMessageType(messageType.microbitRequest);
+    roboMessage.setMessage('no message');
+    roboMessage.setRobotId('');
+    let jsonMessage = roboMessage.build().toJson();
+    socket.send(jsonMessage);
+    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+}
+
+msg.addEventListener('keydown', e => {
+    console.log(e.key);
+
+    if(e.key === "Enter") {
+        createMicrobit(msg.value);
+        let paragraph = document.createElement('paragraph');
+        paragraph.textContent = 'Added microbit with name: ' + msg.value;
+        box.appendChild(paragraph);
+        msg.value = '';
+    }
+    if(e.key === "=") {
+        createPepper();
+        let paragraph = document.createElement('paragraph');
+        paragraph.textContent = 'Added Pepper with name';
+        box.appendChild(paragraph);
+        msg.value = '';
+    }
+
+    if(e.key === "`") {
+        requestMicrobits();
+        let paragraph = document.createElement('paragraph');
+        paragraph.textContent = 'Requested list of microbits!';
+        box.appendChild(paragraph);
+        msg.value = '';
+    }
 });
 
-// Listen for messages
-socket.addEventListener('message', function (event) {
-    console.log('Message from server: ');
-    console.log(' >> ' + event.data);
-});
+// const MicrobitLoginMessage = require('../messages/microbit-login-message');
+// const RoboConnectorMessage = require('../messages/robo-connector-message');
+//
+// const messageConstants = require('../messages/message-constants');
+// const messageType = messageConstants.messageType;
+//
+// // Create WebSocket connection.
+// // Server 1
+// // const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+//
+// // Server 2
+// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+//
+//
+// // Connection opened
+// socket.addEventListener('open', function (event) {
+//     // const loginMessage = new MicrobitLoginMessage();
+//     // loginMessage.setRoomName('room1');
+//     // loginMessage.setPassword('test1234');
+//     // loginMessage.setMicrobitName('kirererere');
+//     // let jsonMessage = loginMessage.build().toJson();
+//     // console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
+//     // socket.send(jsonMessage);
+//
+//     const roboMessage = new RoboConnectorMessage();
+//     roboMessage.setRoomId(1);
+//     roboMessage.setUserId(129);
+//     roboMessage.setMessageType(messageType.handshake);
+//     roboMessage.setMessage('no message');
+//     roboMessage.setRobotId('');
+//     let jsonMessage = roboMessage.build().toJson();
+//     socket.send(jsonMessage);
+//     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+//
+// });
+//
+// // Listen for messages
+// socket.addEventListener('message', function (event) {
+//     console.log('Message from server: ');
+//     console.log(' >> ' + event.data);
+// });
 },{"../messages/message-constants":2,"../messages/microbit-login-message":3,"../messages/robo-connector-message":4}],2:[function(require,module,exports){
 const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
 const messageType = Object.freeze({
