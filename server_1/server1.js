@@ -155,6 +155,7 @@ subscriber.on('message', function (channel, message) {
         case messageType.serverStart:
             if (msgObject.origin !== SERVER_ID) {
                 // initialize to new empty map after other server's startup
+                console.log('SETTING UP SECONDARY DEVICE MAP');
                 secondary_devices.set(msgObject.origin, new Map());
             }
             break;

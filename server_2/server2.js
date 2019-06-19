@@ -155,6 +155,7 @@ subscriber.on('message', function (channel, message) {
         case messageType.serverStart:
             if (msgObject.origin !== SERVER_ID) {
                 // initialize to new empty map after other server's startup
+                console.log('SETTING UP SECONDARY DEVICE MAP');
                 secondary_devices.set(msgObject.origin, new Map());
             }
             break;
@@ -297,6 +298,9 @@ function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
     console.log(type);
     console.log(uuid);
     console.log(deviceName);
+
+    console.log(secondary_devices);
+    console.log(secondary_devices.get(serverID));
 
     if (!secondary_devices.get(serverID).has(roomID)) {
         console.log('Adding new room to secondary devices map');
