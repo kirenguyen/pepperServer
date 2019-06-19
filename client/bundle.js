@@ -68,7 +68,7 @@ msg.addEventListener('keydown', e => {
         box.appendChild(paragraph);
         msg.value = '';
     }
-    if(e.key === "=") {
+    if(e.key === "1") {
         createPepper();
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Added Pepper  ';
@@ -76,7 +76,7 @@ msg.addEventListener('keydown', e => {
         msg.value = '';
     }
 
-    if(e.key === "`") {
+    if(e.key === "2") {
         requestMicrobits();
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Requested list of microbits!    ';

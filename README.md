@@ -93,21 +93,36 @@ let microbitList = {
 }
 ```
 
+
 ###Misc
 
-Here are some of the current messageTypes, some will be consolidated later.
+To try out some of the functionality using the browser, use the `browser.html` located in `/client`;
+to make sure any changes are saved, use `watchify` by running:
+
+`watchify client/client.js -o client/bundle.js -v` in a separate terminal.
+
+Each browser opens up a websocket connection;
+you can press `1` to initialize a Pepper, enter a name for a Micro:Bit and press `Enter` to initialize a Micro:Bit, or press `2` to request microbits from a browser that has initialized a Pepper.
+
+
+Here are some of the current messageTypes, some will be changed later.
 ```javascript
 const messageType = Object.freeze({
-    login: 'login',
-    handshake: 'handshake',
-    action: 'action',
-    pairing: 'pairing',
-    requestMicrobits: 'requestMicrobits',
-    microbitAction: 'microbitAction',
-    addMicrobit: 'addMicrobit',
-    addRobot: 'addRobot',
-    removeDevice: 'removeDevice',
-    serverStart: 'serverStart',
+    login: 'login',                          // microbit login
+    handshake: 'handshake',                  // robot handshake
+    action: 'action',                        // nothing yet
+    pairing: 'pairing',                      // nothing yet
+    requestMicrobits: 'requestMicrobits',    // microbit list request
+    microbitAction: 'microbitAction',        // nothing yet
+    addMicrobit: 'addMicrobit',              // not for client use
 
-});
+    addRobot: 'addRobot',                    // not for client use
+    removeDevice: 'removeDevice',            // not for client use
+    serverStart: 'serverStart',              // not for client use
+
+}); 
 ```
+
+### Issues
+
+Although I am using the /delete_user (API018) to cut the connection, that seems to not be working. So you may have issues if you connect too many Peppers.
