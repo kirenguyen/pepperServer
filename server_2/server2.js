@@ -112,7 +112,8 @@ wss.on('request', function (req) {
             message.setMessageType(messageType.removeDevice);
             message.setRoomId(connection.id.room_id);
             message.setOrigin(SERVER_ID);
-            let deviceInfo = {uuid: connection.id.uuid, device_type: connection.id.device_type};
+            let deviceInfo = {uuid: connection.id.uuid, device_type: connection.id.device_type,
+                room_id: connection.id.room_id};
             message.setMessage(deviceInfo);
             publisher.publish('socket', message.toJson());
         }
@@ -168,7 +169,7 @@ subscriber.on('message', function (channel, message) {
             break;
 
         case messageType.removeDevice:
-            unregisterGlobalDevice(msgObject.message['room_id'], msgObject.message['device_type'],
+            unregisterGlobalDevice(msgObject.message.room_id, msgObject.message['device_type'],
                 msgObject.message['uuid']);
             break;
         case messageType.microbitAction:
