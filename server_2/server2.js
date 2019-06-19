@@ -389,7 +389,7 @@ function login(data, connection) {
 
         registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
             success => console.log('registerLocalDevice function has been called for microbit:', success)
-        )
+        );
 
     });
 }
@@ -422,13 +422,18 @@ function handshake(data, connection) {
         form: body
     };
 
+    console.log('OPTIONS FOR HANDSHAKE');
+    console.log(options);
+    console.log('---------------------');
+
+
     request.post(options, function (error, response, body) {
         if (error) {
             console.error(error);
             connection.sendUTF('database connection failed');
         }
 
-        console.log('Is this where we are ????');
+        console.log('WHY IS THERE NO RESPONSE BODY');
 
         let responseBody = parseJSON(body);
         const failedLogin = '900';
