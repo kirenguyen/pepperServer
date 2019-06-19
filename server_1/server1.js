@@ -128,7 +128,7 @@ wss.on('request', function (req) {
 
         try {
             // disconnect a robot from the server
-            if(connection.id.device_type === deviceType.robot){
+            if(connection.id.device_type === deviceType.microbit){
                 return true;
             }
 
