@@ -294,9 +294,6 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
 function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
 
-    console.log(secondary_devices);
-    console.log(secondary_devices.get(serverID));
-
     if (!secondary_devices.get(serverID).has(roomID)) {
         console.log('Adding new room to secondary devices map');
         let room_map = new Map([
@@ -307,8 +304,8 @@ function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
     }
     secondary_devices.get(serverID).get(roomID).get(type).set(uuid, deviceName);
 
-    console.log('UPDATED SECONDARY MAP: ');
-    console.log(secondary_devices);
+    console.log('UPDATED SECONDARY MAP for the server of the registered device: ');
+    console.log(secondary_devices.get(serverID));
 }
 
 /**
@@ -336,8 +333,8 @@ function unregisterLocalDevice(connection) {
 function unregisterGlobalDevice(serverID, roomID, type, uuid) {
     try {
         secondary_devices.get(serverID).get(roomID).get(type).delete(uuid);
-        console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map: ');
-        console.log(secondary_devices);
+        console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map for the server relating to registered device: ');
+        console.log(secondary_devices.get(serverID));
     } catch (error) {
         console.log('Error in trying to remove device from secondary map.')
         console.log(error);
@@ -494,5 +491,3 @@ function alertPeppers(roomID, uuid, name, broadcast) {
         publisher.publish('socket', message.toJson());
     }
 }
-
-
