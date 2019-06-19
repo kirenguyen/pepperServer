@@ -52,6 +52,7 @@ const messageType = Object.freeze({
     addMicrobit: 'addMicrobit',
     addRobot: 'addRobot',
     removeDevice: 'removeDevice',
+    serverStart: 'serverStart',
 });
 
 

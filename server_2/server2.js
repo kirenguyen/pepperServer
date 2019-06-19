@@ -15,22 +15,6 @@ const SERVER_PORT = 3000;
 
 const REDIS_PORT = 6379;
 const REDIS_ENDPOINT = 'roboblocks-dev-001.pv4tra.0001.use2.cache.amazonaws.com';
-
-// Devices connected to this server
-const devices_map = new Map();
-
-// Devices connected to the other server
-const secondary_devices = new Map();
-
-
-let server = http.createServer(function (request, response) {
-    response.writeHead(200, {'Content-Type': 'text/plain'});
-    response.end('Just sent the headers');
-}).listen(SERVER_PORT, function () {
-    console.log('Server 2 listening on port: ' + SERVER_PORT);
-    serverStartCleanup();
-});
-
 const publisher = redis.createClient(REDIS_PORT, REDIS_ENDPOINT);
 const subscriber = redis.createClient(REDIS_PORT, REDIS_ENDPOINT);
 subscriber.subscribe('socket');
@@ -40,6 +24,21 @@ publisher.on('error', function (err) {
 });
 subscriber.on('error', function (err) {
     console.log('Subscriber error: ' + String(err));
+});
+
+
+// Devices connected to this server
+const devices_map = new Map();
+
+// Devices connected to the other servers
+const secondary_devices = new Map();
+
+let server = http.createServer(function (request, response) {
+    response.writeHead(200, {'Content-Type': 'text/plain'});
+    response.end('Just sent the headers');
+}).listen(SERVER_PORT, function () {
+    console.log('Server 2 listening on port: ' + SERVER_PORT);
+    serverStartCleanup();
 });
 
 
@@ -58,8 +57,15 @@ function originIsAllowed(origin) {
     return true;
 }
 
+/**
+ * Sends a message to other server that this server has just (re)started
+ * to clear cache of any devices that may have once been registered to this server.
+ */
 function serverStartCleanup(){
-    //TODO: clear local map of other server
+    let message = new RedisMessage();
+    message.setOrigin(SERVER_ID);
+    message.setMessageType(messageType.serverStart);
+    publisher.publish('socket', message.toJson());
 }
 
 
@@ -147,13 +153,19 @@ subscriber.on('message', function (channel, message) {
     let msgObject = parseJSON(message);
 
     switch (msgObject.message_type) {
+        case messageType.serverStart:
+            if (msgObject.origin !== SERVER_ID) {
+                // initialize to new empty map after other server's startup
+                secondary_devices.set(msgObject.origin, new Map());
+            }
+            break;
         case messageType.microbitRequest:
             break;
         case messageType.addMicrobit:
             if (msgObject.origin === SERVER_ID) {
                 console.log('RECEIVED REQUEST TO ADD MICROBIT FROM OG SERVER');
             } else {
-                registerGlobalDevice(msgObject.room_id, deviceType.microbit, msgObject.message['uuid'],
+                registerGlobalDevice(msgObject.origin, msgObject.room_id, deviceType.microbit, msgObject.message['uuid'],
                     msgObject.message['name'])
                 alertPeppers(msgObject.room_id, msgObject.message['uuid'],
                     msgObject.message['name'], false);
@@ -163,15 +175,14 @@ subscriber.on('message', function (channel, message) {
             if (msgObject.origin === SERVER_ID) {
                 console.log('RECEIVED REQUEST TO ADD ROBOT FROM OG SERVER');
             } else {
-                registerGlobalDevice(msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
+                registerGlobalDevice(msgObject.origin, msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
                     msgObject.message['name'])
             }
             break;
-
         case messageType.removeDevice:
             // unregister device connected to other server
             if (msgObject.origin !== SERVER_ID){
-                unregisterGlobalDevice(msgObject.message.room_id, msgObject.message['device_type'],
+                unregisterGlobalDevice(msgObject.origin, msgObject.message.room_id, msgObject.message['device_type'],
                     msgObject.message['uuid']);
             }
             break;
@@ -207,8 +218,6 @@ function requestAllMicrobits(data, connection) {
 
         microbitsMessage.microbits.push(microbit);
     });
-
-
 }
 
 
@@ -273,18 +282,19 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
 
 /**
  * Log a device connected onto another server onto this server's
- * local memory for reference. The devices are stored by room id, then by device type,
+ * local memory for reference. The devices are stored by server id, room id, then by device type,
  * then their respective connection id (uuid v4), with the value being the device's user-chosen name.
  *
+ * @param serverID the server that the device was originally connected to
  * @param roomID room ID the device was registered to
  * @param type the deviceType of the registered device (deviceType.microbit or deviceType.robot)
  * @param uuid uuid that the device was associated with when it was registered on the other server
  * @param deviceName name(s) (not necessarily unique) the device was associated with by the user
  */
-function registerGlobalDevice(roomID, type, uuid, deviceName) {
+function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
 
-    if (!secondary_devices.has(roomID)) {
+    if (!secondary_devices.get(serverID).has(roomID)) {
         console.log('Adding new room to secondary devices map');
         let room_map = new Map([
             [deviceType.robot, new Map()],
@@ -292,7 +302,7 @@ function registerGlobalDevice(roomID, type, uuid, deviceName) {
         ]);
         secondary_devices.set(roomID, room_map);
     }
-    secondary_devices.get(roomID).get(type).set(uuid, deviceName);
+    secondary_devices.get(serverID).get(roomID).get(type).set(uuid, deviceName);
 
     console.log('UPDATED SECONDARY MAP: ');
     console.log(secondary_devices);
@@ -321,13 +331,14 @@ function unregisterLocalDevice(connection) {
 
 /**
  * Removes device connected to a different server from this server's local reference
+ * @param serverID the id of the server the device was originally connected to
  * @param roomID
  * @param type
  * @param uuid
  */
-function unregisterGlobalDevice(roomID, type, uuid) {
+function unregisterGlobalDevice(serverID, roomID, type, uuid) {
     try {
-        secondary_devices.get(roomID).get(type).delete(uuid);
+        secondary_devices.get(serverID).get(roomID).get(type).delete(uuid);
         console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map: ');
         console.log(secondary_devices);
     } catch (err) {
