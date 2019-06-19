@@ -2,7 +2,7 @@ const WebSocketServer = require('websocket').server;
 const http = require('http');
 const request = require('request');
 const redis = require("redis");
-const SERVER_ID = 'SERVER_TWO';
+const SERVER_ID = 'SERVER_ONE';
 
 const RedisMessage = require('../messages/redis-publisher-message');
 const uuidv4 = require("uuid/v4");
@@ -23,22 +23,21 @@ const devices_map = new Map();
 const secondary_devices = new Map();
 
 
-
-let server = http.createServer(function(request, response) {
+let server = http.createServer(function (request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end('Just sent the headers');
-}).listen(SERVER_PORT, function() {
-    console.log('Server 2 listening on port: ' + SERVER_PORT);
+}).listen(SERVER_PORT, function () {
+    console.log('Server 1 listening on port: ' + SERVER_PORT);
 });
 
 const publisher = redis.createClient(REDIS_PORT, REDIS_ENDPOINT);
 const subscriber = redis.createClient(REDIS_PORT, REDIS_ENDPOINT);
 subscriber.subscribe('socket');
 
-publisher.on('error', function(err) {
+publisher.on('error', function (err) {
     console.log('Publisher error:  ' + String(err));
 });
-subscriber.on('error', function(err) {
+subscriber.on('error', function (err) {
     console.log('Subscriber error: ' + String(err));
 });
 
@@ -62,7 +61,7 @@ function originIsAllowed(origin) {
 /**
  * Called upon client connection attempt
  */
-wss.on('request', function(req) {
+wss.on('request', function (req) {
     if (!originIsAllowed(req.origin)) {
         req.reject();
         console.log((new Date()) + ' Connection from origin ' + req.origin + ' rejected.');
@@ -72,14 +71,14 @@ wss.on('request', function(req) {
     let connection = req.accept('rb', req.origin);
     connection.webSocketKey = req.httpRequest.headers["sec-websocket-key"];
 
-    connection.on('message', function(message) {
+    connection.on('message', function (message) {
         console.log('MESSAGE RECEIVED FROM CLIENT');
         let data = parseJSON(message.utf8Data);
-        if(!data) {
+        if (!data) {
             return false;
         }
 
-        switch(data['message_type']){
+        switch (data['message_type']) {
             case messageType.login:
                 login(data, connection);
                 break;
@@ -97,13 +96,17 @@ wss.on('request', function(req) {
         }
     });
 
-    connection.on('close', function(reasonCode, description) {
+    connection.on('close', function (reasonCode, description) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
         console.log('desc: ' + description);
 
-        if(connection.hasOwnProperty('id')){
-            unregisterDevice(connection);
+        // if this connection was registered before disconnection
+        if (connection.hasOwnProperty('id')) {
+            unregisterLocalDevice(connection);
+            unregisterGlobalDevice(connection.id.room_id, connection.id.device_type, connection.id.uuid)
         }
+
+
         try {
             let url = domain + 'project/node/delete_user';
             let options = {
@@ -129,17 +132,16 @@ wss.on('request', function(req) {
 /**
  * All messages received by subscriber must be children of 'RedisMessage' class.
  */
-subscriber.on('message', function(channel, message){
+subscriber.on('message', function (channel, message) {
     let msgObject = parseJSON(message);
 
-    switch(msgObject.message_type) {
+    switch (msgObject.message_type) {
         case messageType.microbitRequest:
             break;
         case messageType.addMicrobit:
-            if(msgObject.origin === SERVER_ID){
+            if (msgObject.origin === SERVER_ID) {
                 console.log('RECEIVED REQUEST TO ADD MICROBIT FROM OG SERVER');
             } else {
-                console.log('THE ROOM_ID OF THE MESSAGE OBJECT IS: ', msgObject.room_id);
                 registerGlobalDevice(msgObject.room_id, deviceType.microbit, msgObject.message['uuid'],
                     msgObject.message['name'])
                 alertPeppers(msgObject.room_id, msgObject.message['uuid'],
@@ -147,9 +149,9 @@ subscriber.on('message', function(channel, message){
             }
             break;
         case messageType.addRobot:
-            if(msgObject.origin === SERVER_ID){
+            if (msgObject.origin === SERVER_ID) {
                 console.log('RECEIVED REQUEST TO ADD ROBOT FROM OG SERVER');
-            } else{
+            } else {
                 registerGlobalDevice(msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
                     msgObject.message['name'])
             }
@@ -178,7 +180,7 @@ function requestAllMicrobits(data, connection) {
     microbitsMessage.setMessageType(messageType.microbitRequest);
     microbitsMessage.setRoomId(roomID);
     microbitsMessage.setOrigin(SERVER_ID);
-    microbitsMessage['microbits']  = [];
+    microbitsMessage['microbits'] = [];
 
     devices_map.get(roomID).get(deviceType.microbit).forEach((value, key) => {
         let microbit = {paired: false};   //TODO: add more parameters for each microbit (ex: whether or not it's already paired)
@@ -188,23 +190,7 @@ function requestAllMicrobits(data, connection) {
     });
 
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ///////////////////////////////////////////////////
@@ -235,8 +221,8 @@ function parseJSON(data) {
  * @param connection socket connection object
  * @param deviceName device name(s), not necessarily unique
  */
-function registerDevice(roomID, type, connection, deviceName) {
-    return new Promise(function(resolve) {
+function registerLocalDevice(roomID, type, connection, deviceName) {
+    return new Promise(function (resolve) {
         console.log('REGISTERING DEVICE');
         if (!devices_map.has(roomID)) {
             let room_map = new Map([
@@ -294,29 +280,39 @@ function registerGlobalDevice(roomID, type, uuid, deviceName) {
 }
 
 /**
- * Unregisters device's connection from local memory upon closing of connection
+ * Unregisters device's connection from local memory upon closing of connection.
  * @param connection websocket connection object that was previously registered
  */
-function unregisterDevice(connection){
-    if(!connection.hasOwnProperty('id')){
+function unregisterLocalDevice(connection) {
+    if (!connection.hasOwnProperty('id')) {
         console.log('This connection was not registered');
         return false;
     }
 
-    if (!devices_map.has(connection.id.room_id)){
-        console.log('Room does not exist');
-    }
     let success = devices_map.get(connection.id.room_id).get(connection.id.device_type).delete(connection.id.uuid);
 
-    //debug lines
+    //debug lines, TODO: remove
     if (!success) {
         console.log('Device was not registered; unregister unsuccessful');
     } else {
-        console.log('Successfully unregistered. Updated local mem: ');
+        console.log('SUCCESSFULLY UNREGISTERED. Updated local mem: ');
         console.log(devices_map);
     }
+}
 
-
+/**
+ * Removes device connected to a different server from this server's local reference
+ * @param roomID
+ * @param type
+ * @param uuid
+ */
+function unregisterGlobalDevice(roomID, type, uuid) {
+    try {
+        secondary_devices.get(roomID).get(type).delete(uuid);
+    } catch (err) {
+        console.log('Error in trying to remove device from secondary map.')
+        console.log(err);
+    }
 }
 
 
@@ -340,23 +336,23 @@ function login(data, connection) {
     };
 
     let responseBody = null;
-    request.post(options, function(error, response, body){
-        if (error){
+    request.post(options, function (error, response, body) {
+        if (error) {
             console.error(error);
         }
 
         responseBody = parseJSON(body);
-        console.log('Parsed POST body:');
-        console.log(responseBody);
+        // console.log('Parsed POST body:');
+        // console.log(responseBody);
 
         const failedLogin = '900';
-        if(!responseBody || responseBody.result === failedLogin) {
+        if (!responseBody || responseBody.result === failedLogin) {
             console.log('Failed to authenticate: ' + body);
             return false;
         }
 
-        registerDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
-            success => console.log('registerDevice function has been called for microbit:', success)
+        registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
+            success => console.log('registerLocalDevice function has been called for microbit:', success)
         )
 
     });
@@ -370,7 +366,7 @@ function login(data, connection) {
  * @param connection socket connection object
  */
 function handshake(data, connection) {
-    if (data['device_type'] !== deviceType.robot){
+    if (data['device_type'] !== deviceType.robot) {
         return false;
     }
 
@@ -399,32 +395,35 @@ function handshake(data, connection) {
         let responseBody = parseJSON(body);
         const failedLogin = '900';
 
-        if(responseBody.result === failedLogin) {
+        if (responseBody.result === failedLogin) {
             console.log('Failed handshake ' + body);
             return false;
         } else if (!responseBody) {
             connection.sendUTF('Room is full.');
-        } else {
-            let names = {robot_name_ja: response['robot_name_ja'],
-                robot_name_en: response['robot_name_en']};
-            registerDevice(data.room_id, deviceType.robot, connection, names).then(
-                success => {
-                    let robotInfo = {
-                        name: names,
-                        room_id: data.room_id,
-                        uuid: connection.id['uuid'],
-                    };
-
-                    let message = new RedisMessage();
-                    message.setMessageType(messageType.addRobot);
-                    message.setRoomId(data.room_id);
-                    message.setMessage(robotInfo);
-                    message.setOrigin(SERVER_ID);
-
-                    publisher.publish('socket', message.toJson());
-                    console.log(success, ': sent message to add pepper globally');
-                });
+            return false;
         }
+        let names = {
+            robot_name_ja: response['robot_name_ja'],
+            robot_name_en: response['robot_name_en']
+        };
+        registerLocalDevice(data.room_id, deviceType.robot, connection, names).then(
+            success => {
+                let robotInfo = {
+                    name: names,
+                    room_id: data.room_id,
+                    uuid: connection.id['uuid'],
+                };
+
+                let message = new RedisMessage();
+                message.setMessageType(messageType.addRobot);
+                message.setRoomId(data.room_id);
+                message.setMessage(robotInfo);
+                message.setOrigin(SERVER_ID);
+
+                publisher.publish('socket', message.toJson());
+                console.log(success, ': sent message to add Pepper globally');
+            });
+
     });
 
 }
@@ -434,18 +433,18 @@ function handshake(data, connection) {
  * Alerts all Peppers in the same room as the newly added micro:bit
  * that it been added/alerts the other server of the micro:bit's presence for reference.
  *
- * @param roomID room ID of micro:bit that was newly registered with registerDevice()
- * @param uuid the value of the ID the micro:bit is uniquely mapped to assigned during registerDevice()
+ * @param roomID room ID of micro:bit that was newly registered with registerLocalDevice()
+ * @param uuid the value of the ID the micro:bit is uniquely mapped to assigned during registerLocalDevice()
  * @param name (s) of the micro:bit assigned to by the user
  * @param broadcast true for alerting other server (micro:bit was added to this server), false to just alert
  *        peppers on the server this function is called.
  */
-function alertPeppers(roomID, uuid, name, broadcast){
+function alertPeppers(roomID, uuid, name, broadcast) {
 
     // what the other server will get about this microbit's information
-    let microbitInfo = {uuid: uuid, name: name, room_id:roomID};
+    let microbitInfo = {uuid: uuid, name: name, room_id: roomID};
 
-    if(devices_map.has(roomID)){
+    if (devices_map.has(roomID)) {
         // alert on this server
         devices_map.get(roomID).get(deviceType.robot).forEach((value) => {
             value.sendUTF('This is how we would alert all the Peppers! If only I knew how to exactly...');
@@ -461,7 +460,7 @@ function alertPeppers(roomID, uuid, name, broadcast){
         message.setMessage(microbitInfo);
         message.setOrigin(SERVER_ID);
 
-        console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
+        // console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
 
         publisher.publish('socket', message.toJson());
     }
