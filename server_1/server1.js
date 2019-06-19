@@ -298,6 +298,9 @@ function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
     console.log(uuid);
     console.log(deviceName);
 
+    console.log(secondary_devices);
+    console.log(secondary_devices.get(serverID));
+
     if (!secondary_devices.get(serverID).has(roomID)) {
         console.log('Adding new room to secondary devices map');
         let room_map = new Map([
