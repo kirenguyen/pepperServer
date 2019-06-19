@@ -84,6 +84,9 @@ wss.on('request', function (req) {
 
     connection.on('message', function (message) {
         console.log('MESSAGE RECEIVED FROM CLIENT');
+        console.log(message);
+        console.log('-----------------------');
+
         let data = parseJSON(message.utf8Data);
         if (!data) {
             return false;
