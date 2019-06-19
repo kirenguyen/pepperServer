@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="07f76310-8687-4d61-80c6-b63bc7f380ff" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/browser.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/browser.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/bundle.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/client.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server_1/server1.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_1/server1.js" afterDir="false" />
@@ -25,21 +26,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server_1/server1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-53">
-              <caret line="213" column="28" selection-start-line="213" selection-start-column="9" selection-end-line="213" selection-end-column="28" />
-              <folding>
-                <element signature="n#!!doc;n#parseJSON#0" />
-                <element signature="n#!!doc;n#registerLocalDevice#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/server_2/server2.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="6" column="33" selection-start-line="6" selection-start-column="33" selection-end-line="6" selection-end-column="33" />
+            <state relative-caret-position="-797">
+              <caret line="416" column="5" lean-forward="true" selection-start-line="416" selection-start-column="5" selection-end-line="416" selection-end-column="5" />
               <folding>
                 <element signature="n#!!doc;n#parseJSON#0" />
                 <element signature="n#!!doc;n#registerLocalDevice#0" />
@@ -49,10 +37,32 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server_2/server2.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1912">
+              <caret line="32" column="36" lean-forward="true" selection-start-line="32" selection-start-column="36" selection-end-line="32" selection-end-column="36" />
+              <folding>
+                <element signature="n#!!doc;n#parseJSON#0" />
+                <element signature="n#!!doc;n#registerLocalDevice#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="428">
-              <caret line="32" column="45" selection-start-line="32" selection-start-column="45" selection-end-line="32" selection-end-column="45" />
+            <state relative-caret-position="423">
+              <caret line="75" column="23" selection-start-line="75" selection-start-column="23" selection-end-line="75" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client/browser.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="155">
+              <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -118,7 +128,6 @@
         <option value="$PROJECT_DIR$/server_1/websocketServer.js" />
         <option value="$PROJECT_DIR$/server_2/websocketServer2.js" />
         <option value="$PROJECT_DIR$/message-constants.js" />
-        <option value="$PROJECT_DIR$/client/browser.html" />
         <option value="$PROJECT_DIR$/client/microbit-list.js" />
         <option value="$PROJECT_DIR$/client/microbit-login-message.js" />
         <option value="$PROJECT_DIR$/client/microbit-list-message.js" />
@@ -129,9 +138,10 @@
         <option value="$PROJECT_DIR$/client/redis-publisher-message.js" />
         <option value="$PROJECT_DIR$/messages/redis-publisher-message.js" />
         <option value="$PROJECT_DIR$/messages/message-constants.js" />
-        <option value="$PROJECT_DIR$/client/client.js" />
+        <option value="$PROJECT_DIR$/client/browser.html" />
         <option value="$PROJECT_DIR$/server_1/server1.js" />
         <option value="$PROJECT_DIR$/server_2/server2.js" />
+        <option value="$PROJECT_DIR$/client/client.js" />
       </list>
     </option>
   </component>
@@ -156,6 +166,11 @@
             <path>
               <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
               <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pepperServer" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="pepperServer" type="b2602c69:ProjectViewProjectNode" />
@@ -240,14 +255,14 @@
       <workItem from="1560388214564" duration="886000" />
       <workItem from="1560393730787" duration="3327000" />
       <workItem from="1560479415326" duration="22960000" />
-      <workItem from="1560734497229" duration="60368000" />
+      <workItem from="1560734497229" duration="61576000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="111236000" />
+    <option name="totallyTimeSpent" value="112444000" />
   </component>
-  <component name="TodoView" selected-index="1">
+  <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -260,7 +275,7 @@
     <frame x="273" y="0" width="1140" height="898" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4981203" visible="true" weight="0.20304115" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4981203" visible="true" weight="0.20304115" />
       <window_info id="Structure" order="1" sideWeight="0.5018797" side_tool="true" weight="0.22633003" />
       <window_info id="Favorites" order="2" sideWeight="0.5018797" side_tool="true" weight="0.22633003" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -269,10 +284,10 @@
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" visible="true" weight="0.03726708" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.31801242" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32876712" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.4992236" weight="0.17763975" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.4992236" visible="true" weight="0.17763975" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007764" side_tool="true" weight="0.19178082" />
       <window_info anchor="bottom" id="TypeScript" order="11" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -306,13 +321,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="900">
           <caret line="45" selection-start-line="45" selection-end-line="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/browser.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="7" lean-forward="true" selection-start-line="6" selection-start-column="7" selection-end-line="6" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -381,17 +389,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/client.js">
+    <entry file="file://$PROJECT_DIR$/client/browser.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="428">
-          <caret line="32" column="45" selection-start-line="32" selection-start-column="45" selection-end-line="32" selection-end-column="45" />
+        <state relative-caret-position="155">
+          <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server_1/server1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-53">
-          <caret line="213" column="28" selection-start-line="213" selection-start-column="9" selection-end-line="213" selection-end-column="28" />
+        <state relative-caret-position="-797">
+          <caret line="416" column="5" lean-forward="true" selection-start-line="416" selection-start-column="5" selection-end-line="416" selection-end-column="5" />
           <folding>
             <element signature="n#!!doc;n#parseJSON#0" />
             <element signature="n#!!doc;n#registerLocalDevice#0" />
@@ -401,12 +409,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server_2/server2.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="33" selection-start-line="6" selection-start-column="33" selection-end-line="6" selection-end-column="33" />
+        <state relative-caret-position="-1912">
+          <caret line="32" column="36" lean-forward="true" selection-start-line="32" selection-start-column="36" selection-end-line="32" selection-end-column="36" />
           <folding>
             <element signature="n#!!doc;n#parseJSON#0" />
             <element signature="n#!!doc;n#registerLocalDevice#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/client.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="423">
+          <caret line="75" column="23" selection-start-line="75" selection-start-column="23" selection-end-line="75" selection-end-column="23" />
         </state>
       </provider>
     </entry>

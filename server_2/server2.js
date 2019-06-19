@@ -36,7 +36,7 @@ let server = http.createServer(function (request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end('Just sent the headers');
 }).listen(SERVER_PORT, function () {
-    console.log('Server w listening on port: ' + SERVER_PORT);
+    console.log('Server 2 listening on port: ' + SERVER_PORT);
     serverStartCleanup();
 });
 
@@ -404,8 +404,8 @@ function login(data, connection) {
         }
 
         responseBody = parseJSON(body);
-        // console.log('Parsed POST body:');
-        // console.log(responseBody);
+        console.log('MICROBIT JOINED THE SERVER');
+        console.log(responseBody);
 
         const failedLogin = '900';
         if (!responseBody || responseBody.result === failedLogin) {
@@ -455,6 +455,11 @@ function handshake(data, connection) {
         }
 
         let responseBody = parseJSON(body);
+        console.log('!!!! ROBOT HANDSHAKE DONE !!!! ');
+        console.log('Whats the ROOM ID???');
+
+        console.log(responseBody);
+
         const failedLogin = '900';
 
         if (responseBody.result === failedLogin) {

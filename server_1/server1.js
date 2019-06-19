@@ -404,8 +404,8 @@ function login(data, connection) {
         }
 
         responseBody = parseJSON(body);
-        // console.log('Parsed POST body:');
-        // console.log(responseBody);
+        console.log('MICROBIT JOINED THE SERVER');
+        console.log(responseBody);
 
         const failedLogin = '900';
         if (!responseBody || responseBody.result === failedLogin) {
@@ -455,6 +455,11 @@ function handshake(data, connection) {
         }
 
         let responseBody = parseJSON(body);
+        console.log('!!!! ROBOT HANDSHAKE DONE !!!! ');
+        console.log('Whats the ROOM ID???');
+
+        console.log(responseBody);
+
         const failedLogin = '900';
 
         if (responseBody.result === failedLogin) {
