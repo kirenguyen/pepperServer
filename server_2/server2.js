@@ -232,7 +232,7 @@ function requestAllMicrobits(data, connection) {
 function parseJSON(data) {
     console.log('WHY CANT WE PARSE THIS FUCKING JSON');
     console.log(data);
-
+    console.log('-------------------------------');
 
     try {
         return JSON.parse(data);
