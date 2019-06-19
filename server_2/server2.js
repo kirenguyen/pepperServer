@@ -293,11 +293,6 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  */
 function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
-    console.log(serverID);
-    console.log(roomID);
-    console.log(type);
-    console.log(uuid);
-    console.log(deviceName);
 
     console.log(secondary_devices);
     console.log(secondary_devices.get(serverID));
@@ -308,7 +303,7 @@ function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
             [deviceType.robot, new Map()],
             [deviceType.microbit, new Map()],
         ]);
-        secondary_devices.set(roomID, room_map);
+        secondary_devices.get(serverID).set(roomID, room_map);
     }
     secondary_devices.get(serverID).get(roomID).get(type).set(uuid, deviceName);
 
@@ -321,19 +316,13 @@ function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
  * @param connection websocket connection object that was previously registered
  */
 function unregisterLocalDevice(connection) {
-    if (!connection.hasOwnProperty('id')) {
-        console.log('This connection was not registered');
-        return false;
-    }
-
-    let success = devices_map.get(connection.id.room_id).get(connection.id.device_type).delete(connection.id.uuid);
-
-    //debug lines, TODO: remove
-    if (!success) {
-        console.log('Device was not registered; unregister unsuccessful');
-    } else {
-        console.log('SUCCESSFULLY UNREGISTERED. Updated local mem: ');
+    try{
+        devices_map.get(connection.id.room_id).get(connection.id.device_type).delete(connection.id.uuid);
+        console.log('REMOVED LOCAL CONNECTION FROM MEM: ')
         console.log(devices_map);
+    } catch (error) {
+        console.log('Error in trying to remove device from local memory.')
+        console.log(error);
     }
 }
 
@@ -349,9 +338,9 @@ function unregisterGlobalDevice(serverID, roomID, type, uuid) {
         secondary_devices.get(serverID).get(roomID).get(type).delete(uuid);
         console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map: ');
         console.log(secondary_devices);
-    } catch (err) {
+    } catch (error) {
         console.log('Error in trying to remove device from secondary map.')
-        console.log(err);
+        console.log(error);
     }
 }
 
