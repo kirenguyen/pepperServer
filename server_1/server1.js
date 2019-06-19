@@ -2,7 +2,7 @@ const WebSocketServer = require('websocket').server;
 const http = require('http');
 const request = require('request');
 const redis = require("redis");
-const SERVER_ID = 'SERVER_ONE';
+const SERVER_ID = 'SERVER_TWO';
 
 const RedisMessage = require('../messages/redis-publisher-message');
 const uuidv4 = require("uuid/v4");
@@ -36,7 +36,7 @@ let server = http.createServer(function (request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end('Just sent the headers');
 }).listen(SERVER_PORT, function () {
-    console.log('Server 1 listening on port: ' + SERVER_PORT);
+    console.log('Server 2 listening on port: ' + SERVER_PORT);
     serverStartCleanup();
 });
 
@@ -59,6 +59,7 @@ function originIsAllowed(origin) {
 /**
  * Sends a message to other server that this server has just (re)started
  * to clear cache of any devices that may have once been registered to this server.
+ *
  */
 function serverStartCleanup(){
     let message = new RedisMessage();
@@ -292,7 +293,9 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  * @param deviceName name(s) (not necessarily unique) the device was associated with by the user
  */
 function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
-    console.log('REGISTERING DEVICE FROM OTHER SERVER');
+    if(!secondary_devices.has(serverID)){
+        secondary_devices.set(serverID, new Map());
+    }
 
     if (!secondary_devices.get(serverID).has(roomID)) {
         console.log('Adding new room to secondary devices map');

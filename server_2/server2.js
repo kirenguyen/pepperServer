@@ -59,6 +59,7 @@ function originIsAllowed(origin) {
 /**
  * Sends a message to other server that this server has just (re)started
  * to clear cache of any devices that may have once been registered to this server.
+ *
  */
 function serverStartCleanup(){
     let message = new RedisMessage();
@@ -292,7 +293,9 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  * @param deviceName name(s) (not necessarily unique) the device was associated with by the user
  */
 function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
-    console.log('REGISTERING DEVICE FROM OTHER SERVER');
+    if(!secondary_devices.has(serverID)){
+        secondary_devices.set(serverID, new Map());
+    }
 
     if (!secondary_devices.get(serverID).has(roomID)) {
         console.log('Adding new room to secondary devices map');
