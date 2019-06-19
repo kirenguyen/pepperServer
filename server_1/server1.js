@@ -101,7 +101,7 @@ wss.on('request', function(req) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
         console.log('desc: ' + description);
 
-        if(connection.has('id')){
+        if(connection.hasOwnProperty('id')){
             unregisterDevice(connection);
         }
         try {
@@ -117,11 +117,7 @@ wss.on('request', function(req) {
             };
             request.post(options, function (error, response, body) {
                 //TODO: finish up the clean-up
-                console.log('Deleting user, post request unparsed body: ');
-                console.log(body);
                 let users = JSON.parse(body).notification;
-                console.log('what users means: ');
-                console.log(users);
             });
         } catch (err) {
             console.log(err);
@@ -219,7 +215,6 @@ function requestAllMicrobits(data, connection) {
  * @returns JSON object if data was parsable, false otherwise
  */
 function parseJSON(data) {
-    console.log(data);
     try {
         return JSON.parse(data);
     } catch (err) {
@@ -285,7 +280,7 @@ function registerGlobalDevice(roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
 
     if (!secondary_devices.has(roomID)) {
-        console.log('RESETTING');
+        console.log('Adding new room to secondary devices map');
         let room_map = new Map([
             [deviceType.robot, new Map()],
             [deviceType.microbit, new Map()],
@@ -303,7 +298,7 @@ function registerGlobalDevice(roomID, type, uuid, deviceName) {
  * @param connection websocket connection object that was previously registered
  */
 function unregisterDevice(connection){
-    if(!connection.has('id')){
+    if(!connection.hasOwnProperty('id')){
         console.log('This connection was not registered');
         return false;
     }
