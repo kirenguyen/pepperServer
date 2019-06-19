@@ -169,8 +169,11 @@ subscriber.on('message', function (channel, message) {
             break;
 
         case messageType.removeDevice:
-            unregisterGlobalDevice(msgObject.message.room_id, msgObject.message['device_type'],
-                msgObject.message['uuid']);
+            // unregister device connected to other server
+            if (msgObject.origin !== SERVER_ID){
+                unregisterGlobalDevice(msgObject.message.room_id, msgObject.message['device_type'],
+                    msgObject.message['uuid']);
+            }
             break;
         case messageType.microbitAction:
             // if microbit or robot is on this server (depending on what the action is), do the action, else ignore
@@ -323,11 +326,10 @@ function unregisterLocalDevice(connection) {
  * @param uuid
  */
 function unregisterGlobalDevice(roomID, type, uuid) {
-    console.log(roomID);
-    console.log(type);
-    console.log(uuid);
     try {
         secondary_devices.get(roomID).get(type).delete(uuid);
+        console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map: ');
+        console.log(secondary_devices);
     } catch (err) {
         console.log('Error in trying to remove device from secondary map.')
         console.log(err);
