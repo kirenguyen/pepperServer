@@ -76,7 +76,7 @@ msg.addEventListener('keydown', e => {
     if(e.key === "=") {
         createPepper();
         let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Added Pepper with name: ' + msg.value;
+        paragraph.textContent = 'Added Pepper with name';
         box.appendChild(paragraph);
         msg.value = '';
     }

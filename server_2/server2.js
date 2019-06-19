@@ -458,7 +458,11 @@ function handshake(data, connection) {
 
         let responseBody = parseJSON(body);
 
-        // console.log(responseBody);
+        console.log('-------------------');
+
+        console.log(responseBody);
+
+        console.log('------end of response body in pepper handshake----');
 
         const failedLogin = '900';
 
