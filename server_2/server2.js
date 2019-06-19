@@ -428,6 +428,8 @@ function handshake(data, connection) {
             connection.sendUTF('database connection failed');
         }
 
+        console.log('Is this where we are ????');
+
         let responseBody = parseJSON(body);
         const failedLogin = '900';
 
