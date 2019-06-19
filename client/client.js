@@ -31,7 +31,7 @@ function createMicrobit(name) {
     loginMessage.setRoomName('room1');
     loginMessage.setPassword('test1234');   //all joining room 1
     loginMessage.setMicrobitName(name);
-    let jsonMessage = loginMessage.build().toJson();
+    let jsonMessage = loginMessage.toJson();
     console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
     socket.send(jsonMessage);
 }
@@ -43,19 +43,18 @@ function createPepper() {
     roboMessage.setMessageType(messageType.handshake);
     roboMessage.setMessage('no message');
     roboMessage.setRobotId('');
-    let jsonMessage = roboMessage.build().toJson();
+    let jsonMessage = roboMessage.toJson();
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
+/**
+ * Needs to be called on the same connection that a Pepper has already connected with
+ */
 function requestMicrobits(){
     const roboMessage = new RoboConnectorMessage();
-    roboMessage.setRoomId(1);
-    roboMessage.setUserId(name);
     roboMessage.setMessageType(messageType.requestMicrobits);
-    roboMessage.setMessage('no message');
-    roboMessage.setRobotId('');
-    let jsonMessage = roboMessage.build().toJson();
+    let jsonMessage = roboMessage.toJson();
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
