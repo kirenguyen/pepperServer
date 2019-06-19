@@ -83,7 +83,7 @@ wss.on('request', function (req) {
     connection.webSocketKey = req.httpRequest.headers["sec-websocket-key"];
 
     connection.on('message', function (message) {
-        console.log('MESSAGE RECEIVED FROM CLIENT');
+        // console.log('MESSAGE RECEIVED FROM CLIENT');
         let data = parseJSON(message.utf8Data);
         if (!data) {
             return false;
@@ -156,7 +156,7 @@ subscriber.on('message', function (channel, message) {
         case messageType.serverStart:
             if (msgObject.origin !== SERVER_ID) {
                 // initialize to new empty map after other server's startup
-                console.log('SETTING UP SECONDARY DEVICE MAP');
+                console.log('(RE)SETTING UP SECONDARY DEVICE MAP');
                 secondary_devices.set(msgObject.origin, new Map());
             }
             break;
@@ -275,7 +275,6 @@ function parseJSON(data) {
  */
 function registerLocalDevice(roomID, type, connection, deviceName) {
     return new Promise(function (resolve) {
-        console.log('REGISTERING DEVICE');
         if (!devices_map.has(roomID)) {
             let room_map = new Map([
                 [deviceType.robot, new Map()],
@@ -404,8 +403,8 @@ function login(data, connection) {
         }
 
         responseBody = parseJSON(body);
-        console.log('MICROBIT JOINED THE SERVER');
-        console.log(responseBody);
+        // console.log('MICROBIT JOINED THE SERVER');
+        // console.log(responseBody);
 
         const failedLogin = '900';
         if (!responseBody || responseBody.result === failedLogin) {
@@ -455,10 +454,8 @@ function handshake(data, connection) {
         }
 
         let responseBody = parseJSON(body);
-        console.log('!!!! ROBOT HANDSHAKE DONE !!!! ');
-        console.log('Whats the ROOM ID???');
 
-        console.log(responseBody);
+        // console.log(responseBody);
 
         const failedLogin = '900';
 
