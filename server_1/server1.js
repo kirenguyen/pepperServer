@@ -488,7 +488,6 @@ function alertPeppers(roomID, uuid, name, broadcast) {
         message.setRoomId(roomID);
         message.setMessage(microbitInfo);
         message.setOrigin(SERVER_ID);
-
         // console.log('PUBLISHING MESSAGE FROM INSIDE ALERT PEPPERS: ');
 
         publisher.publish('socket', message.toJson());
