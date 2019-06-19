@@ -292,6 +292,11 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  */
 function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
     console.log('REGISTERING DEVICE FROM OTHER SERVER');
+    console.log(serverID);
+    console.log(roomID);
+    console.log(type);
+    console.log(uuid);
+    console.log(deviceName);
 
     if (!secondary_devices.get(serverID).has(roomID)) {
         console.log('Adding new room to secondary devices map');
@@ -442,7 +447,7 @@ function handshake(data, connection) {
                 let robotInfo = {
                     name: names,
                     room_id: data.room_id,
-                    uuid: connection.id['uuid'],
+                    uuid: connection.id.uuid,
                 };
 
                 let message = new RedisMessage();
