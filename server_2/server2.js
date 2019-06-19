@@ -233,7 +233,7 @@ function requestAllMicrobits(data, connection) {
  * @returns JSON object if data was parsable, false otherwise
  */
 function parseJSON(data) {
-    console.log('WHY CANT WE PARSE THIS FUCKING JSON');
+    console.log('WHY CANT WE PARSE THIS JSON');
     console.log(data);
     console.log('-------------------------------');
 
@@ -433,7 +433,10 @@ function handshake(data, connection) {
             connection.sendUTF('database connection failed');
         }
 
-        console.log('WHY IS THERE NO RESPONSE BODY');
+        console.log('RESPONSE BODY FROM HANDSHAKE');
+        console.log(body);
+        console.log('-------------')
+
 
         let responseBody = parseJSON(body);
         const failedLogin = '900';
