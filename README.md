@@ -99,7 +99,7 @@ let microbitList = {
 
 The following is a sample script to pair a Pepper that has been connected to the server and performed the handshake to a Micro:Bit.
 
-You will need to get the UUID of the Micro:Bit you want to pair Pepper to.
+You will need to get the UUID of the Micro:Bit you want to pair Pepper to; only Pepper can send a message to pair with a Micro:Bit.
 
 ```javascript
 const RoboMessage = require('../messages/robo-message');
@@ -116,12 +116,12 @@ socket.send(jsonMessage);
 
 ## Unpairing a Micro:Bit or Robot
 
-At the moment, you can send a message from a Micro:Bit or Robot to break the pairing.
+At the moment, you can send a message from a Micro:Bit or Robot to cut the pairing.
 The websocket connection must have a device that was paired.
 
-Make sure the messageType is `messageType.unpairDevice`. That's the only parameter.
+Make sure the messageType is `messageType.unpairDevice`. That's the only parameter; both devices in the pairing will be disconnected.
  
- Here is a sample script for unpairing from Pepper:
+Here is a sample script for unpairing from Pepper:
 
 ```javascript
 const RoboMessage = require('../messages/robo-message');
