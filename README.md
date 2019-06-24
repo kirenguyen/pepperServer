@@ -58,7 +58,7 @@ let jsonMessage = loginMessage.toJson();
 socket.send(jsonMessage);
 ```
 
-##Requesting Micro:Bit List
+## Requesting Micro:Bit List
 
 You can find the code the function for this in either `server#.js` file: `requestAllMicrobits`.
 
@@ -95,7 +95,7 @@ let microbitList = {
 }
  ```
 
-##Pairing a Robot to a Micro:Bit
+## Pairing a Robot to a Micro:Bit
 
 The following is a sample script to pair a Pepper that has been connected to the server and performed the handshake to a Micro:Bit.
 
@@ -114,7 +114,7 @@ let jsonMessage = roboMessage.toJson();
 socket.send(jsonMessage);
 ```
 
-##Unpairing a Micro:Bit or Robot
+## Unpairing a Micro:Bit or Robot
 
 At the moment, you can send a message from a Micro:Bit or Robot to break the pairing.
 
@@ -125,7 +125,7 @@ Sample script for the unpairing from a Pepper:
 ```
 
 
-###Misc
+### Misc
 
 To try out some of the functionality using the browser, use the `browser.html` located in `/client`;
 to make sure any changes are saved, use `watchify` by running:
