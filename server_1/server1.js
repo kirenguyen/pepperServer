@@ -332,6 +332,9 @@ function unregisterLocalDevice(connection) {
  * @param uuid uuid v4 associated with device at connection time
  */
 function unregisterGlobalDevice(roomID, type, uuid) {
+    console.log('TRYING TO UNREGISTER DEVICE GLOBALLY');
+    console.log(roomID, type, uuid);
+    console.log(secondary_devices);
     try {
         secondary_devices.get(roomID).get(type).delete(uuid);
         console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map for the server relating to registered device: ');
@@ -355,7 +358,7 @@ function unpairLocalDevice(connection){
         let microbitID;
         if (connection.id.device_type === deviceType.robot){
             oppositeType = deviceType.microbit;
-            robotID = deviceType.id.uuid;
+            robotID = connection.id.uuid;
             microbitID = connection.id.paired_uuid;
         } else {
             oppositeType = deviceType.robot;
@@ -477,7 +480,8 @@ function pairLocalDevice(data, connection) {
         pairGlobalDevice(connection.id.room_id, deviceType.microbit, connection.id.paired_uuid, connection.id.uuid);
 
         console.log('PAIRED LOCAL CONNECTION FROM MEM: ');
-        console.log(devices_map);
+        console.log(devices_map.get(connection.id.room_id).get(deviceType.robot).get(connection.id.uuid));
+        console.log(devices_map.get(connection.id.room_id).get(deviceType.robot).get(connection.id.uuid) === connection);
 
         let pairMsg = new RedisMessage();
         pairMsg.setOrigin(SERVER_ID);
@@ -528,7 +532,7 @@ function pairGlobalDevice(roomID, type, uuid, paired_uuid){
         }
     }
 
-     if (secondary_devices.has(roomID)){
+    if (secondary_devices.has(roomID)){
         if (secondary_devices.get(roomID).get(type).has(uuid)) {
             let info = secondary_devices.get(roomID).get(type).get(uuid);
             info.paired = true;
