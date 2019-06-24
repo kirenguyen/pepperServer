@@ -635,6 +635,10 @@ function handshake(data, connection) {
             connection.sendUTF('Room is full.');
             return false;
         }
+
+        console.log('ROBOT HANDSHAKE TIMEEEEEEEEEEEEE');
+        console.log(response);
+
         let names = {
             robot_name_ja: response['robot_name_ja'],
             robot_name_en: response['robot_name_en']
