@@ -635,10 +635,14 @@ function handshake(data, connection) {
             connection.sendUTF('Room is full.');
             return false;
         }
+
         let names = {
-            robot_name_ja: response['robot_name_ja'],
-            robot_name_en: response['robot_name_en']
+            robot_name_ja: responseBody['robot_name_ja'],
+            robot_name_en: responseBody['robot_name_en']
         };
+
+        console.log(names);
+
         registerLocalDevice(data.room_id, deviceType.robot, connection, names).then(
             success => {
                 let robotInfo = {

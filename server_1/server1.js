@@ -636,12 +636,9 @@ function handshake(data, connection) {
             return false;
         }
 
-        console.log('ROBOT HANDSHAKE TIMEEEEEEEEEEEEE');
-        console.log(responseBody);
-
         let names = {
-            robot_name_ja: response['robot_name_ja'],
-            robot_name_en: response['robot_name_en']
+            robot_name_ja: responseBody['robot_name_ja'],
+            robot_name_en: responseBody['robot_name_en']
         };
 
         console.log(names);
