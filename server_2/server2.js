@@ -341,6 +341,7 @@ function unregisterGlobalDevice(roomID, type, uuid) {
 
 /**
  * Updates device/connection that requested to be unpaired, and propagates the unpair request across the different servers.
+ * No effect if the device was not paired to begin with.
  *
  * @param connection the registered connection of the device that requested to be unpaired
  */
@@ -396,6 +397,7 @@ function unpairLocalDevice(connection){
 
 /**
  * Cleans a device's pairing from memory after a(nother) device requested to be unpaired.
+ * No effect if the device was not paired to begin with.
  *
  * @param roomID the room where the device requested to be unpaired (same as room of paired device)
  * @param type the type of the device that is to be cleared from pairing
@@ -409,7 +411,7 @@ function unpairGlobalDevice(roomID, type, uuid){
             connection.id.paired_uuid = false;
 
             console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map: ');
-            console.log(connection);
+            // console.log(connection);
             return true;
         }
     }
@@ -423,7 +425,7 @@ function unpairGlobalDevice(roomID, type, uuid){
             secondary_devices.get(roomID).get(type).set(uuid, info);
 
             console.log('SUCCESSFULLY CLEANED UP PAIRING on secondary_devices map');
-            console.log(info);
+            // console.log(info);
         } else {
             console.log("UNABLE TO UNPAIR SECOND DEVICE FOR SOME REASON");
         }
@@ -431,16 +433,17 @@ function unpairGlobalDevice(roomID, type, uuid){
 }
 
 /**
- * Asserts that the target Micro:Bit for pairing is available
+ * Asserts that a device is available for pairing
  * @param roomID the room of the device that requested to be paired
- * @param microbitUUID the target UUID of the Micro:Bit to be paired
+ * @param type the deviceType of the target device
+ * @param targetUUID the UUID of the device to be paired to
  * @return boolean true if the Micro:Bit is available for pairing, false otherwise
  */
-function checkValidPairing(roomID, microbitUUID) {
-    if (devices_map.get(roomID).get(deviceType.microbit).has(microbitUUID)){
-        return !devices_map.get(roomID).get(deviceType.microbit).get(microbitUUID).id.paired;
-    } else if (secondary_devices.get(roomID).get(deviceType.microbit).has(microbitUUID)){
-        return !secondary_devices.get(roomID).get(deviceType.microbit).get(microbitUUID).paired;
+function checkValidPairing(roomID, type, targetUUID) {
+    if (devices_map.get(roomID).get(type).has(targetUUID)){
+        return !devices_map.get(roomID).get(type).get(targetUUID).id.paired;
+    } else if (secondary_devices.get(roomID).get(type).has(targetUUID)){
+        return !secondary_devices.get(roomID).get(type).get(targetUUID).paired;
     } else {
         return false;
     }
@@ -453,12 +456,20 @@ function checkValidPairing(roomID, microbitUUID) {
  *  @param data Pepper's message contents (RoboMessage)
  *  @param connection Pepper's registered connection that requested to pair with a Micro:Bit
  *  @return boolean false if the target device cannot be paired, true if successful
- *          //TODO: consider sending a more refined failed connection
  */
 function pairLocalDevice(data, connection) {
     try{
-        if (!checkValidPairing(connection.id.room_id, data.microbit_id)){
+        // check if the micro:bit is free
+        if (!checkValidPairing(connection.id.room_id, deviceType.microbit, data.microbit_id)){
             connection.sendUTF('Selected Micro:Bit is not available to be paired with');
+            console.log('The selected Micro:Bit is already paired');
+            return false;
+        }
+
+        // check if this Pepper is free
+        if (!checkValidPairing(connection.id.room_id, deviceType.unpairDevice, connection.id.uuid)){
+            connection.sendUTF('Pepper is already paired! Please unpair first before attempting again');
+            console.log('Pepper is already paired with a Micro:Bit. Please unpair first before attempting again');
             return false;
         }
 
@@ -493,6 +504,7 @@ function pairLocalDevice(data, connection) {
 
         //TODO: API call?? pair up the robots and microbits?
 
+        return true;
     } catch (error) {
         console.log('Error in trying to pair device on this servers local memory.');
         console.log(error);
@@ -505,7 +517,7 @@ function pairLocalDevice(data, connection) {
  * @param type deviceType of the device to be updated
  * @param uuid the UUID of the device to update its pairing
  * @param paired_uuid the UUID of the device it will be paired with
- *
+ * @return boolean true if successful pairing, false otherwise
  */
 function pairGlobalDevice(roomID, type, uuid, paired_uuid) {
     if(devices_map.has(roomID)) {
@@ -515,7 +527,7 @@ function pairGlobalDevice(roomID, type, uuid, paired_uuid) {
             connection.id.paired_uuid = paired_uuid;
 
             console.log('SUCCESSFULLY UPDATED PAIRING on devices_map: ');
-            console.log(connection);
+            // console.log(connection);
             return true;
         }
     }
@@ -529,11 +541,13 @@ function pairGlobalDevice(roomID, type, uuid, paired_uuid) {
             secondary_devices.get(roomID).get(type).set(uuid, info);
 
             console.log('SUCCESSFULLY UPDATED PAIRING on secondary_devices map');
-            console.log(info);
+            // console.log(info);
+            return true;
         }
     }
     else {
         console.log("UNABLE TO SUCCESSFULLY PAIR DEVICE FOR SOME REASON");
+        return false;
     }
 }
 
@@ -758,4 +772,3 @@ function alertPeppers(roomID, uuid, name, broadcast) {
         publisher.publish('socket', message.toJson());
     }
 }
-
