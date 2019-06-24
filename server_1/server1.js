@@ -643,6 +643,9 @@ function handshake(data, connection) {
             robot_name_ja: response['robot_name_ja'],
             robot_name_en: response['robot_name_en']
         };
+
+        console.log(names);
+
         registerLocalDevice(data.room_id, deviceType.robot, connection, names).then(
             success => {
                 let robotInfo = {
