@@ -358,7 +358,7 @@ function unpairLocalDevice(connection){
         let microbitID;
         if (connection.id.device_type === deviceType.robot){
             oppositeType = deviceType.microbit;
-            robotID = deviceType.id.uuid;
+            robotID = connection.id.uuid;
             microbitID = connection.id.paired_uuid;
         } else {
             oppositeType = deviceType.robot;
