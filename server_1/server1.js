@@ -458,11 +458,6 @@ function checkValidPairing(roomID, microbitUUID) {
  */
 function pairLocalDevice(data, connection) {
     try{
-        console.log(data);
-        console.log('MICROBIT ID');
-        console.log(data['microbit_id']);
-        console.log(data.microbit_id);
-
 
         if (!checkValidPairing(connection.id.room_id, data.microbit_id)){
             connection.sendUTF('Selected Micro:Bit is not available to be paired with');
@@ -470,7 +465,7 @@ function pairLocalDevice(data, connection) {
         }
 
         connection.id.paired = true;
-        connection.id.paired_uuid = data.message.microbit_id;
+        connection.id.paired_uuid = data.microbit_id;
 
         // register that the Micro:Bit is now paired to this Pepper
         pairGlobalDevice(connection.id.room_id, deviceType.microbit, connection.id.paired_uuid, connection.id.uuid);
