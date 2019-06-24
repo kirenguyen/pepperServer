@@ -458,7 +458,7 @@ function checkValidPairing(roomID, microbitUUID) {
  */
 function pairLocalDevice(data, connection) {
     try{
-        if (!checkValidPairing(connection.message.room_id, data.message.microbit_id)){
+        if (!checkValidPairing(connection.id.room_id, data.message.microbit_id)){
             connection.sendUTF('Selected Micro:Bit is not available to be paired with');
             return false;
         }
