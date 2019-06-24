@@ -637,7 +637,7 @@ function handshake(data, connection) {
         }
 
         console.log('ROBOT HANDSHAKE TIMEEEEEEEEEEEEE');
-        console.log(response);
+        console.log(responseBody);
 
         let names = {
             robot_name_ja: response['robot_name_ja'],
