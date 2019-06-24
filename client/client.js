@@ -6,10 +6,10 @@ const messageType = messageConstants.messageType;
 
 // Create WebSocket connection.
 // Server 1
-// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2
-const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 const msg = document.getElementById('msg');
 const box = document.getElementById('box');
@@ -49,6 +49,9 @@ function createPepper() {
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
+/**
+ * @param microbitUUID UUID of MicroBit to be paired
+ */
 function pairDevices(microbitUUID) {
     const roboMessage = new RoboMessage();
     roboMessage.setMessageType(messageType.pairing);
@@ -68,6 +71,10 @@ function requestMicrobits(){
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
+
+
+
+
 
 msg.addEventListener('keydown', e => {
     if(e.key === "Enter") {

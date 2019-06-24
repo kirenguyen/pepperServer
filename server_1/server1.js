@@ -153,6 +153,7 @@ wss.on('request', function (req) {
                 }
             };
             request.post(options, function (error, response, body) {
+                console.log('!!!!!!!!!!!!!!!!!!!!!!cutting connection!!!!!!!!!!!!!!!!!!!!!!!!')
                 console.log('Cutting robots connection; BODY (unparsed):');
                 console.log(body);
             });
@@ -457,7 +458,7 @@ function checkValidPairing(roomID, microbitUUID) {
  */
 function pairLocalDevice(data, connection) {
     try{
-        if (!checkValidPairing(data.message.room_id, data.message.microbit_id)){
+        if (!checkValidPairing(connection.message.room_id, data.message.microbit_id)){
             connection.sendUTF('Selected Micro:Bit is not available to be paired with');
             return false;
         }
