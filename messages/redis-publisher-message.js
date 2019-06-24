@@ -5,7 +5,6 @@ class RedisMessage {
             message_type: messageType,
             message: message,
             origin: origin,
-            return_to_client: false,
         }
     }
     setRoomId(roomId) {
@@ -22,10 +21,6 @@ class RedisMessage {
     }
     setOrigin(origin) {
         this._message.origin = origin;
-        return this;
-    }
-    setReturnToClient(bool){
-        this._message.return_to_client = bool;
         return this;
     }
     toJson(){

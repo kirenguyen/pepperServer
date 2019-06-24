@@ -1,5 +1,5 @@
-const MicrobitLoginMessage = require('../messages/microbit-login-message');
-const RoboConnectorMessage = require('../messages/robo-connector-message');
+const MicrobitMessage = require('../messages/microbit-message');
+const RoboMessage = require('../messages/robo-message');
 
 const messageConstants = require('../messages/message-constants');
 const messageType = messageConstants.messageType;
@@ -27,17 +27,18 @@ socket.addEventListener('message', function (event) {
 
 
 function createMicrobit(name) {
-    const loginMessage = new MicrobitLoginMessage();
+    const loginMessage = new MicrobitMessage();
     loginMessage.setRoomName('room1');
     loginMessage.setPassword('test1234');   //all joining room 1
     loginMessage.setMicrobitName(name);
+    loginMessage.setMessageType(messageType.login);
     let jsonMessage = loginMessage.toJson();
     console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
     socket.send(jsonMessage);
 }
 
 function createPepper() {
-    const roboMessage = new RoboConnectorMessage();
+    const roboMessage = new RoboMessage();
     roboMessage.setRoomId(1);
     roboMessage.setUserId(129);
     roboMessage.setMessageType(messageType.handshake);
@@ -48,11 +49,20 @@ function createPepper() {
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
+function pairDevices(microbitUUID) {
+    const roboMessage = new RoboMessage();
+    roboMessage.setMessageType(messageType.pairing);
+    roboMessage.setMicrobitId(microbitUUID);
+    let jsonMessage = roboMessage.toJson();
+    socket.send(jsonMessage);
+    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+}
+
 /**
  * Needs to be called on the same connection that a Pepper has already connected with
  */
 function requestMicrobits(){
-    const roboMessage = new RoboConnectorMessage();
+    const roboMessage = new RoboMessage();
     roboMessage.setMessageType(messageType.requestMicrobits);
     let jsonMessage = roboMessage.toJson();
     socket.send(jsonMessage);
@@ -76,10 +86,14 @@ msg.addEventListener('keydown', e => {
     }
 
     if(e.key === "2") {
-        requestMicrobits();
+        let data = requestMicrobits();
         let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Requested list of microbits!    ';
+        paragraph.textContent = JSON.stringify(data);
         box.appendChild(paragraph);
         msg.value = '';
+    }
+
+    if(e.key === "3") {
+        pairDevices(msg.value);
     }
 });

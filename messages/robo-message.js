@@ -1,12 +1,13 @@
 const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
 
-class RoboConnectorMessage {
+class RoboMessage {
     constructor() {
         this._message = {
             room_id: null,
             user_id: null,
             robot_id: null,
+            microbit_id: null,              // always null unless messageType === pairing
             device_type: deviceType.robot,
             message_type: null,
             message: null
@@ -24,6 +25,10 @@ class RoboConnectorMessage {
         this._message.robot_id = robotId;
         return this;
     }
+    setMicrobitId(microbitId) {
+        this._message.microbit_id = microbitId;
+        return this;
+    }
     setMessageType(messageType) {
         this._message.message_type = messageType;
         return this;
@@ -32,11 +37,8 @@ class RoboConnectorMessage {
         this._message.message = message;
         return this;
     }
-    build() {
-        return this;
-    }
     toJson(){
         return JSON.stringify(this._message);
     }
 }
-module.exports = RoboConnectorMessage;
+module.exports = RoboMessage;

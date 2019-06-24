@@ -3,7 +3,6 @@ Server for Pepper school Micro:bits project.
 
 #####Still a work-in-progress, I apologize for bugs! I will need to consolidate the message types, so please bear with me.
 
-#####バグが多いかもしれないから、
 
 
 ## Running the Two Servers
@@ -20,16 +19,16 @@ The two servers are (port 3000):
 
 
 ## Connecting a Pepper
-In the `/messages` directory, there is a `robo-connector-message.js` file, used to form the handshake between the server and Pepper.
+In the `/messages` directory, there is a `robo-message.js` file, used to form the handshake between the server and Pepper.
 
 Sample script for sending (to server 1). Please fix the node module paths accordingly.
 ```javascript
-const RoboConnectorMessage = require('../messages/robo-connector-message');
+const RoboMessage = require('../messages/robo-connector-message');
 const messageType = require('../messages/message-constants');
 
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
-const roboMessage = new RoboConnectorMessage();
+const roboMessage = new RoboMessage();
 roboMessage.setRoomId(1);
 roboMessage.setUserId(129);
 roboMessage.setMessageType(messageType.handshake);
@@ -43,9 +42,10 @@ socket.send(jsonMessage);
 ## Connecting a Micro:Bit to server
 Very similar to Pepper. This uses a different message at the moment, but I may later make Pepper and Micro:bit use the same one.
 
-In the same `/messages` directory, there is a `microbit-login-message.js` file, used to login the micro:bit to the server.
+In the same `/messages` directory, there is a `microbit-message.js` file, used to login the micro:bit to the server.
 
 Sample script for sending (to server 2). Please fix the node module paths accordingly.
+
 ```javascript
 const MicrobitLoginMessage = require('../messages/microbit-login-message');
 
@@ -64,24 +64,26 @@ socket.send(jsonMessage);
 You can find the code the function for this in either `server#.js` file: `requestAllMicrobits`.
 
 The function requires that you send the message from a Pepper already connected to a server. It will return all of the Micro:Bits on both servers that are in the same room as the Pepper that sent the message.
-It also uses the `robo-connector-message.js` (for now).
+It also uses the `robo-message.js` (for now).
 
-In the same `/messages` directory, there is a `microbit-login-message.js` file, used to login the micro:bit to the server.
+In the same `/messages` directory, there is a `microbit-message.js` file, used to login the micro:bit to the server.
 
 Sample script for sending a request from a Pepper connected to server 1.
+
 ```javascript
-const RoboConnectorMessage = require('../messages/robo-connector-message');
+const RoboMessage = require('../messages/robo-connector-message');
 const messageType = require('../messages/message-constants');
 
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
-const roboMessage = new RoboConnectorMessage();
+const roboMessage = new RoboMessage();
 roboMessage.setMessageType(messageType.requestMicrobits);
 let jsonMessage = roboMessage.toJson();
 socket.send(jsonMessage);
 ```
 
 The return Micro:Bit list will be in this format:
+
  ```
 let microbitList = {
     room_id:  <room_id of Pepper that sent request>,
@@ -106,6 +108,7 @@ you can press `1` to initialize a Pepper, enter a name for a Micro:Bit and press
 
 
 Here are some of the current messageTypes, some will be changed later.
+
 ```javascript
 const messageType = Object.freeze({
     login: 'login',                          // microbit login
@@ -119,7 +122,6 @@ const messageType = Object.freeze({
     addRobot: 'addRobot',                    // not for client use
     removeDevice: 'removeDevice',            // not for client use
     serverStart: 'serverStart',              // not for client use
-
 }); 
 ```
 

@@ -2,14 +2,14 @@ const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
 const messageType = messageConstants.messageType;
 
-class MicrobitLoginMessage {
+class MicrobitMessage {
     constructor() {
         this._message = {
             room_name: null,
             password: null,
             microbit_name: null,
             device_type: deviceType.microbit,
-            message_type: messageType.login
+            message_type: null,
         }
     }
     setRoomName(roomName) {
@@ -24,11 +24,12 @@ class MicrobitLoginMessage {
         this._message.microbit_name = microbitName;
         return this;
     }
-    build() {
+    setMessageType(messageType) {
+        this._message.message_type = messageType;
         return this;
     }
     toJson(){
         return JSON.stringify(this._message);
     }
 }
-module.exports = MicrobitLoginMessage;
+module.exports = MicrobitMessage;

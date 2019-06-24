@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const MicrobitLoginMessage = require('../messages/microbit-login-message');
-const RoboConnectorMessage = require('../messages/robo-connector-message');
+const MicrobitMessage = require('../messages/microbit-message');
+const RoboMessage = require('../messages/robo-message');
 
 const messageConstants = require('../messages/message-constants');
 const messageType = messageConstants.messageType;
@@ -28,17 +28,18 @@ socket.addEventListener('message', function (event) {
 
 
 function createMicrobit(name) {
-    const loginMessage = new MicrobitLoginMessage();
+    const loginMessage = new MicrobitMessage();
     loginMessage.setRoomName('room1');
     loginMessage.setPassword('test1234');   //all joining room 1
     loginMessage.setMicrobitName(name);
+    loginMessage.setMessageType(messageType.login);
     let jsonMessage = loginMessage.toJson();
     console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
     socket.send(jsonMessage);
 }
 
 function createPepper() {
-    const roboMessage = new RoboConnectorMessage();
+    const roboMessage = new RoboMessage();
     roboMessage.setRoomId(1);
     roboMessage.setUserId(129);
     roboMessage.setMessageType(messageType.handshake);
@@ -49,11 +50,20 @@ function createPepper() {
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
+function pairDevices(microbitUUID) {
+    const roboMessage = new RoboMessage();
+    roboMessage.setMessageType(messageType.pairing);
+    roboMessage.setMicrobitId(microbitUUID);
+    let jsonMessage = roboMessage.toJson();
+    socket.send(jsonMessage);
+    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+}
+
 /**
  * Needs to be called on the same connection that a Pepper has already connected with
  */
 function requestMicrobits(){
-    const roboMessage = new RoboConnectorMessage();
+    const roboMessage = new RoboMessage();
     roboMessage.setMessageType(messageType.requestMicrobits);
     let jsonMessage = roboMessage.toJson();
     socket.send(jsonMessage);
@@ -77,15 +87,19 @@ msg.addEventListener('keydown', e => {
     }
 
     if(e.key === "2") {
-        requestMicrobits();
+        let data = requestMicrobits();
         let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Requested list of microbits!    ';
+        paragraph.textContent = JSON.stringify(data);
         box.appendChild(paragraph);
         msg.value = '';
     }
+
+    if(e.key === "3") {
+        pairDevices(msg.value);
+    }
 });
 
-},{"../messages/message-constants":2,"../messages/microbit-login-message":3,"../messages/robo-connector-message":4}],2:[function(require,module,exports){
+},{"../messages/message-constants":2,"../messages/microbit-message":3,"../messages/robo-message":4}],2:[function(require,module,exports){
 const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
 const messageType = Object.freeze({
     login: 'login',
@@ -94,8 +108,16 @@ const messageType = Object.freeze({
     pairing: 'pairing',
     requestMicrobits: 'requestMicrobits',
     microbitAction: 'microbitAction',
+
+    unpairDevice: 'unpairDevice',
+
+
+    // not to be used by client
+
     addMicrobit: 'addMicrobit',
     addRobot: 'addRobot',
+    finishPairing: 'finishPairing',
+    finishUnpairing: 'finishUnpairing',
     removeDevice: 'removeDevice',
     serverStart: 'serverStart',
 
@@ -111,14 +133,14 @@ const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
 const messageType = messageConstants.messageType;
 
-class MicrobitLoginMessage {
+class MicrobitMessage {
     constructor() {
         this._message = {
             room_name: null,
             password: null,
             microbit_name: null,
             device_type: deviceType.microbit,
-            message_type: messageType.login
+            message_type: null,
         }
     }
     setRoomName(roomName) {
@@ -133,24 +155,26 @@ class MicrobitLoginMessage {
         this._message.microbit_name = microbitName;
         return this;
     }
-    build() {
+    setMessageType(messageType) {
+        this._message.message_type = messageType;
         return this;
     }
     toJson(){
         return JSON.stringify(this._message);
     }
 }
-module.exports = MicrobitLoginMessage;
+module.exports = MicrobitMessage;
 },{"./message-constants":2}],4:[function(require,module,exports){
 const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
 
-class RoboConnectorMessage {
+class RoboMessage {
     constructor() {
         this._message = {
             room_id: null,
             user_id: null,
             robot_id: null,
+            microbit_id: null,              // always null unless messageType === pairing
             device_type: deviceType.robot,
             message_type: null,
             message: null
@@ -168,6 +192,10 @@ class RoboConnectorMessage {
         this._message.robot_id = robotId;
         return this;
     }
+    setMicrobitId(microbitId) {
+        this._message.microbit_id = microbitId;
+        return this;
+    }
     setMessageType(messageType) {
         this._message.message_type = messageType;
         return this;
@@ -176,12 +204,9 @@ class RoboConnectorMessage {
         this._message.message = message;
         return this;
     }
-    build() {
-        return this;
-    }
     toJson(){
         return JSON.stringify(this._message);
     }
 }
-module.exports = RoboConnectorMessage;
+module.exports = RoboMessage;
 },{"./message-constants":2}]},{},[1]);

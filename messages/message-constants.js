@@ -6,8 +6,16 @@ const messageType = Object.freeze({
     pairing: 'pairing',
     requestMicrobits: 'requestMicrobits',
     microbitAction: 'microbitAction',
+
+    unpairDevice: 'unpairDevice',
+
+
+    // not to be used by client
+
     addMicrobit: 'addMicrobit',
     addRobot: 'addRobot',
+    finishPairing: 'finishPairing',
+    finishUnpairing: 'finishUnpairing',
     removeDevice: 'removeDevice',
     serverStart: 'serverStart',
 
