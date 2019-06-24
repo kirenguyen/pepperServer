@@ -211,7 +211,7 @@ subscriber.on('message', function (channel, message) {
         case messageType.removeDevice:
             // unregister device connected to other server
             if (msgObject.origin !== SERVER_ID){
-                unregisterGlobalDevice(msgObject.origin, msgObject.message.room_id, msgObject.message['device_type'],
+                unregisterGlobalDevice(msgObject.message.room_id, msgObject.message['device_type'],
                     msgObject.message['uuid']);
             }
             break;
