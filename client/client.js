@@ -54,8 +54,19 @@ function createPepper() {
  */
 function pairDevices(microbitUUID) {
     const roboMessage = new RoboMessage();
-    roboMessage.setMessageType(messageType.pairing);
+    roboMessage.setMessageType(messageType.pairDevice);
     roboMessage.setMicrobitId(microbitUUID);
+    let jsonMessage = roboMessage.toJson();
+    socket.send(jsonMessage);
+    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+}
+
+/**
+ * Needs to be called on the same connection that a paired Pepper/Microbit is on
+ */
+function unpairDevice() {
+    const roboMessage = new RoboMessage();
+    roboMessage.setMessageType(messageType.unpairDevice);
     let jsonMessage = roboMessage.toJson();
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);

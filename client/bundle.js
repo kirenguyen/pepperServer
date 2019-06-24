@@ -55,8 +55,19 @@ function createPepper() {
  */
 function pairDevices(microbitUUID) {
     const roboMessage = new RoboMessage();
-    roboMessage.setMessageType(messageType.pairing);
+    roboMessage.setMessageType(messageType.pairDevice);
     roboMessage.setMicrobitId(microbitUUID);
+    let jsonMessage = roboMessage.toJson();
+    socket.send(jsonMessage);
+    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+}
+
+/**
+ * Needs to be called on the same connection that a paired Pepper/Microbit is on
+ */
+function unpairDevice() {
+    const roboMessage = new RoboMessage();
+    roboMessage.setMessageType(messageType.unpairDevice);
     let jsonMessage = roboMessage.toJson();
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
@@ -111,11 +122,14 @@ const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
 const messageType = Object.freeze({
     login: 'login',
     handshake: 'handshake',
-    action: 'action',   //no implementation
-    pairing: 'pairing',
-    requestMicrobits: 'requestMicrobits',
-    microbitAction: 'microbitAction',   //no implementation
+
+    pairDevice: 'pairDevice',
     unpairDevice: 'unpairDevice',
+
+    requestMicrobits: 'requestMicrobits',
+
+    action: 'action',   //no implementation
+    microbitAction: 'microbitAction',   //no implementation
 
     // not to be used by client
     addMicrobit: 'addMicrobit',
@@ -177,7 +191,7 @@ class RoboMessage {
             room_id: null,
             user_id: null,
             robot_id: null,
-            microbit_id: null,              // always null unless messageType === pairing
+            microbit_id: null,              // always null unless messageType === pairDevice
             device_type: deviceType.robot,
             message_type: null,
             message: null

@@ -96,7 +96,7 @@ wss.on('request', function (req) {
                 break;
             case messageType.action:
                 break;
-            case messageType.pairing:
+            case messageType.pairDevice:
                 pairLocalDevice(data, connection);
                 break;
             case messageType.requestMicrobits:
@@ -396,12 +396,12 @@ function unpairLocalDevice(connection){
 }
 
 /**
- * Cleans a device's pairing from memory after a(nother) device requested to be unpaired.
+ * Cleans a device's pairDevice from memory after a(nother) device requested to be unpaired.
  * No effect if the device was not paired to begin with.
  *
  * @param roomID the room where the device requested to be unpaired (same as room of paired device)
- * @param type the type of the device that is to be cleared from pairing
- * @param uuid the UUID of the device that is to be cleared from pairing
+ * @param type the type of the device that is to be cleared from pairDevice
+ * @param uuid the UUID of the device that is to be cleared from pairDevice
  */
 function unpairGlobalDevice(roomID, type, uuid){
     if(devices_map.has(roomID)) {
@@ -433,11 +433,11 @@ function unpairGlobalDevice(roomID, type, uuid){
 }
 
 /**
- * Asserts that a device is available for pairing
+ * Asserts that a device is available for pairDevice
  * @param roomID the room of the device that requested to be paired
  * @param type the deviceType of the target device
  * @param targetUUID the UUID of the device to be paired to
- * @return boolean true if the Micro:Bit is available for pairing, false otherwise
+ * @return boolean true if the Micro:Bit is available for pairDevice, false otherwise
  */
 function checkValidPairing(roomID, type, targetUUID) {
     if (devices_map.get(roomID).get(type).has(targetUUID)){
@@ -451,7 +451,7 @@ function checkValidPairing(roomID, type, targetUUID) {
 
 /**
  *  Robot on this server wants to pair with a Micro:Bit in the room, send notice to all servers
- *  to update pairing upon success.
+ *  to update pairDevice upon success.
  *
  *  @param data Pepper's message contents (RoboMessage)
  *  @param connection Pepper's registered connection that requested to pair with a Micro:Bit
@@ -480,7 +480,7 @@ function pairLocalDevice(data, connection) {
         pairGlobalDevice(connection.id.room_id, deviceType.microbit, connection.id.paired_uuid, connection.id.uuid);
 
         console.log('PAIRED LOCAL CONNECTION FROM MEM: ');
-        console.log('CHECKING that the map entry is equivalent to the updated connection after pairing');
+        console.log('CHECKING that the map entry is equivalent to the updated connection after pairDevice');
         console.log(devices_map.get(connection.id.room_id).get(deviceType.robot).get(connection.id.uuid) === connection);
 
         let pairMsg = new RedisMessage();
@@ -512,12 +512,12 @@ function pairLocalDevice(data, connection) {
 }
 
 /**
- * Finishes up pairing by updating the correct pairs in the local memory.
+ * Finishes up pairDevice by updating the correct pairs in the local memory.
  * @param roomID the roomID of the device pair
  * @param type deviceType of the device to be updated
- * @param uuid the UUID of the device to update its pairing
+ * @param uuid the UUID of the device to update its pairDevice
  * @param paired_uuid the UUID of the device it will be paired with
- * @return boolean true if successful pairing, false otherwise
+ * @return boolean true if successful pairDevice, false otherwise
  */
 function pairGlobalDevice(roomID, type, uuid, paired_uuid) {
     if(devices_map.has(roomID)) {

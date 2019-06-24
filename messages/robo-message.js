@@ -7,7 +7,7 @@ class RoboMessage {
             room_id: null,
             user_id: null,
             robot_id: null,
-            microbit_id: null,              // always null unless messageType === pairing
+            microbit_id: null,              // always null unless messageType === pairDevice
             device_type: deviceType.robot,
             message_type: null,
             message: null

@@ -108,7 +108,7 @@ const messageType = require('../messages/message-constants');
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 const roboMessage = new RoboMessage();
-roboMessage.setMessageType(messageType.pairing);
+roboMessage.setMessageType(messageType.pairDevice);
 roboMessage.setMicrobitId(microbitUUID);    //request the list of Micro:Bits to pick a UUID
 let jsonMessage = roboMessage.toJson();
 socket.send(jsonMessage);
@@ -117,13 +117,23 @@ socket.send(jsonMessage);
 ## Unpairing a Micro:Bit or Robot
 
 At the moment, you can send a message from a Micro:Bit or Robot to break the pairing.
+The websocket connection must have a device that was paired.
 
-Sample script for the unpairing from a Pepper:
+Make sure the messageType is `messageType.unpairDevice`. That's the only parameter.
+ 
+ Here is a sample script for unpairing from Pepper:
 
 ```javascript
-//TODO
-```
+const RoboMessage = require('../messages/robo-message');
+const messageType = require('../messages/message-constants');
 
+const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+
+const roboMessage = new RoboMessage();
+roboMessage.setMessageType(messageType.unpairDevice);
+let jsonMessage = roboMessage.toJson();
+socket.send(jsonMessage);
+```
 
 ### Misc
 

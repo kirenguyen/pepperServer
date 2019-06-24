@@ -2,11 +2,14 @@ const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
 const messageType = Object.freeze({
     login: 'login',
     handshake: 'handshake',
-    action: 'action',   //no implementation
-    pairing: 'pairing',
-    requestMicrobits: 'requestMicrobits',
-    microbitAction: 'microbitAction',   //no implementation
+
+    pairDevice: 'pairDevice',
     unpairDevice: 'unpairDevice',
+
+    requestMicrobits: 'requestMicrobits',
+
+    action: 'action',   //no implementation
+    microbitAction: 'microbitAction',   //no implementation
 
     // not to be used by client
     addMicrobit: 'addMicrobit',
