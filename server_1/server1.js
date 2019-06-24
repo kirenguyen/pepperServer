@@ -197,6 +197,12 @@ subscriber.on('message', function (channel, message) {
                     msgObject.message['name'])
             }
             break;
+        case messageType.finishPairing:
+            if (msgObject.origin !== SERVER_ID) {
+                pairGlobalDevice(msgObject.room_id, msgObject.message['device_type'],
+                    msgObject.message['uuid'], msgObject.message['paired_uuid']);
+            }
+            break;
         case messageType.finishUnpairing:
             if (msgObject.origin !== SERVER_ID) {
                 unpairGlobalDevice(msgObject.room_id, msgObject.message['device_type'], msgObject.message['uuid']);
