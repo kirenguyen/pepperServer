@@ -60,7 +60,7 @@ function originIsAllowed(origin) {
  * to clear cache of any devices that may have once been registered to this server.
  *
  */
-function serverStartCleanup(){
+function serverStartCleanup() {
     let message = new RedisMessage();
     message.setOrigin(SERVER_ID);
     message.setMessageType(messageType.serverStart);
@@ -226,8 +226,6 @@ subscriber.on('message', function (channel, message) {
 });
 
 
-
-
 /**
  * Registers successful connection of device to local memory
  * The devices are stored by room id, then by device type,
@@ -268,7 +266,6 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
         if (type === deviceType.microbit) {
             alertPeppers(roomID, connection.id.uuid, deviceName, true);
         }
-
         resolve('done');
     });
 }
@@ -285,7 +282,6 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  * @param deviceName name(s) (not necessarily unique) the device was associated with by the user
  */
 function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
-
     if (!secondary_devices.has(roomID)) {
         console.log('Adding new room to secondary devices map');
         let room_map = new Map([
@@ -294,7 +290,6 @@ function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
         ]);
         secondary_devices.set(roomID, room_map);
     }
-
     // newly instantiate all of the same data as what is stored in the connection object locally
     let deviceInfo = {
         device_type: type,
@@ -303,7 +298,6 @@ function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
         paired: false,
         paired_uuid: null,
     };
-
     secondary_devices.get(roomID).get(type).set(uuid, deviceInfo);
 
     console.log('UPDATED SECONDARY MAP for the server of the registered device: ');
@@ -349,7 +343,6 @@ function unregisterGlobalDevice(roomID, type, uuid) {
  * Updates device/connection that requested to be unpaired, and propagates the unpair request across the different servers.
  *
  * @param connection the registered connection of the device that requested to be unpaired
- * @return boolean TODO
  */
 function unpairLocalDevice(connection){
     try{
@@ -373,7 +366,6 @@ function unpairLocalDevice(connection){
         connection.id.paired_uuid = null;
 
         console.log('UNPAIRED LOCAL CONNECTION FROM MEM: ');
-        console.log(devices_map);
 
         let pairMsg = new RedisMessage();
         pairMsg.setOrigin(SERVER_ID);
@@ -417,7 +409,7 @@ function unpairGlobalDevice(roomID, type, uuid){
             connection.id.paired_uuid = false;
 
             console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map: ');
-            console.log(devices_map);
+            console.log(connection);
             return true;
         }
     }
@@ -426,18 +418,16 @@ function unpairGlobalDevice(roomID, type, uuid){
         if (secondary_devices.get(roomID).get(type).has(uuid)) {
             let info = secondary_devices.get(roomID).get(type).get(uuid);
             info.paired = false;
-            info.paired_uuid = false
+            info.paired_uuid = false;
 
             secondary_devices.get(roomID).get(type).set(uuid, info);
 
             console.log('SUCCESSFULLY CLEANED UP PAIRING on secondary_devices map');
-            console.log(secondary_devices);
-
+            console.log(info);
         } else {
             console.log("UNABLE TO UNPAIR SECOND DEVICE FOR SOME REASON");
         }
     }
-
 }
 
 /**
@@ -467,7 +457,6 @@ function checkValidPairing(roomID, microbitUUID) {
  */
 function pairLocalDevice(data, connection) {
     try{
-
         if (!checkValidPairing(connection.id.room_id, data.microbit_id)){
             connection.sendUTF('Selected Micro:Bit is not available to be paired with');
             return false;
@@ -480,7 +469,7 @@ function pairLocalDevice(data, connection) {
         pairGlobalDevice(connection.id.room_id, deviceType.microbit, connection.id.paired_uuid, connection.id.uuid);
 
         console.log('PAIRED LOCAL CONNECTION FROM MEM: ');
-        console.log(devices_map.get(connection.id.room_id).get(deviceType.robot).get(connection.id.uuid));
+        console.log('CHECKING that the map entry is equivalent to the updated connection after pairing');
         console.log(devices_map.get(connection.id.room_id).get(deviceType.robot).get(connection.id.uuid) === connection);
 
         let pairMsg = new RedisMessage();
@@ -494,7 +483,6 @@ function pairLocalDevice(data, connection) {
 
         // update all the robots across servers to show this pair
         publisher.publish('socket', pairMsg.toJson());
-
 
         // update all the microbits across servers to show this pair (reverse the paired uuid's/type)
         let microbitUpdateInfo = {uuid: connection.id.paired_uuid, paired_uuid: connection.id.uuid,
@@ -519,7 +507,7 @@ function pairLocalDevice(data, connection) {
  * @param paired_uuid the UUID of the device it will be paired with
  *
  */
-function pairGlobalDevice(roomID, type, uuid, paired_uuid){
+function pairGlobalDevice(roomID, type, uuid, paired_uuid) {
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(uuid)) {
             let connection = devices_map.get(roomID).get(type).get(uuid);
@@ -527,12 +515,12 @@ function pairGlobalDevice(roomID, type, uuid, paired_uuid){
             connection.id.paired_uuid = paired_uuid;
 
             console.log('SUCCESSFULLY UPDATED PAIRING on devices_map: ');
-            console.log(devices_map);
+            console.log(connection);
             return true;
         }
     }
 
-    if (secondary_devices.has(roomID)){
+    if (secondary_devices.has(roomID)) {
         if (secondary_devices.get(roomID).get(type).has(uuid)) {
             let info = secondary_devices.get(roomID).get(type).get(uuid);
             info.paired = true;
@@ -541,7 +529,7 @@ function pairGlobalDevice(roomID, type, uuid, paired_uuid){
             secondary_devices.get(roomID).get(type).set(uuid, info);
 
             console.log('SUCCESSFULLY UPDATED PAIRING on secondary_devices map');
-            console.log(secondary_devices);
+            console.log(info);
         }
     }
     else {

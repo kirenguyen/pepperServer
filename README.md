@@ -1,11 +1,10 @@
 # pepperServer
-Server for Pepper school Micro:bits project. 
 
-#####Still a work-in-progress, I apologize for bugs! I will need to consolidate the message types, so please bear with me.
-
+LAST UPDATED: 24/6/19
 
 
-## Running the Two Servers
+### Running the Two Servers
+
 Clone the repo and install all the `npm` dependencies with `npm install`. For reference, the node version I used while writing this is `v12.3.1`.
 
 There are two server directories, `/server_1` and `/server_2`. Each contains one file, each with a `server.js#` file; these are the server files that need to be run to establish the servers. I use `nodemon` to run the servers.
@@ -23,7 +22,7 @@ In the `/messages` directory, there is a `robo-message.js` file, used to form th
 
 Sample script for sending (to server 1). Please fix the node module paths accordingly.
 ```javascript
-const RoboMessage = require('../messages/robo-connector-message');
+const RoboMessage = require('../messages/robo-message');
 const messageType = require('../messages/message-constants');
 
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
@@ -47,11 +46,11 @@ In the same `/messages` directory, there is a `microbit-message.js` file, used t
 Sample script for sending (to server 2). Please fix the node module paths accordingly.
 
 ```javascript
-const MicrobitLoginMessage = require('../messages/microbit-login-message');
+const MicrobitMessage = require('../messages/microbit-message');
 
 const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
-const loginMessage = new MicrobitLoginMessage();
+const loginMessage = new MicrobitMessage();
 loginMessage.setRoomName('room1');
 loginMessage.setPassword('test1234');   
 loginMessage.setMicrobitName('microbit1');    
@@ -71,7 +70,7 @@ In the same `/messages` directory, there is a `microbit-message.js` file, used t
 Sample script for sending a request from a Pepper connected to server 1.
 
 ```javascript
-const RoboMessage = require('../messages/robo-connector-message');
+const RoboMessage = require('../messages/robo-message');
 const messageType = require('../messages/message-constants');
 
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
@@ -91,8 +90,38 @@ let microbitList = {
         uuid: <UUID assigned to device connection>
         name: <name assigned to microbit by user>
         paired: <boolean: always false for now>
+        paired_uuid: <UUID of paired device || null >
     }, ........]
 }
+ ```
+
+##Pairing a Robot to a Micro:Bit
+
+The following is a sample script to pair a Pepper that has been connected to the server and performed the handshake to a Micro:Bit.
+
+You will need to get the UUID of the Micro:Bit you want to pair Pepper to.
+
+```javascript
+const RoboMessage = require('../messages/robo-message');
+const messageType = require('../messages/message-constants');
+
+const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+
+const roboMessage = new RoboMessage();
+roboMessage.setMessageType(messageType.pairing);
+roboMessage.setMicrobitId(microbitUUID);    //request the list of Micro:Bits to pick a UUID
+let jsonMessage = roboMessage.toJson();
+socket.send(jsonMessage);
+```
+
+##Unpairing a Micro:Bit or Robot
+
+At the moment, you can send a message from a Micro:Bit or Robot to break the pairing.
+
+Sample script for the unpairing from a Pepper:
+
+```javascript
+//TODO
 ```
 
 
@@ -107,24 +136,7 @@ Each browser opens up a websocket connection;
 you can press `1` to initialize a Pepper, enter a name for a Micro:Bit and press `Enter` to initialize a Micro:Bit, or press `2` to request microbits from a browser that has initialized a Pepper.
 
 
-Here are some of the current messageTypes, some will be changed later.
-
-```javascript
-const messageType = Object.freeze({
-    login: 'login',                          // microbit login
-    handshake: 'handshake',                  // robot handshake
-    action: 'action',                        // nothing yet
-    pairing: 'pairing',                      // nothing yet
-    requestMicrobits: 'requestMicrobits',    // microbit list request
-    microbitAction: 'microbitAction',        // nothing yet
-    addMicrobit: 'addMicrobit',              // not for client use
-
-    addRobot: 'addRobot',                    // not for client use
-    removeDevice: 'removeDevice',            // not for client use
-    serverStart: 'serverStart',              // not for client use
-}); 
-```
 
 ### Issues
 
-Although I am using the /delete_user (API018) to cut the connection, that seems to not be working. So you may have issues if you connect too many Peppers.
+Although I am using the /delete_user (API018) to cut the connection, if the server crashes before you can close the connection, you will need to manually disconnect the robot through mySQL.
