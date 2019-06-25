@@ -658,8 +658,7 @@ function requestAllMicrobits(connection) {
     if (devices_map.has(connection.id.room_id)) {
         devices_map.get(connection.id.room_id).get(deviceType.microbit).forEach((value) => {
             // value is the connection object stored after registration of microbit
-            console.log(value);
-            console.log(typeof value);
+            console.log(typeof value.id);
             data.microbit_list.push(value.id);
         });
     }
