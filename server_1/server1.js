@@ -683,7 +683,7 @@ function requestAllMicrobits(connection) {
     // Collect all microbits from other servers in the same room
     if(secondary_devices.has(connection.id.room_id)) {
         secondary_devices.get(connection.id.room_id).get(deviceType.microbit).forEach((microbit) => {
-            data.microbit_list.push(microbit.build());
+            data.microbit_list.push(microbit);
         });
     }
 
