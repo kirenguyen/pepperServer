@@ -38,7 +38,7 @@ const server = http.createServer(function (request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end('Just sent the headers');
 }).listen(SERVER_PORT, function () {
-    console.log('Server 1 listening on port: ' + SERVER_PORT);
+    console.log('Server 2 listening on port: ' + SERVER_PORT);
     serverStartCleanup();
 });
 
@@ -261,12 +261,11 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  * local memory for reference. The devices are stored by server id, room id, then by device type,
  * then their respective connection id (uuid v4), with the value being the device's user-chosen name.
  *
- * @param params DeviceParams object describing the device to be registered into the server's cache
+ * Information will be stored as DeviceParameter object.
+ *
+ * @param params DeviceParams-like object describing the device to be registered into the server's cache
  */
 function registerGlobalDevice(params) {
-    console.log(params);
-    console.log(typeof params);
-
 
     if (!secondary_devices.has(params.room_id)) {
         console.log('Adding new room to secondary devices map');
@@ -276,8 +275,15 @@ function registerGlobalDevice(params) {
         ]);
         secondary_devices.set(params.room_id, room_map);
     }
+
+    const deviceInfo = new DeviceParameters();
+    deviceInfo.setDeviceType(params.device_type);
+    deviceInfo.setRoomID(params.room_id);
+    deviceInfo.setUUID(params.uuid);
+    deviceInfo.setName(params.name);
+
     // newly instantiate all of the same data as what is stored in the connection object locally
-    secondary_devices.get(params.room_id).get(params.device_type).set(params.uuid, params);
+    secondary_devices.get(params.room_id).get(params.device_type).set(params.uuid, deviceInfo);
 
     console.log('UPDATED SECONDARY MAP for the server of the registered device: ');
     console.log(secondary_devices);
@@ -401,8 +407,6 @@ function unpairGlobalDevice(roomID, type, uuid){
             const info = secondary_devices.get(roomID).get(type).get(uuid);
             info.setPaired(false);
             info.setPairedUUID(null);
-
-            secondary_devices.get(roomID).get(type).set(uuid, info);
 
             console.log('SUCCESSFULLY CLEANED UP PAIRING on secondary_devices map');
             // console.log(info);
@@ -530,8 +534,6 @@ function pairGlobalDevice(params) {
             const info = secondary_devices.get(roomID).get(type).get(uuid);
             info.setPaired(true);
             info.setPairedUUID(pairedUUID);
-
-            secondary_devices.get(roomID).get(type).set(uuid, info);
 
             console.log('SUCCESSFULLY UPDATED PAIRING on secondary_devices map!');
             // console.log(info);
@@ -713,7 +715,7 @@ function parseJSON(data) {
  * Alerts all Peppers in the same room as the *newly* added micro:bit
  * that it been added/alerts the other server of the micro:bit's presence for reference.
  *
- * @param params DeviceParameters-like object describing the Micro:Bit that was just added
+ * @param params DeviceParameters-like object (containing same attributes) describing the Micro:Bit that was just added
  * @param broadcast true for alerting other server (micro:bit was added to this server), false to just alert
  *        peppers on the server this function is called.
  *
@@ -723,7 +725,7 @@ function alertPeppers(params, broadcast) {
         // alert on this server
         devices_map.get(params.room_id).get(deviceType.robot).forEach((connection) => {
             connection.sendUTF('Alerting Peppers in room of new Microbit added!');
-            connection.sendUTF(params);
+            connection.sendUTF(params)
         });
     }
 
