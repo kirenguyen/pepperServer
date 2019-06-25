@@ -460,7 +460,7 @@ function pairLocalDevice(data, connection) {
         pairMessage.setOrigin(SERVER_ID);
         pairMessage.setMessageType(messageType.finishPairing);
         pairMessage.setRoomId(connection.id.room_id);
-        pairMessage.setMessage(connection.id.toJSON()); // Pepper's deviceParameters
+        pairMessage.setMessage(connection.id.build()); // Pepper's deviceParameters
 
         // update all the robots across servers to show this pair
         publisher.publish('socket', pairMessage.toJSON());
@@ -472,7 +472,7 @@ function pairLocalDevice(data, connection) {
         microbitUpdate.setDeviceType(deviceType.microbit);
         microbitUpdate.setRoomID(connection.id.room_id);
 
-        pairMessage.setMessage(microbitUpdate);
+        pairMessage.setMessage(microbitUpdate.build());
         publisher.publish('socket', pairMessage.toJSON());
 
         //TODO: API call?? pair up the robots and microbits?
@@ -486,7 +486,7 @@ function pairLocalDevice(data, connection) {
 
 /**
  * Finishes up pairDevice by updating the correct pairs in the local memory.
- * @param params the DeviceParameters of the Pepper that sent the pair request
+ * @param params the DeviceParameters object of the Pepper that sent the pair request
  * @return boolean true if successful pairDevice, false otherwise
  */
 function pairGlobalDevice(params) {
@@ -621,7 +621,7 @@ function handshake(data, connection) {
                 const message = new RedisMessage();
                 message.setMessageType(messageType.addRobot);
                 message.setRoomId(data.room_id);
-                message.setMessage(connection.id.build());  // DeviceParameters of the object to register globally
+                message.setMessage(connection.id.build());  // DeviceParameters class object to register globally; build into object
                 message.setOrigin(SERVER_ID);
 
                 publisher.publish('socket', message.toJSON());
