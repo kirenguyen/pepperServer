@@ -713,7 +713,7 @@ function parseJSON(data) {
  * Alerts all Peppers in the same room as the *newly* added micro:bit
  * that it been added/alerts the other server of the micro:bit's presence for reference.
  *
- * @param params DeviceParameters-like object describing the Micro:Bit that was just added
+ * @param params DeviceParameters-like object (containing same attributes) describing the Micro:Bit that was just added
  * @param broadcast true for alerting other server (micro:bit was added to this server), false to just alert
  *        peppers on the server this function is called.
  *
@@ -723,7 +723,7 @@ function alertPeppers(params, broadcast) {
         // alert on this server
         devices_map.get(params.room_id).get(deviceType.robot).forEach((connection) => {
             connection.sendUTF('Alerting Peppers in room of new Microbit added!');
-            connection.sendUTF(params.toJSON())
+            connection.sendUTF(params)
         });
     }
 

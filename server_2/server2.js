@@ -723,7 +723,7 @@ function alertPeppers(params, broadcast) {
         // alert on this server
         devices_map.get(params.room_id).get(deviceType.robot).forEach((connection) => {
             connection.sendUTF('Alerting Peppers in room of new Microbit added!');
-            connection.sendUTF(params.toJSON())
+            connection.sendUTF(params);
         });
     }
 
