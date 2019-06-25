@@ -58,6 +58,13 @@ let jsonMessage = loginMessage.toJson();
 socket.send(jsonMessage);
 ```
 
+Upon successful connection to the server, an alert will be sent to all Peppers within the same room as an object formatted as follows:
+
+```
+
+```
+
+
 ## Requesting Micro:Bit List
 
 You can find the code the function for this in either `server#.js` file: `requestAllMicrobits`.
