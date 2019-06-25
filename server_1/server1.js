@@ -431,7 +431,7 @@ function checkValidPairing(roomID, type, targetUUID) {
 }
 
 /**
- *  Robot on this server wants to pair with a Micro:Bit in the room, send notice to all servers
+ *  Pepper on this server wants to pair with a Micro:Bit in the room, send notice to all servers
  *  to update pairDevice upon success.
  *
  *  @param data Pepper's message contents (RoboMessage)
@@ -484,6 +484,10 @@ function pairLocalDevice(data, connection) {
         publisher.publish('socket', pairMessage.toJSON());
 
         //TODO: API call?? pair up the robots and microbits?
+
+
+        console.log('PEPPER SENT THE REQUEST TO PAIR UP, HERE IS HIS CONNECTION.ID');
+        console.log(connection.id);
 
         return true;
     } catch (error) {
