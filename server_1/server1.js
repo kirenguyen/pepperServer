@@ -127,7 +127,7 @@ wss.on('request', function (req) {
             message.setMessageType(messageType.removeDevice);
             message.setRoomId(connection.id.room_id);
             message.setOrigin(SERVER_ID);
-            message.setMessage(connection.id.toJSON());  // DeviceParameter of device to be removed
+            message.setMessage(connection.id.build());  // DeviceParameter of device to be removed
             publisher.publish('socket', message.toJSON());
 
         } else {
@@ -621,7 +621,7 @@ function handshake(data, connection) {
                 const message = new RedisMessage();
                 message.setMessageType(messageType.addRobot);
                 message.setRoomId(data.room_id);
-                message.setMessage(connection.id.toJSON());  // DeviceParameters of the object to register globally
+                message.setMessage(connection.id.build());  // DeviceParameters of the object to register globally
                 message.setOrigin(SERVER_ID);
 
                 publisher.publish('socket', message.toJSON());
@@ -658,15 +658,14 @@ function requestAllMicrobits(connection) {
     if (devices_map.has(connection.id.room_id)) {
         devices_map.get(connection.id.room_id).get(deviceType.microbit).forEach((value) => {
             // value is the connection object stored after registration of microbit
-            console.log(typeof value.id);
-            data.microbit_list.push(value.id);
+            data.microbit_list.push(value.id.build());
         });
     }
 
     // Collect all microbits from other servers in the same room
     if(secondary_devices.has(connection.id.room_id)) {
         secondary_devices.get(connection.id.room_id).get(deviceType.microbit).forEach((microbit) => {
-            data.microbit_list.push(microbit);
+            data.microbit_list.push(microbit.build());
         });
     }
 
@@ -714,7 +713,7 @@ function alertPeppers(params, broadcast) {
         const message = new RedisMessage();
         message.setMessageType(messageType.addMicrobit);
         message.setRoomId(params.room_id);
-        message.setMessage(params.toJSON());
+        message.setMessage(params.build());
         message.setOrigin(SERVER_ID);
 
         publisher.publish('socket', message.toJSON());
