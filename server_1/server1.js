@@ -264,6 +264,11 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  * @param params DeviceParams object describing the device to be registered into the server's cache
  */
 function registerGlobalDevice(params) {
+    console.log(params);
+    console.log(typeof params);
+
+
+
     if (!secondary_devices.has(params.room_id)) {
         console.log('Adding new room to secondary devices map');
         const room_map = new Map([
