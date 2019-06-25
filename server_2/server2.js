@@ -407,7 +407,7 @@ function unpairGlobalDevice(roomID, type, uuid){
         if (devices_map.get(roomID).get(type).has(uuid)) {
             let connection = devices_map.get(roomID).get(type).get(uuid);
             connection.id.paired = false;
-            connection.id.paired_uuid = false;
+            connection.id.paired_uuid = null;
 
             console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map: ');
             // console.log(connection);
@@ -419,7 +419,7 @@ function unpairGlobalDevice(roomID, type, uuid){
         if (secondary_devices.get(roomID).get(type).has(uuid)) {
             let info = secondary_devices.get(roomID).get(type).get(uuid);
             info.paired = false;
-            info.paired_uuid = false;
+            info.paired_uuid = null;
 
             secondary_devices.get(roomID).get(type).set(uuid, info);
 
@@ -525,7 +525,7 @@ function pairGlobalDevice(roomID, type, uuid, paired_uuid) {
             connection.id.paired = true;
             connection.id.paired_uuid = paired_uuid;
 
-            console.log('SUCCESSFULLY UPDATED PAIRING on devices_map: ');
+            console.log('SUCCESSFULLY UPDATED PAIRING on devices_map!');
             // console.log(connection);
             return true;
         }
@@ -539,7 +539,7 @@ function pairGlobalDevice(roomID, type, uuid, paired_uuid) {
 
             secondary_devices.get(roomID).get(type).set(uuid, info);
 
-            console.log('SUCCESSFULLY UPDATED PAIRING on secondary_devices map');
+            console.log('SUCCESSFULLY UPDATED PAIRING on secondary_devices map!');
             // console.log(info);
             return true;
         }
