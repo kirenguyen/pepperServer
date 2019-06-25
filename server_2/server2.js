@@ -28,10 +28,10 @@ subscriber.on('error', function (err) {
     console.log('Subscriber error: ' + String(err));
 });
 
-// Devices connected to this server
+// Devices connected to this server; contains connections where connection.id == DeviceParameter class objects
 const devices_map = new Map();
 
-// Devices connected to the other server
+// Devices connected to the other server; contains DeviceParameter class objects
 const secondary_devices = new Map();
 
 const server = http.createServer(function (request, response) {
@@ -685,7 +685,7 @@ function requestAllMicrobits(connection) {
     // Collect all microbits from other servers in the same room
     if(secondary_devices.has(connection.id.room_id)) {
         secondary_devices.get(connection.id.room_id).get(deviceType.microbit).forEach((microbit) => {
-            data.microbit_list.push(microbit);
+            data.microbit_list.push(microbit.build());
         });
     }
 
