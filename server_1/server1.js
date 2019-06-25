@@ -197,6 +197,7 @@ subscriber.on('message', function (channel, message) {
             break;
         case messageType.finishUnpairing:
             if (msgObject.origin !== SERVER_ID) {
+                console.log('??? here');
                 unpairGlobalDevice(msgObject.room_id, msgObject.message['device_type'], msgObject.message['uuid']);
             }
             break;
@@ -335,6 +336,8 @@ function unpairLocalDevice(connection){
         }
 
         // clear the memory of the paired device as well
+        console.log('about to win it all');
+        console.log(connection.id);
         unpairGlobalDevice(connection.id.room_id, oppositeType, connection.id.paired_uuid);
 
         connection.id.setPaired(false);
