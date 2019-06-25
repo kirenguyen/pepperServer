@@ -491,7 +491,7 @@ function pairLocalDevice(data, connection) {
  */
 function pairGlobalDevice(params) {
     const roomID = params.room_id;
-    const type = params.device;
+    const type = params.device_type;
     const uuid = params.uuid;
     const pairedUUID = params.paired_uuid;
 
