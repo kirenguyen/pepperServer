@@ -29,7 +29,7 @@ subscriber.on('error', function (err) {
 // Devices connected to this server
 const devices_map = new Map();
 
-// Devices connected to the other servers
+// Devices connected to the other server
 const secondary_devices = new Map();
 
 let server = http.createServer(function (request, response) {
@@ -94,13 +94,11 @@ wss.on('request', function (req) {
             case messageType.handshake:
                 handshake(data, connection);
                 break;
-            case messageType.action:
+            case messageType.requestMicrobits:
+                requestAllMicrobits(connection);
                 break;
             case messageType.pairDevice:
                 pairLocalDevice(data, connection);
-                break;
-            case messageType.requestMicrobits:
-                requestAllMicrobits(connection);
                 break;
             case messageType.unpairDevice:
                 unpairLocalDevice(connection);
@@ -182,9 +180,7 @@ subscriber.on('message', function (channel, message) {
             }
             break;
         case messageType.addMicrobit:
-            if (msgObject.origin === SERVER_ID) {
-                console.log('RECEIVED REQUEST TO ADD MICROBIT FROM OG SERVER');
-            } else {
+            if (msgObject.origin !== SERVER_ID) {
                 registerGlobalDevice(msgObject.origin, msgObject.room_id, deviceType.microbit, msgObject.message['uuid'],
                     msgObject.message['name']);
                 alertPeppers(msgObject.room_id, msgObject.message['uuid'],
@@ -192,9 +188,7 @@ subscriber.on('message', function (channel, message) {
             }
             break;
         case messageType.addRobot:
-            if (msgObject.origin === SERVER_ID) {
-                console.log('RECEIVED REQUEST TO ADD ROBOT FROM OG SERVER');
-            } else {
+            if (msgObject.origin !== SERVER_ID) {
                 registerGlobalDevice(msgObject.origin, msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
                     msgObject.message['name'])
             }
@@ -216,9 +210,6 @@ subscriber.on('message', function (channel, message) {
                 unregisterGlobalDevice(msgObject.message.room_id, msgObject.message['device_type'],
                     msgObject.message['uuid']);
             }
-            break;
-        case messageType.microbitAction:
-            // if microbit or robot is on this server (depending on what the action is), do the action, else ignore
             break;
         default:
             console.log('Message pubbed that fell into default case: ');
@@ -242,7 +233,6 @@ subscriber.on('message', function (channel, message) {
  */
 function registerLocalDevice(roomID, type, connection, deviceName) {
     return new Promise(function (resolve) {
-        console.log('REGISTERING DEVICE');
         if (!devices_map.has(roomID)) {
             let room_map = new Map([
                 [deviceType.robot, new Map()],
@@ -261,7 +251,7 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
         };
         devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
 
-        console.log('!!!! Devices map: ');
+        console.log('!!!! Devices map after registering local device: ');
         console.log(devices_map);
 
         // notify all peppers that a microbit was added on this server
@@ -313,7 +303,7 @@ function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
 function unregisterLocalDevice(connection) {
     try{
         devices_map.get(connection.id.room_id).get(connection.id.device_type).delete(connection.id.uuid);
-        console.log('REMOVED LOCAL CONNECTION FROM MEM: ');
+        console.log('REMOVED LOCAL CONNECTION FROM MEMORY:');
         console.log(devices_map);
     } catch (error) {
         console.log('Error in trying to remove device from local memory.');
@@ -328,15 +318,12 @@ function unregisterLocalDevice(connection) {
  * @param uuid uuid v4 associated with device at connection time
  */
 function unregisterGlobalDevice(roomID, type, uuid) {
-    console.log('TRYING TO UNREGISTER DEVICE GLOBALLY');
-    console.log(roomID, type, uuid);
-    console.log(secondary_devices);
     try {
         secondary_devices.get(roomID).get(type).delete(uuid);
         console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map for the server relating to registered device: ');
         console.log(secondary_devices);
     } catch (error) {
-        console.log('Error in trying to remove device from secondary map.')
+        console.log('Error in trying to remove device from secondary map.');
         console.log(error);
     }
 }
@@ -389,7 +376,7 @@ function unpairLocalDevice(connection){
         pairMsg.setMessage(microbitUpdateInfo);
         publisher.publish('socket', pairMsg.toJson());
 
-        //TODO: API call?? pair up the robots and microbits?
+        //TODO: API call?? unpair the robots and microbits?
 
     } catch (error) {
         console.log('Error in trying to unpair device from local memory.');
@@ -412,7 +399,7 @@ function unpairGlobalDevice(roomID, type, uuid){
             connection.id.paired = false;
             connection.id.paired_uuid = null;
 
-            console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map: ');
+            console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map');
             // console.log(connection);
             return true;
         }
@@ -721,14 +708,12 @@ function requestAllMicrobits(connection) {
     return data;
 }
 
-
 /////////////////////// MISC FUNCTIONS /////////////////////////////
-
 
 /**
  * Attempts to parse a string into a JSON object
  * @param data JSON string that can be parsed back into an object
- * @returns JSON object if data was parsable, false otherwise
+ * @returns JSON object if data was parsable, nothing otherwise
  */
 function parseJSON(data) {
     try {
@@ -750,7 +735,6 @@ function parseJSON(data) {
  *        peppers on the server this function is called.
  */
 function alertPeppers(roomID, uuid, name, broadcast) {
-
     // what the other server will instantiate for this newly added microbit
     let microbitInfo = {uuid: uuid, name: name, room_id: roomID, paired: false, paired_uuid: null};
 

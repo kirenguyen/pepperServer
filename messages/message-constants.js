@@ -8,9 +8,6 @@ const messageType = Object.freeze({
 
     requestMicrobits: 'requestMicrobits',
 
-    action: 'action',   //no implementation
-    microbitAction: 'microbitAction',   //no implementation
-
     // not to be used by client
     addMicrobit: 'addMicrobit',
     addRobot: 'addRobot',
