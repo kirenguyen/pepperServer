@@ -28,7 +28,7 @@ class MicrobitMessage {
         this._message.message_type = messageType;
         return this;
     }
-    toJson(){
+    toJSON(){
         return JSON.stringify(this._message);
     }
 }

@@ -64,7 +64,7 @@ function serverStartCleanup() {
     const message = new RedisMessage();
     message.setOrigin(SERVER_ID);
     message.setMessageType(messageType.serverStart);
-    publisher.publish('socket', message.toJson());
+    publisher.publish('socket', message.toJSON());
 }
 
 /**
@@ -128,7 +128,7 @@ wss.on('request', function (req) {
             const deviceInfo = {uuid: connection.id.uuid, device_type: connection.id.device_type,
                 room_id: connection.id.room_id};
             message.setMessage(deviceInfo);
-            publisher.publish('socket', message.toJson());
+            publisher.publish('socket', message.toJSON());
         } else {
             console.log('This connection was not set up with a device');
             return false;
@@ -365,14 +365,14 @@ function unpairLocalDevice(connection){
         pairMsg.setMessage(robotUpdateInfo);
 
         // update all the robots across servers to show this pair
-        publisher.publish('socket', pairMsg.toJson());
+        publisher.publish('socket', pairMsg.toJSON());
 
         // update all the microbits across servers to show this pair (reverse the paired uuid's/type)
         const microbitUpdateInfo = {uuid: microbitID,
             room_id: connection.id.room_id,
             device_type: deviceType.microbit};
         pairMsg.setMessage(microbitUpdateInfo);
-        publisher.publish('socket', pairMsg.toJson());
+        publisher.publish('socket', pairMsg.toJSON());
 
         //TODO: API call?? unpair the robots and microbits?
 
@@ -480,14 +480,14 @@ function pairLocalDevice(data, connection) {
         pairMsg.setMessage(robotUpdateInfo);
 
         // update all the robots across servers to show this pair
-        publisher.publish('socket', pairMsg.toJson());
+        publisher.publish('socket', pairMsg.toJSON());
 
         // update all the microbits across servers to show this pair (reverse the paired uuid's/type)
         const microbitUpdateInfo = {uuid: connection.id.paired_uuid, paired_uuid: connection.id.uuid,
             room_id: connection.id.room_id,
             device_type: deviceType.microbit};
         pairMsg.setMessage(microbitUpdateInfo);
-        publisher.publish('socket', pairMsg.toJson());
+        publisher.publish('socket', pairMsg.toJSON());
 
         //TODO: API call?? pair up the robots and microbits?
 
@@ -645,7 +645,7 @@ function handshake(data, connection) {
                 message.setMessage(robotInfo);
                 message.setOrigin(SERVER_ID);
 
-                publisher.publish('socket', message.toJson());
+                publisher.publish('socket', message.toJSON());
                 console.log(success, ': sent message to add Pepper globally');
             });
 
@@ -748,6 +748,6 @@ function alertPeppers(roomID, uuid, name, broadcast) {
         message.setMessage(microbitInfo);
         message.setOrigin(SERVER_ID);
 
-        publisher.publish('socket', message.toJson());
+        publisher.publish('socket', message.toJSON());
     }
 }

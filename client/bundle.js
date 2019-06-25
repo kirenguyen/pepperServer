@@ -32,7 +32,7 @@ function createMicrobit(name) {
     loginMessage.setPassword('test1234');   //all joining room 1
     loginMessage.setMicrobitName(name);
     loginMessage.setMessageType(messageType.login);
-    let jsonMessage = loginMessage.toJson();
+    let jsonMessage = loginMessage.toJSON();
     console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
     socket.send(jsonMessage);
 }
@@ -44,7 +44,7 @@ function createPepper(roomNumber) {
     roboMessage.setMessageType(messageType.handshake);
     roboMessage.setMessage('no message');
     roboMessage.setRobotId('');
-    let jsonMessage = roboMessage.toJson();
+    let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
@@ -56,7 +56,7 @@ function pairDevices(microbitUUID) {
     const roboMessage = new RoboMessage();
     roboMessage.setMessageType(messageType.pairDevice);
     roboMessage.setMicrobitId(microbitUUID);
-    let jsonMessage = roboMessage.toJson();
+    let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
@@ -67,7 +67,7 @@ function pairDevices(microbitUUID) {
 function unpairDevice() {
     const roboMessage = new RoboMessage();
     roboMessage.setMessageType(messageType.unpairDevice);
-    let jsonMessage = roboMessage.toJson();
+    let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
@@ -78,7 +78,7 @@ function unpairDevice() {
 function requestMicrobits(){
     const roboMessage = new RoboMessage();
     roboMessage.setMessageType(messageType.requestMicrobits);
-    let jsonMessage = roboMessage.toJson();
+    let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
@@ -182,7 +182,7 @@ class MicrobitMessage {
         this._message.message_type = messageType;
         return this;
     }
-    toJson(){
+    toJSON(){
         return JSON.stringify(this._message);
     }
 }
@@ -227,7 +227,7 @@ class RoboMessage {
         this._message.message = message;
         return this;
     }
-    toJson(){
+    toJSON(){
         return JSON.stringify(this._message);
     }
 }

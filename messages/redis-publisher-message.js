@@ -23,7 +23,7 @@ class RedisMessage {
         this._message.origin = origin;
         return this;
     }
-    toJson(){
+    toJSON(){
         return JSON.stringify(this._message);
     }
 }

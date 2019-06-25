@@ -32,7 +32,17 @@ class DeviceParameters {
         return this;
     }
     toJSON(){
-        return JSON.stringify(this);
+        return JSON.stringify(this.build());
+    }
+    build(){
+        return {
+            uuid: this.uuid,
+            name: this.name,
+            room_id: this.room_id,
+            paired: this.paired,
+            paired_uuid: this.paired_uuid,
+            device_type: this.device_type,
+        };
     }
 }
 

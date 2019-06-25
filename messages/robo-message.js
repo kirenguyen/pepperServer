@@ -37,7 +37,7 @@ class RoboMessage {
         this._message.message = message;
         return this;
     }
-    toJson(){
+    toJSON(){
         return JSON.stringify(this._message);
     }
 }
