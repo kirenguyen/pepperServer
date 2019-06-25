@@ -1,6 +1,6 @@
 # pepperServer
 
-LAST UPDATED: 24/6/19
+LAST UPDATED: 25/6/19
 
 
 ### Running the Two Servers
@@ -145,7 +145,7 @@ to make sure any changes are saved, use `watchify` by running:
 Each browser opens up a websocket connection;
 you can press `1` to initialize a Pepper, enter a name for a Micro:Bit and press `Enter` to initialize a Micro:Bit, or press `2` to request microbits from a browser that has initialized a Pepper.
 
-
+In the text box, you can also enter a Micro:Bit UUID to pair a Pepper to a Micro:Bit.
 
 ### Issues
 
