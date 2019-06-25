@@ -153,8 +153,7 @@ wss.on('request', function (req) {
                 }
             };
             request.post(options, function (error, response, body) {
-                console.log('!!!!!!!!!!!!!!!!!!!!!!cutting connection!!!!!!!!!!!!!!!!!!!!!!!!')
-                console.log('Cutting robots connection; BODY (unparsed):');
+                console.log('!!!!!!!!!!!!!!!!!!!!!!cutting connection!!!!!!!!!!!!!!!!!!!!!!!!');
                 console.log(body);
             });
         } catch (err) {
@@ -467,7 +466,7 @@ function pairLocalDevice(data, connection) {
         }
 
         // check if this Pepper is free
-        if (!checkValidPairing(connection.id.room_id, deviceType.unpairDevice, connection.id.uuid)){
+        if (!checkValidPairing(connection.id.room_id, deviceType.robot, connection.id.uuid)){
             connection.sendUTF('Pepper is already paired! Please unpair first before attempting again');
             console.log('Pepper is already paired with a Micro:Bit. Please unpair first before attempting again');
             return false;
@@ -720,9 +719,7 @@ function requestAllMicrobits(connection) {
 }
 
 
-
 /////////////////////// MISC FUNCTIONS /////////////////////////////
-
 
 
 /**
