@@ -9,6 +9,8 @@ const uuidv4 = require("uuid/v4");
 
 const domain = 'https://roboblocks.xyz/';
 const messageConstants = require('../messages/message-constants');
+
+const DeviceParameters = require('../device_parameters');
 const deviceType = messageConstants.deviceType;
 const messageType = messageConstants.messageType;
 const SERVER_PORT = 3000;
@@ -125,10 +127,9 @@ wss.on('request', function (req) {
             message.setMessageType(messageType.removeDevice);
             message.setRoomId(connection.id.room_id);
             message.setOrigin(SERVER_ID);
-            const deviceInfo = {uuid: connection.id.uuid, device_type: connection.id.device_type,
-                room_id: connection.id.room_id};
-            message.setMessage(deviceInfo);
+            message.setMessage(connection.id);  // DeviceParameter of device to be removed
             publisher.publish('socket', message.toJson());
+
         } else {
             console.log('This connection was not set up with a device');
             return false;
@@ -179,22 +180,19 @@ subscriber.on('message', function (channel, message) {
             break;
         case messageType.addMicrobit:
             if (msgObject.origin !== SERVER_ID) {
-                registerGlobalDevice(msgObject.origin, msgObject.room_id, deviceType.microbit, msgObject.message['uuid'],
-                    msgObject.message['name']);
+                registerGlobalDevice(msgObject.message);
                 alertPeppers(msgObject.room_id, msgObject.message['uuid'],
                     msgObject.message['name'], false);
             }
             break;
         case messageType.addRobot:
             if (msgObject.origin !== SERVER_ID) {
-                registerGlobalDevice(msgObject.origin, msgObject.room_id, deviceType.robot, msgObject.message['uuid'],
-                    msgObject.message['name'])
+                registerGlobalDevice(msgObject.message);
             }
             break;
         case messageType.finishPairing:
             if (msgObject.origin !== SERVER_ID) {
-                pairGlobalDevice(msgObject.room_id, msgObject.message['device_type'],
-                    msgObject.message['uuid'], msgObject.message['paired_uuid']);
+                pairGlobalDevice(msgObject.message);
             }
             break;
         case messageType.finishUnpairing:
@@ -205,8 +203,7 @@ subscriber.on('message', function (channel, message) {
         case messageType.removeDevice:
             // unregister device connected to other server
             if (msgObject.origin !== SERVER_ID){
-                unregisterGlobalDevice(msgObject.message.room_id, msgObject.message['device_type'],
-                    msgObject.message['uuid']);
+                unregisterGlobalDevice(msgObject.message);
             }
             break;
         default:
@@ -220,7 +217,7 @@ subscriber.on('message', function (channel, message) {
 /**
  * Registers successful connection of device to local memory
  * The devices are stored by room id, then by device type,
- * then their respective connection id (uuid v4).
+ * then by a new respective connection id (uuid v4).
  *
  * Information is also sent to the other server to store reference.
  *
@@ -238,15 +235,14 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
             ]);
             devices_map.set(roomID, room_map);
         }
+
         //identifying information to unregister device on closing
-        connection.id = {
-            room_id: roomID,
-            device_type: type,
-            name: deviceName,
-            uuid: uuidv4(),
-            paired: false,
-            paired_uuid: null,
-        };
+        connection.id = new DeviceParameters();
+        connection.id.setRoomID(roomID);
+        connection.id.setName(deviceName);
+        connection.id.setDeviceType(type);
+        connection.id.setUUID(uuidv4());
+
         devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
 
         console.log('!!!! Devices map after registering local device: ');
@@ -254,7 +250,7 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
 
         // notify all peppers that a microbit was added on this server
         if (type === deviceType.microbit) {
-            alertPeppers(roomID, connection.id.uuid, deviceName, true);
+            alertPeppers(connection.id, true);
         }
         resolve('done');
     });
@@ -265,30 +261,19 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  * local memory for reference. The devices are stored by server id, room id, then by device type,
  * then their respective connection id (uuid v4), with the value being the device's user-chosen name.
  *
- * @param serverID the server that the device was originally connected to
- * @param roomID room ID the device was registered to
- * @param type the deviceType of the registered device (deviceType.microbit or deviceType.robot)
- * @param uuid uuid that the device was associated with when it was registered on the other server
- * @param deviceName name(s) (not necessarily unique) the device was associated with by the user
+ * @param params DeviceParams object describing the device to be registered into the server's cache
  */
-function registerGlobalDevice(serverID, roomID, type, uuid, deviceName) {
-    if (!secondary_devices.has(roomID)) {
+function registerGlobalDevice(params) {
+    if (!secondary_devices.has(params.room_id)) {
         console.log('Adding new room to secondary devices map');
         const room_map = new Map([
             [deviceType.robot, new Map()],
             [deviceType.microbit, new Map()],
         ]);
-        secondary_devices.set(roomID, room_map);
+        secondary_devices.set(params.room_id, room_map);
     }
     // newly instantiate all of the same data as what is stored in the connection object locally
-    const deviceInfo = {
-        device_type: type,
-        uuid: uuid,
-        name: deviceName,
-        paired: false,
-        paired_uuid: null,
-    };
-    secondary_devices.get(roomID).get(type).set(uuid, deviceInfo);
+    secondary_devices.get(params.room_id).get(params.device_type).set(params.uuid, params);
 
     console.log('UPDATED SECONDARY MAP for the server of the registered device: ');
     console.log(secondary_devices);
@@ -311,13 +296,11 @@ function unregisterLocalDevice(connection) {
 
 /**
  * Removes device connected to a different server from this server's local reference
- * @param roomID id of the room of device to remove
- * @param type type of device to remove
- * @param uuid uuid v4 associated with device at connection time
+ * @param params the DeviceParameter object of the device to be removed from the local memory
  */
-function unregisterGlobalDevice(roomID, type, uuid) {
+function unregisterGlobalDevice(params) {
     try {
-        secondary_devices.get(roomID).get(type).delete(uuid);
+        secondary_devices.get(params.room_id).get(params.device_type).delete(params.uuid);
         console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map for the server relating to registered device: ');
         console.log(secondary_devices);
     } catch (error) {
@@ -350,10 +333,8 @@ function unpairLocalDevice(connection){
         // clear the memory of the paired device as well
         unpairGlobalDevice(connection.id.room_id, oppositeType, connection.id.paired_uuid);
 
-        connection.id.paired = false;
-        connection.id.paired_uuid = null;
-
-        console.log('UNPAIRED LOCAL CONNECTION FROM MEM');
+        connection.id.setPaired(false);
+        connection.id.setPairedUUID(null);
 
         const pairMsg = new RedisMessage();
         pairMsg.setOrigin(SERVER_ID);
@@ -362,6 +343,7 @@ function unpairLocalDevice(connection){
         const robotUpdateInfo = {uuid: robotID,
             room_id: connection.id.room_id,
             device_type: deviceType.robot};
+
         pairMsg.setMessage(robotUpdateInfo);
 
         // update all the robots across servers to show this pair
@@ -394,8 +376,8 @@ function unpairGlobalDevice(roomID, type, uuid){
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(uuid)) {
             const connection = devices_map.get(roomID).get(type).get(uuid);
-            connection.id.paired = false;
-            connection.id.paired_uuid = null;
+            connection.id.setPaired(false);
+            connection.id.setPairedUUID(null);
 
             console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map');
             // console.log(connection);
@@ -406,8 +388,8 @@ function unpairGlobalDevice(roomID, type, uuid){
     if (secondary_devices.has(roomID)){
         if (secondary_devices.get(roomID).get(type).has(uuid)) {
             const info = secondary_devices.get(roomID).get(type).get(uuid);
-            info.paired = false;
-            info.paired_uuid = null;
+            info.setPaired(false);
+            info.setPairedUUID(null);
 
             secondary_devices.get(roomID).get(type).set(uuid, info);
 
@@ -460,34 +442,34 @@ function pairLocalDevice(data, connection) {
             return false;
         }
 
-        connection.id.paired = true;
-        connection.id.paired_uuid = data.microbit_id;
+        connection.id.setPaired(true);
+        connection.id.setPairedUUID(data.microbit_id);
 
         // register that the Micro:Bit is now paired to this Pepper
-        pairGlobalDevice(connection.id.room_id, deviceType.microbit, connection.id.paired_uuid, connection.id.uuid);
+        pairGlobalDevice(connection.id);
 
         console.log('PAIRED LOCAL CONNECTION FROM MEM');
         console.log('CHECKING that the map entry is equivalent to the updated connection after pairDevice');
         console.log(devices_map.get(connection.id.room_id).get(deviceType.robot).get(connection.id.uuid) === connection);
 
-        const pairMsg = new RedisMessage();
-        pairMsg.setOrigin(SERVER_ID);
-        pairMsg.setMessageType(messageType.finishPairing);
-        pairMsg.setRoomId(connection.id.room_id);
-        const robotUpdateInfo = {paired_uuid: connection.id.paired_uuid, uuid: connection.id.uuid,
-            room_id: connection.id.room_id,
-            device_type: deviceType.robot};
-        pairMsg.setMessage(robotUpdateInfo);
+        const pairMessage = new RedisMessage();
+        pairMessage.setOrigin(SERVER_ID);
+        pairMessage.setMessageType(messageType.finishPairing);
+        pairMessage.setRoomId(connection.id.room_id);
+        pairMessage.setMessage(connection.id); // Pepper's deviceParameters
 
         // update all the robots across servers to show this pair
-        publisher.publish('socket', pairMsg.toJson());
+        publisher.publish('socket', pairMessage.toJson());
 
         // update all the microbits across servers to show this pair (reverse the paired uuid's/type)
-        const microbitUpdateInfo = {uuid: connection.id.paired_uuid, paired_uuid: connection.id.uuid,
-            room_id: connection.id.room_id,
-            device_type: deviceType.microbit};
-        pairMsg.setMessage(microbitUpdateInfo);
-        publisher.publish('socket', pairMsg.toJson());
+        const microbitUpdate = new DeviceParameters();
+        microbitUpdate.setUUID(connection.id.paired_uuid);
+        microbitUpdate.setPairedUUID(connection.id.uuid);
+        microbitUpdate.setDeviceType(deviceType.microbit);
+        microbitUpdate.setRoomID(connection.id.room_id);
+
+        pairMessage.setMessage(microbitUpdate);
+        publisher.publish('socket', pairMessage.toJson());
 
         //TODO: API call?? pair up the robots and microbits?
 
@@ -500,18 +482,20 @@ function pairLocalDevice(data, connection) {
 
 /**
  * Finishes up pairDevice by updating the correct pairs in the local memory.
- * @param roomID the roomID of the device pair
- * @param type deviceType of the device to be updated
- * @param uuid the UUID of the device to update its pairDevice
- * @param paired_uuid the UUID of the device it will be paired with
+ * @param params the DeviceParameters of the Pepper that sent the pair request
  * @return boolean true if successful pairDevice, false otherwise
  */
-function pairGlobalDevice(roomID, type, uuid, paired_uuid) {
+function pairGlobalDevice(params) {
+    const roomID = params.room_id;
+    const type = params.device;
+    const uuid = params.uuid;
+    const pairedUUID = params.paired_uuid;
+
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(uuid)) {
             const connection = devices_map.get(roomID).get(type).get(uuid);
-            connection.id.paired = true;
-            connection.id.paired_uuid = paired_uuid;
+            connection.id.setPaired(true);
+            connection.id.setPairedUUID(pairedUUID);
 
             console.log('SUCCESSFULLY UPDATED PAIRING on devices_map!');
             // console.log(connection);
@@ -522,8 +506,8 @@ function pairGlobalDevice(roomID, type, uuid, paired_uuid) {
     if (secondary_devices.has(roomID)) {
         if (secondary_devices.get(roomID).get(type).has(uuid)) {
             const info = secondary_devices.get(roomID).get(type).get(uuid);
-            info.paired = true;
-            info.paired_uuid = paired_uuid;
+            info.setPaired(true);
+            info.setPairedUUID(pairedUUID);
 
             secondary_devices.get(roomID).get(type).set(uuid, info);
 
@@ -564,8 +548,6 @@ function login(data, connection) {
         }
 
         const responseBody = parseJSON(body);
-        // console.log('Parsed POST body:');
-        // console.log(responseBody);
 
         const failedLogin = '900';
         if (!responseBody || responseBody.result === failedLogin) {
@@ -631,18 +613,11 @@ function handshake(data, connection) {
 
         registerLocalDevice(data.room_id, deviceType.robot, connection, names).then(
             success => {
-                const robotInfo = {
-                    name: names,
-                    room_id: data.room_id,
-                    uuid: connection.id.uuid,
-                    paired: false,
-                    paired_uuid: null,
-                };
 
                 const message = new RedisMessage();
                 message.setMessageType(messageType.addRobot);
                 message.setRoomId(data.room_id);
-                message.setMessage(robotInfo);
+                message.setMessage(connection.id);  // DeviceParameters of the object to register globally
                 message.setOrigin(SERVER_ID);
 
                 publisher.publish('socket', message.toJson());
@@ -657,14 +632,17 @@ function handshake(data, connection) {
  *
  * @param connection the websocket connection object of Pepper that sent the request for all Microbits
  * @return object with room id and list of microbit info objects; format is as following:
- *  { room_id: <var> ,                       // room ID of the microbits returned (same as the room Pepper is in)
+ *  { room_id: <var> ,                      // room ID of the microbits returned (same as the room Pepper is in)
  *    microbit_list: [{
+ *          roomID: <var>                   // roomID that this microbit is in
  *          uuid: <uuid version 4>          // uuid assigned to the microbit when it connected to a server
  *          name: <string>                  // user chosen name
  *          paired: true || false           // whether or not the microbit is already paired
  *          paired_uuid: <uuid version 4 if a device is paired to it, null otherwise>,
  *      }, ... ... ]
  *   }
+ *
+ *   microbit_list will be filled with multiple DeviceParameter objects describing the Micro:Bit.
  */
 function requestAllMicrobits(connection) {
     const data = {
@@ -676,24 +654,14 @@ function requestAllMicrobits(connection) {
     if (devices_map.has(connection.id.room_id)) {
         devices_map.get(connection.id.room_id).get(deviceType.microbit).forEach((value) => {
             // value is the connection object stored after registration of microbit
-            data.microbit_list.push({
-                uuid: value.id.uuid,
-                name: value.id.name,
-                paired: value.id.paired,
-                paired_uuid: value.id.paired_uuid,
-            });
+            data.microbit_list.push(value.id);
         });
     }
 
     // Collect all microbits from other servers in the same room
     if(secondary_devices.has(connection.id.room_id)) {
         secondary_devices.get(connection.id.room_id).get(deviceType.microbit).forEach((microbit) => {
-            data.microbit_list.push({
-                uuid: microbit.uuid,
-                name: microbit.name,
-                paired: microbit.paired,
-                paired_uuid: microbit.paired_uuid,
-            });
+            data.microbit_list.push(microbit);
         });
     }
 
@@ -723,29 +691,25 @@ function parseJSON(data) {
  * Alerts all Peppers in the same room as the *newly* added micro:bit
  * that it been added/alerts the other server of the micro:bit's presence for reference.
  *
- * @param roomID room ID of micro:bit that was newly registered with registerLocalDevice()
- * @param uuid the value of the ID the micro:bit is uniquely mapped to assigned during registerLocalDevice()
- * @param name (s) of the micro:bit assigned to by the user
+ * @param params DeviceParameters object describing the Micro:Bit that was just added
  * @param broadcast true for alerting other server (micro:bit was added to this server), false to just alert
  *        peppers on the server this function is called.
+ *
  */
-function alertPeppers(roomID, uuid, name, broadcast) {
-    // what the other server will instantiate for this newly added microbit
-    const microbitInfo = {uuid: uuid, name: name, room_id: roomID, paired: false, paired_uuid: null};
-
-    if (devices_map.has(roomID)) {
+function alertPeppers(params, broadcast) {
+    if (devices_map.has(params.room_id)) {
         // alert on this server
-        devices_map.get(roomID).get(deviceType.robot).forEach((connection) => {
+        devices_map.get(params.room_id).get(deviceType.robot).forEach((connection) => {
             connection.sendUTF('Alerting Peppers in room of new Microbit added!');
-            connection.sendUTF(JSON.stringify(microbitInfo))
+            connection.sendUTF(params.toJSON())
         });
     }
 
     if (broadcast) {
         const message = new RedisMessage();
         message.setMessageType(messageType.addMicrobit);
-        message.setRoomId(roomID);
-        message.setMessage(microbitInfo);
+        message.setRoomId(params.room_id);
+        message.setMessage(params);
         message.setOrigin(SERVER_ID);
 
         publisher.publish('socket', message.toJson());
