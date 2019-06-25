@@ -38,7 +38,7 @@ const server = http.createServer(function (request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end('Just sent the headers');
 }).listen(SERVER_PORT, function () {
-    console.log('Server 2 listening on port: ' + SERVER_PORT);
+    console.log('Server 1 listening on port: ' + SERVER_PORT);
     serverStartCleanup();
 });
 
@@ -181,8 +181,7 @@ subscriber.on('message', function (channel, message) {
         case messageType.addMicrobit:
             if (msgObject.origin !== SERVER_ID) {
                 registerGlobalDevice(msgObject.message);
-                alertPeppers(msgObject.room_id, msgObject.message['uuid'],
-                    msgObject.message['name'], false);
+                alertPeppers(msgObject.message, false);
             }
             break;
         case messageType.addRobot:
@@ -251,7 +250,7 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
 
         // notify all peppers that a microbit was added on this server
         if (type === deviceType.microbit) {
-            alertPeppers(connection.id, true);
+            alertPeppers(connection.id.build(), true);
         }
         resolve('done');
     });
@@ -714,7 +713,7 @@ function parseJSON(data) {
  * Alerts all Peppers in the same room as the *newly* added micro:bit
  * that it been added/alerts the other server of the micro:bit's presence for reference.
  *
- * @param params DeviceParameters object describing the Micro:Bit that was just added
+ * @param params DeviceParameters-like object describing the Micro:Bit that was just added
  * @param broadcast true for alerting other server (micro:bit was added to this server), false to just alert
  *        peppers on the server this function is called.
  *
@@ -732,7 +731,7 @@ function alertPeppers(params, broadcast) {
         const message = new RedisMessage();
         message.setMessageType(messageType.addMicrobit);
         message.setRoomId(params.room_id);
-        message.setMessage(params.build());
+        message.setMessage(params);
         message.setOrigin(SERVER_ID);
 
         publisher.publish('socket', message.toJSON());
