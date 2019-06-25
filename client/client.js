@@ -100,9 +100,9 @@ msg.addEventListener('keydown', e => {
     }
 
     if(e.key === 'Control') {
-        let data = requestMicrobits();
+        requestMicrobits();
         let paragraph = document.createElement('paragraph');
-        paragraph.textContent = JSON.stringify(data);
+        paragraph.textContent = ' requested microbits';
         box.appendChild(paragraph);
         msg.value = '';
     }

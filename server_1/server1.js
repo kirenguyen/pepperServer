@@ -495,6 +495,8 @@ function pairGlobalDevice(params) {
     const uuid = params.uuid;
     const pairedUUID = params.paired_uuid;
 
+    console.log(roomID, type, uuid, pairedUUID);
+
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(uuid)) {
             const connection = devices_map.get(roomID).get(type).get(uuid);
