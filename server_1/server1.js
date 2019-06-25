@@ -629,8 +629,6 @@ function handshake(data, connection) {
             robot_name_en: responseBody['robot_name_en']
         };
 
-        console.log(names);
-
         registerLocalDevice(data.room_id, deviceType.robot, connection, names).then(
             success => {
                 const robotInfo = {

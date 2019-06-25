@@ -108,7 +108,7 @@ msg.addEventListener('keydown', e => {
         msg.value = '';
     }
 
-    if(e.key === 'Alt') {
+    if(e.key === '=') {
         pairDevices(msg.value);
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Just attempted pairing with microbit UUID: ' + msg.value;
@@ -116,7 +116,7 @@ msg.addEventListener('keydown', e => {
         msg.value = '';
     }
 
-    if(e.key === 'Meta'){
+    if(e.key === '-'){
         unpairDevice();
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Just attempted to disconnect pair connections';
