@@ -340,6 +340,8 @@ function unpairLocalDevice(connection){
         connection.id.setPaired(false);
         connection.id.setPairedUUID(null);
 
+        console.log('UNPAIRED DEVICE(s) ON LOCAL MEMORY!!!');
+
         const pairMsg = new RedisMessage();
         pairMsg.setOrigin(SERVER_ID);
         pairMsg.setMessageType(messageType.finishUnpairing);
@@ -377,6 +379,9 @@ function unpairLocalDevice(connection){
  * @param uuid the UUID of the device that is to be cleared from pairDevice
  */
 function unpairGlobalDevice(roomID, type, uuid){
+    console.log('About to unpair global device using following params');
+    console.log(roomID, type, uuid);
+
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(uuid)) {
             const connection = devices_map.get(roomID).get(type).get(uuid);
@@ -495,6 +500,7 @@ function pairGlobalDevice(params) {
     const uuid = params.uuid;
     const pairedUUID = params.paired_uuid;
 
+    console.log('pairing global device using following params:');
     console.log(roomID, type, uuid, pairedUUID);
 
     if(devices_map.has(roomID)) {
