@@ -37,9 +37,9 @@ function createMicrobit(name) {
     socket.send(jsonMessage);
 }
 
-function createPepper() {
+function createPepper(roomNumber) {
     const roboMessage = new RoboMessage();
-    roboMessage.setRoomId(1);
+    roboMessage.setRoomId(parseInt(roomNumber, 10));
     roboMessage.setUserId(129);
     roboMessage.setMessageType(messageType.handshake);
     roboMessage.setMessage('no message');
@@ -83,19 +83,15 @@ function requestMicrobits(){
     console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
-
-
-
-
 msg.addEventListener('keydown', e => {
-    if(e.key === "Enter") {
+    if(e.key === 'Enter') {
         createMicrobit(msg.value);
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Added microbit with name: ' + msg.value + '    ';
         box.appendChild(paragraph);
         msg.value = '';
     }
-    if(e.key === "1") {
+    if(e.key === '1') {
         createPepper();
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Added Pepper  ';
@@ -103,7 +99,7 @@ msg.addEventListener('keydown', e => {
         msg.value = '';
     }
 
-    if(e.key === "2") {
+    if(e.key === '2') {
         let data = requestMicrobits();
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = JSON.stringify(data);
@@ -111,7 +107,20 @@ msg.addEventListener('keydown', e => {
         msg.value = '';
     }
 
-    if(e.key === "3") {
+    if(e.key === '3') {
         pairDevices(msg.value);
+        let paragraph = document.createElement('paragraph');
+        paragraph.textContent = 'Just attempted pairing with microbit UUID: ' + msg.value;
+        box.appendChild(paragraph);
+        msg.value = '';
+    }
+
+    if(e.key === '4'){
+        unpairDevice();
+        let paragraph = document.createElement('paragraph');
+        paragraph.textContent = 'Just attempted to disconnect pair connections';
+        box.appendChild(paragraph);
+        msg.value = '';
+
     }
 });

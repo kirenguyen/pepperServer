@@ -133,10 +133,13 @@ wss.on('request', function (req) {
                 room_id: connection.id.room_id};
             message.setMessage(deviceInfo);
             publisher.publish('socket', message.toJson());
+        } else {
+            console.log('This connection was not set up with a device');
+            return false;
         }
 
         try {
-            // don't do POST request for micro:bits
+            // don't do POST request for micro:bits (yet)
             if(connection.id.device_type === deviceType.microbit){
                 return true;
             }
@@ -365,7 +368,7 @@ function unpairLocalDevice(connection){
         connection.id.paired = false;
         connection.id.paired_uuid = null;
 
-        console.log('UNPAIRED LOCAL CONNECTION FROM MEM: ');
+        console.log('UNPAIRED LOCAL CONNECTION FROM MEM');
 
         let pairMsg = new RedisMessage();
         pairMsg.setOrigin(SERVER_ID);
@@ -478,7 +481,7 @@ function pairLocalDevice(data, connection) {
         // register that the Micro:Bit is now paired to this Pepper
         pairGlobalDevice(connection.id.room_id, deviceType.microbit, connection.id.paired_uuid, connection.id.uuid);
 
-        console.log('PAIRED LOCAL CONNECTION FROM MEM: ');
+        console.log('PAIRED LOCAL CONNECTION FROM MEM');
         console.log('CHECKING that the map entry is equivalent to the updated connection after pairDevice');
         console.log(devices_map.get(connection.id.room_id).get(deviceType.robot).get(connection.id.uuid) === connection);
 
@@ -754,7 +757,7 @@ function alertPeppers(roomID, uuid, name, broadcast) {
     if (devices_map.has(roomID)) {
         // alert on this server
         devices_map.get(roomID).get(deviceType.robot).forEach((value) => {
-            value.sendUTF('This is how we would alert all the Peppers! If only I knew how to exactly...');
+            value.sendUTF('Alerting Peppers in room of new Microbit added!');
             value.sendUTF(JSON.stringify(microbitInfo))
         });
     }
