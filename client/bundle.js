@@ -7,10 +7,10 @@ const messageType = messageConstants.messageType;
 
 // Create WebSocket connection.
 // Server 1
-// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2
-const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 const msg = document.getElementById('msg');
 const box = document.getElementById('box');
@@ -22,7 +22,6 @@ socket.addEventListener('open', function (event) {
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
-    console.log('Message from server: ');
     console.log(' >> ' + event.data);
 });
 
@@ -85,6 +84,7 @@ function requestMicrobits(){
 }
 
 msg.addEventListener('keydown', e => {
+    console.log(e.key);
     if(e.key === 'Enter') {
         createMicrobit(msg.value);
         let paragraph = document.createElement('paragraph');
@@ -92,15 +92,15 @@ msg.addEventListener('keydown', e => {
         box.appendChild(paragraph);
         msg.value = '';
     }
-    if(e.key === '1') {
-        createPepper();
+    if(e.key === 'Tab') {
+        createPepper(msg.value);
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Added Pepper  ';
         box.appendChild(paragraph);
         msg.value = '';
     }
 
-    if(e.key === '2') {
+    if(e.key === 'Control') {
         let data = requestMicrobits();
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = JSON.stringify(data);
@@ -108,7 +108,7 @@ msg.addEventListener('keydown', e => {
         msg.value = '';
     }
 
-    if(e.key === '3') {
+    if(e.key === 'Alt') {
         pairDevices(msg.value);
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Just attempted pairing with microbit UUID: ' + msg.value;
@@ -116,7 +116,7 @@ msg.addEventListener('keydown', e => {
         msg.value = '';
     }
 
-    if(e.key === '4'){
+    if(e.key === 'Meta'){
         unpairDevice();
         let paragraph = document.createElement('paragraph');
         paragraph.textContent = 'Just attempted to disconnect pair connections';

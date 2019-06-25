@@ -81,7 +81,6 @@ wss.on('request', function (req) {
     connection.webSocketKey = req.httpRequest.headers["sec-websocket-key"];
 
     connection.on('message', function (message) {
-        console.log('MESSAGE RECEIVED FROM CLIENT');
         let data = parseJSON(message.utf8Data);
         if (!data) {
             return false;
@@ -112,7 +111,6 @@ wss.on('request', function (req) {
 
     connection.on('close', function (reasonCode, description) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-        console.log('desc: ' + description);
 
         // if this connection was registered before disconnection
         if (connection.hasOwnProperty('id')) {
@@ -715,8 +713,6 @@ function requestAllMicrobits(connection) {
  * @returns JSON object if data was parsable, nothing otherwise
  */
 function parseJSON(data) {
-    console.log('Received from client: ');
-    console.log(data);
     try {
         return JSON.parse(data);
     } catch (err) {
