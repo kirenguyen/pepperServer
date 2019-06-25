@@ -715,6 +715,8 @@ function requestAllMicrobits(connection) {
  * @returns JSON object if data was parsable, nothing otherwise
  */
 function parseJSON(data) {
+    console.log('Received from client: ');
+    console.log(data);
     try {
         return JSON.parse(data);
     } catch (err) {
