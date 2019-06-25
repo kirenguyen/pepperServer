@@ -374,12 +374,12 @@ function unpairLocalDevice(connection){
 }
 
 /**
- * Cleans a device's pairDevice from memory after a(nother) device requested to be unpaired.
+ * Cleans a device's partner/pair from memory after a(nother) device requested to be unpaired.
  * No effect if the device was not paired to begin with.
  *
  * @param roomID the room where the device requested to be unpaired (same as room of paired device)
- * @param type the type of the device that is to be cleared from pairDevice
- * @param uuid the UUID of the device that is to be cleared from pairDevice
+ * @param type the type of the device that is to be cleared from partner
+ * @param uuid the UUID of the device that is to be cleared from partner
  */
 function unpairGlobalDevice(roomID, type, uuid){
     console.log('About to unpair global device using following params');
@@ -457,8 +457,15 @@ function pairLocalDevice(data, connection) {
         connection.id.setPaired(true);
         connection.id.setPairedUUID(data.microbit_id);
 
-        // register that the Micro:Bit is now paired to this Pepper
-        pairGlobalDevice(connection.id);
+        console.log('ABOUT TO PAIR GLOBAL DEVICE AKA UPDATE THE OTHER DEVICE');
+
+        const updateMicrobit = new DeviceParameters();
+        updateMicrobit.setUUID(connection.id.paired_uuid);
+        updateMicrobit.setPairedUUID(connection.id.paired_uuid);
+        updateMicrobit.setRoomID(connection.id.room_id);
+
+        // register that the Micro:Bit is now paired to this Pepper with the correct information
+        pairGlobalDevice(updateMicrobit);
 
         console.log('PAIRED LOCAL CONNECTION FROM MEM');
         console.log('CHECKING that the map entry is equivalent to the updated connection after pairDevice');
@@ -486,9 +493,6 @@ function pairLocalDevice(data, connection) {
         //TODO: API call?? pair up the robots and microbits?
 
 
-        console.log('PEPPER SENT THE REQUEST TO PAIR UP, HERE IS HIS CONNECTION.ID');
-        console.log(connection.id);
-
         return true;
     } catch (error) {
         console.log('Error in trying to pair device on this servers local memory.');
@@ -498,7 +502,8 @@ function pairLocalDevice(data, connection) {
 
 /**
  * Finishes up pairDevice by updating the correct pairs in the local memory.
- * @param params the DeviceParameters object of the Pepper that sent the pair request
+ * @param params the DeviceParameters object of the Device describing how the local memory
+ *        will be updated
  * @return boolean true if successful pairDevice, false otherwise
  */
 function pairGlobalDevice(params) {
