@@ -457,17 +457,16 @@ function pairLocalDevice(data, connection) {
         connection.id.setPaired(true);
         connection.id.setPairedUUID(data.microbit_id);
 
-        console.log('ABOUT TO PAIR GLOBAL DEVICE AKA UPDATE THE OTHER DEVICE');
 
         const updateMicrobit = new DeviceParameters();
         updateMicrobit.setUUID(connection.id.paired_uuid);
-        updateMicrobit.setPairedUUID(connection.id.paired_uuid);
+        updateMicrobit.setPairedUUID(connection.id.uuid);
         updateMicrobit.setRoomID(connection.id.room_id);
+        updateMicrobit.setDeviceType(deviceType.microbit);
 
         // register that the Micro:Bit is now paired to this Pepper with the correct information
         pairGlobalDevice(updateMicrobit);
 
-        console.log('PAIRED LOCAL CONNECTION FROM MEM');
         console.log('CHECKING that the map entry is equivalent to the updated connection after pairDevice');
         console.log(devices_map.get(connection.id.room_id).get(deviceType.robot).get(connection.id.uuid) === connection);
 
