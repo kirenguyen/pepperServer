@@ -192,7 +192,9 @@ subscriber.on('message', function (channel, message) {
             if (msgObject.origin !== SERVER_ID) {
                 pairGlobalDevice(msgObject.message);
             }
-            updatePeppersMicrobitList(msgObject.room_id, false);
+            if ( msgObject.message.device_type === deviceType.microbit) {
+                updatePeppersMicrobitList(msgObject.room_id, false);
+            }
             break;
         case messageType.notifyPepper:
             if (msgObject.origin !== SERVER_ID) {
@@ -203,14 +205,18 @@ subscriber.on('message', function (channel, message) {
             if (msgObject.origin !== SERVER_ID) {
                 unpairGlobalDevice(msgObject.room_id, msgObject.message['device_type'], msgObject.message['uuid']);
             }
-            updatePeppersMicrobitList(msgObject.room_id, true);
+            if ( msgObject.message.device_type === deviceType.microbit) {
+                updatePeppersMicrobitList(msgObject.room_id, false);
+            }
             break;
         case messageType.removeDevice:
             // unregister device connected to other server
             if (msgObject.origin !== SERVER_ID){
                 unregisterGlobalDevice(msgObject.message);
             }
-            updatePeppersMicrobitList(msgObject.room_id, true);
+            if ( msgObject.message.device_type === deviceType.microbit) {
+                updatePeppersMicrobitList(msgObject.room_id, false);
+            }
             break;
         default:
             console.log('Message pubbed that fell into default case: ');
@@ -763,11 +769,11 @@ function updatePeppersMicrobitList(roomID, broadcast) {
         });
     }
 
-    if (broadcast) {
-        const message = new RedisMessage();
-        message.setMessageType(messageType.notifyPepper);
-        message.setRoomId(roomID);
-        message.setOrigin(SERVER_ID);
-        publisher.publish('socket', message.toJSON());
-    }
+    // if (broadcast) {
+    //     const message = new RedisMessage();
+    //     message.setMessageType(messageType.notifyPepper);
+    //     message.setRoomId(roomID);
+    //     message.setOrigin(SERVER_ID);
+    //     publisher.publish('socket', message.toJSON());
+    // }
 }
