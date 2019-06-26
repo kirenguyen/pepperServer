@@ -594,7 +594,7 @@ function handshake(data, connection) {
         "room_id": data.room_id,
         "user_id": data.user_id,
         "socket_id": connection.webSocketKey,
-        "device_type": data.device_type,
+        "device_type": 1,
         "robot_id": data.robot_id
     };
 

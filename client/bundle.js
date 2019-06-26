@@ -7,10 +7,10 @@ const messageType = messageConstants.messageType;
 
 // Create WebSocket connection.
 // Server 1
-// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2
-const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 const msg = document.getElementById('msg');
 const box = document.getElementById('box');
@@ -127,14 +127,12 @@ msg.addEventListener('keydown', e => {
 });
 
 },{"../messages/message-constants":2,"../messages/microbit-message":3,"../messages/robo-message":4}],2:[function(require,module,exports){
-const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
+const deviceType = Object.freeze({robot: 'robot', microbit: 'microbit', browser: 'browser'});
 const messageType = Object.freeze({
     login: 'login',
     handshake: 'handshake',
-
     pairDevice: 'pairDevice',
     unpairDevice: 'unpairDevice',
-
     requestMicrobits: 'requestMicrobits',
 
     // not to be used by client

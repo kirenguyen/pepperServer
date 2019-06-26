@@ -1,11 +1,9 @@
-const deviceType = Object.freeze({robot: 1, microbit: 2, browser: 3});
+const deviceType = Object.freeze({robot: 'robot', microbit: 'microbit', browser: 'browser'});
 const messageType = Object.freeze({
     login: 'login',
     handshake: 'handshake',
-
     pairDevice: 'pairDevice',
     unpairDevice: 'unpairDevice',
-
     requestMicrobits: 'requestMicrobits',
 
     // not to be used by client
