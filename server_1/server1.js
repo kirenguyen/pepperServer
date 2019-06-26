@@ -179,9 +179,8 @@ subscriber.on('message', function (channel, message) {
             break;
         case messageType.addMicrobit:
             if (msgObject.origin !== SERVER_ID) {
-                alertPeppersNewMicrobit(msgObject.message, false).then(
-                    success => registerGlobalDevice(msgObject.message)
-            )
+                registerGlobalDevice(msgObject.message);
+                alertPeppersNewMicrobit(msgObject.message, false);
             }
             break;
         case messageType.addRobot:
@@ -724,29 +723,25 @@ function parseJSON(data) {
  *
  */
 function alertPeppersNewMicrobit(microbit, broadcast) {
-    return new Promise(function(resolve) {
-        if (devices_map.has(microbit.room_id)) {
-            // notifyPepper on this server
-            devices_map.get(microbit.room_id).get(deviceType.robot).forEach((connection) => {
-                connection.sendUTF('Alerting Peppers in room of new Microbit added!');
-                let microbitList = requestAllMicrobits(connection);
-                microbitList.microbit_list.push(microbit);
-                connection.sendUTF(JSON.stringify(microbitList));
-            });
-        }
+    if (devices_map.has(microbit.room_id)) {
+        // notifyPepper on this server
+        devices_map.get(microbit.room_id).get(deviceType.robot).forEach((connection) => {
+            connection.sendUTF('Alerting Peppers in room of new Microbit added!');
+            let microbitList = requestAllMicrobits(connection);
+            // microbitList.microbit_list.push(microbit);
+            connection.sendUTF(JSON.stringify(microbitList));
+        });
+    }
 
-        if (broadcast) {
-            const message = new RedisMessage();
-            message.setMessageType(messageType.addMicrobit);
-            message.setRoomId(microbit.room_id);
-            message.setMessage(microbit);
-            message.setOrigin(SERVER_ID);
+    if (broadcast) {
+        const message = new RedisMessage();
+        message.setMessageType(messageType.addMicrobit);
+        message.setRoomId(microbit.room_id);
+        message.setMessage(microbit);
+        message.setOrigin(SERVER_ID);
 
-            publisher.publish('socket', message.toJSON());
-        }
-
-        resolve('done');
-    });
+        publisher.publish('socket', message.toJSON());
+    }
 }
 
 /**

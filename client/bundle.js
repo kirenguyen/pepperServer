@@ -9,7 +9,7 @@ const messageType = messageConstants.messageType;
 // Server 1
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
-// Server 2
+// Server 2 (PERMANENTLY LOCKED DONT TOUCH IT)
 // const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 const msg = document.getElementById('msg');
