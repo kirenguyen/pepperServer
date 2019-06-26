@@ -623,7 +623,7 @@ function handshake(data, connection) {
             return false;
         }
 
-        connection.sendUTF(responseBody);   //send back Flower names
+        connection.sendUTF(response);   //send back Flower names
 
         const names = {
             robot_name_ja: responseBody['robot_name_ja'],

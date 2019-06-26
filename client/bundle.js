@@ -22,7 +22,7 @@ socket.addEventListener('open', function (event) {
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
-    console.log(' >> ' + event.data);
+    console.log(event.data);
 });
 
 
