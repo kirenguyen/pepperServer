@@ -30,12 +30,12 @@ const messageType = messageConstants.messageType;
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 const roboMessage = new RoboMessage();
-roboMessage.setRoomId(1);
+roboMessage.setRoomId('1');
 roboMessage.setUserId(129);
 roboMessage.setMessageType(messageType.handshake);
 roboMessage.setMessage('no message');
 roboMessage.setRobotId('');             
-let jsonMessage = roboMessage.toJson();
+let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
 ```
 
@@ -56,7 +56,7 @@ const loginMessage = new MicrobitMessage();
 loginMessage.setRoomName('room1');
 loginMessage.setPassword('test1234');   
 loginMessage.setMicrobitName('microbit1');    
-let jsonMessage = loginMessage.toJson();
+let jsonMessage = loginMessage.toJSON();
 socket.send(jsonMessage);
 ```
 
@@ -87,7 +87,7 @@ const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.c
 
 const roboMessage = new RoboMessage();
 roboMessage.setMessageType(messageType.requestMicrobits);
-let jsonMessage = roboMessage.toJson();
+let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
 ```
 
@@ -122,7 +122,7 @@ const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.c
 const roboMessage = new RoboMessage();
 roboMessage.setMessageType(messageType.pairDevice);
 roboMessage.setMicrobitId(microbitUUID);    //request the list of Micro:Bits to pick a UUID
-let jsonMessage = roboMessage.toJson();
+let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
 ```
 
@@ -144,7 +144,7 @@ const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.c
 
 const roboMessage = new RoboMessage();
 roboMessage.setMessageType(messageType.unpairDevice);
-let jsonMessage = roboMessage.toJson();
+let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
 ```
 
