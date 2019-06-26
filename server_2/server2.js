@@ -29,6 +29,10 @@ subscriber.on('error', function (err) {
     console.log('Subscriber error: ' + String(err));
 });
 
+//TODO:
+// MAKE ALL ROOM_ID KEYS STRINGS.
+
+
 // Devices connected to this server; contains connections where connection.id == DeviceParameter class objects
 const devices_map = new Map();
 
@@ -252,6 +256,8 @@ subscriber.on('message', function (channel, message) {
  */
 function registerLocalDevice(roomID, type, connection, deviceName) {
     return new Promise(function (resolve) {
+        const roomID = roomID.toString();
+
         if (!devices_map.has(roomID)) {
             const room_map = new Map([
                 [deviceType.robot, new Map()],
@@ -297,23 +303,25 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  */
 function registerGlobalDevice(params) {
 
-    if (!secondary_devices.has(params.room_id)) {
+    let roomID = params.room_id.toString();
+
+    if (!secondary_devices.has(roomID)) {
         console.log('Adding new room to secondary devices map');
         const room_map = new Map([
             [deviceType.robot, new Map()],
             [deviceType.microbit, new Map()],
         ]);
-        secondary_devices.set(params.room_id, room_map);
+        secondary_devices.set(roomID, room_map);
     }
 
     const deviceInfo = new DeviceParameters();
     deviceInfo.setDeviceType(params.device_type);
-    deviceInfo.setRoomID(params.room_id);
+    deviceInfo.setRoomID(roomID);
     deviceInfo.setUUID(params.uuid);
     deviceInfo.setName(params.name);
 
     // newly instantiate all of the same data as what is stored in the connection object locally
-    secondary_devices.get(params.room_id).get(params.device_type).set(params.uuid, deviceInfo);
+    secondary_devices.get(roomID).get(params.device_type).set(params.uuid, deviceInfo);
 
     console.log('UPDATED SECONDARY MAP for the server of the registered device: ');
     console.log(secondary_devices);
@@ -641,6 +649,11 @@ function handshake(data, connection) {
             connection.sendUTF('database connection failed');
         }
 
+        if (!body) {
+            connection.sendUTF('room is full.');
+            return false;
+        }
+
         const responseBody = parseJSON(body);
         const failedLogin = '900';
         connection.sendUTF(body);   //send back Flower names
@@ -648,11 +661,7 @@ function handshake(data, connection) {
         if (responseBody.result === failedLogin) {
             console.log('Failed handshake ' + body);
             return false;
-        } else if (!responseBody) {
-            connection.sendUTF('Room is full.');
-            return false;
         }
-
 
         const names = {
             robot_name_ja: responseBody['robot_name_ja'],
@@ -738,6 +747,7 @@ function parseJSON(data) {
  * @param roomID alert Peppers in room with this ID
  */
 function alertPeppers(roomID) {
+    roomID = roomID.toString();
     if (devices_map.has(roomID)) {
         // notifyPepper on this server
         devices_map.get(roomID).get(deviceType.robot).forEach((connection) => {

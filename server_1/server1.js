@@ -83,9 +83,6 @@ wss.on('request', function (req) {
     connection.webSocketKey = req.httpRequest.headers["sec-websocket-key"];
 
     connection.on('message', function (message) {
-        c
-
-
         let data = parseJSON(message.utf8Data);
         if (!data) {
             return false;
@@ -99,7 +96,11 @@ wss.on('request', function (req) {
                 handshake(data, connection);
                 break;
             case messageType.requestMicrobits:
-                connection.sendUTF(JSON.stringify(requestAllMicrobits(connection)));
+                const microbitList = requestAllMicrobits(connection);
+                connection.sendUTF(JSON.stringify(microbitList));
+                // connection.sendUTF('requested microbit list');
+                console.log('REQUESTING MICROBIT LIST:');
+                console.log(microbitList);
                 break;
             case messageType.pairDevice:
                 pairLocalDevice(data, connection);
@@ -640,6 +641,11 @@ function handshake(data, connection) {
             connection.sendUTF('database connection failed');
         }
 
+        if (!body) {
+            connection.sendUTF('room is full.');
+            return false;
+        }
+
         const responseBody = parseJSON(body);
         const failedLogin = '900';
         connection.sendUTF(body);   //send back Flower names
@@ -647,11 +653,7 @@ function handshake(data, connection) {
         if (responseBody.result === failedLogin) {
             console.log('Failed handshake ' + body);
             return false;
-        } else if (!responseBody) {
-            connection.sendUTF('Room is full.');
-            return false;
         }
-
 
         const names = {
             robot_name_ja: responseBody['robot_name_ja'],

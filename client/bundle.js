@@ -42,7 +42,7 @@ function createMicrobit(name) {
 
 function createPepper(roomNumber) {
     const roboMessage = new RoboMessage();
-    roboMessage.setRoomId(parseInt(roomNumber, 10));
+    roboMessage.setRoomId(roomNumber.toString());
     roboMessage.setUserId(129);
     roboMessage.setMessageType(messageType.handshake);
     roboMessage.setMessage('no message');
