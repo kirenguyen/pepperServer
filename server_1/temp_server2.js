@@ -19,8 +19,8 @@ const REDIS_PORT = 6379;
 const REDIS_ENDPOINT = 'roboblocks-dev-001.pv4tra.0001.use2.cache.amazonaws.com';
 const publisher = redis.createClient(REDIS_PORT, REDIS_ENDPOINT);
 const subscriber = redis.createClient(REDIS_PORT, REDIS_ENDPOINT);
-const TESTING_CHANNEL = 'testing-socket';
-subscriber.subscribe(TESTING_CHANNEL);
+const REDIS_CHANNEL = 'testing-socket';
+subscriber.subscribe(REDIS_CHANNEL);
 
 publisher.on('error', function (err) {
     console.log('Publisher error:  ' + String(err));
@@ -66,7 +66,7 @@ function serverStartCleanup() {
     const message = new RedisMessage();
     message.setOrigin(SERVER_ID);
     message.setMessageType(messageType.serverStart);
-    publisher.publish('socket', message.toJSON());
+    publisher.publish(REDIS_CHANNEL, message.toJSON());
 }
 
 /**
@@ -128,7 +128,7 @@ wss.on('request', function (req) {
             message.setRoomId(connection.id.room_id);
             message.setOrigin(SERVER_ID);
             message.setMessage(connection.id.build());
-            publisher.publish('socket', message.toJSON());
+            publisher.publish(REDIS_CHANNEL, message.toJSON());
 
         } else {
             console.log('This connection was not set up with a device');
@@ -168,7 +168,7 @@ wss.on('request', function (req) {
  * All messages received by subscriber must be children of 'RedisMessage' class.
  */
 subscriber.on('message', function (channel, message) {
-    if(channel !== TESTING_CHANNEL){
+    if(channel !== REDIS_CHANNEL){
         console.log('Message was not from me! Channel:');
         console.log(channel);
         return false;
@@ -276,7 +276,7 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
             message.setMessage(connection.id.build());
             message.setOrigin(SERVER_ID);
 
-            publisher.publish('socket', message.toJSON());
+            publisher.publish(REDIS_CHANNEL, message.toJSON());
         }
         resolve('done');
     });
@@ -385,14 +385,14 @@ function unpairLocalDevice(connection){
         pairMsg.setMessage(robotUpdateInfo);
 
         // update all the robots across servers to show this pair
-        publisher.publish('socket', pairMsg.toJSON());
+        publisher.publish(REDIS_CHANNEL, pairMsg.toJSON());
 
         // update all the microbits across servers to show this pair (reverse the paired uuid's/type)
         const microbitUpdateInfo = {uuid: microbitID,
             room_id: connection.id.room_id,
             device_type: deviceType.microbit};
         pairMsg.setMessage(microbitUpdateInfo);
-        publisher.publish('socket', pairMsg.toJSON());
+        publisher.publish(REDIS_CHANNEL, pairMsg.toJSON());
 
         //TODO: API call?? unpair the robots and microbits?
 
@@ -501,7 +501,7 @@ function pairLocalDevice(data, connection) {
         pairMessage.setMessage(connection.id.build()); // Pepper's deviceParameters
 
         // update all the robots across servers to show this pair
-        publisher.publish('socket', pairMessage.toJSON());
+        publisher.publish(REDIS_CHANNEL, pairMessage.toJSON());
 
         // update all the microbits across servers to show this pair (reverse the paired uuid's/type)
         const microbitUpdate = new DeviceParameters();
@@ -511,7 +511,7 @@ function pairLocalDevice(data, connection) {
         microbitUpdate.setRoomID(connection.id.room_id);
 
         pairMessage.setMessage(microbitUpdate.build());
-        publisher.publish('socket', pairMessage.toJSON());
+        publisher.publish(REDIS_CHANNEL, pairMessage.toJSON());
 
         //TODO: API call?? pair up the robots and microbits?
 
@@ -663,7 +663,7 @@ function handshake(data, connection) {
                 message.setMessage(connection.id.build());  // DeviceParameters class object to register globally; build into object
                 message.setOrigin(SERVER_ID);
 
-                publisher.publish('socket', message.toJSON());
+                publisher.publish(REDIS_CHANNEL, message.toJSON());
                 console.log(success, ': sent message to add Pepper globally');
             });
 
