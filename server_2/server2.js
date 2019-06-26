@@ -477,6 +477,12 @@ function checkValidPairing(roomID, type, targetUUID) {
  */
 function pairLocalDevice(data, connection) {
     try{
+        if(connection.id.device_type === deviceType.microbit){
+            connection.sendUTF('Error: Tried to connect a Micro:Bit with a Micro:Bit');
+            console.log('Error: Tried to connect a Micro:Bit with a Micro:Bit');
+            return false;
+        }
+
         // check if the micro:bit is free
         if (!checkValidPairing(connection.id.room_id, deviceType.microbit, data.microbit_id)){
             connection.sendUTF('Selected Micro:Bit is not available to be paired with');
