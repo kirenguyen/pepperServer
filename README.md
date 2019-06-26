@@ -22,8 +22,8 @@ In the `/messages` directory, there is a `robo-message.js` file, used to form th
 
 Sample script for sending (to server 1). Please fix the node module paths accordingly.
 ```javascript
-const RoboMessage = require('../messages/robo-message');
-const messageType = require('../messages/message-constants');
+const messageConstants = require('../messages/message-constants');
+const messageType = messageConstants.messageType;
 
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
@@ -78,7 +78,8 @@ Sample script for sending a request from a Pepper connected to server 1.
 
 ```javascript
 const RoboMessage = require('../messages/robo-message');
-const messageType = require('../messages/message-constants');
+const messageConstants = require('../messages/message-constants');
+const messageType = messageConstants.messageType;
 
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
@@ -110,7 +111,8 @@ You will need to get the UUID of the Micro:Bit you want to pair Pepper to; only 
 
 ```javascript
 const RoboMessage = require('../messages/robo-message');
-const messageType = require('../messages/message-constants');
+const messageConstants = require('../messages/message-constants');
+const messageType = messageConstants.messageType;
 
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
@@ -132,7 +134,8 @@ Here is a sample script for unpairing from Pepper:
 
 ```javascript
 const RoboMessage = require('../messages/robo-message');
-const messageType = require('../messages/message-constants');
+const messageConstants = require('../messages/message-constants');
+const messageType = messageConstants.messageType;
 
 const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
