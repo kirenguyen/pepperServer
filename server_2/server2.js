@@ -268,7 +268,7 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
 
         //identifying information to unregister device on closing
         connection.id = new DeviceParameters();
-        connection.id.setRoomID(roomID);
+        connection.id.setRoomID(roomIdString);
         connection.id.setName(deviceName);
         connection.id.setDeviceType(type);
         connection.id.setUUID(uuidv4());
