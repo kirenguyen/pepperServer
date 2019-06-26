@@ -1,6 +1,6 @@
 # pepperServer
 
-LAST UPDATED: 25/6/19
+LAST UPDATED: 26/6/19
 
 
 ### Running the Two Servers
@@ -62,8 +62,17 @@ socket.send(jsonMessage);
 
 Upon successful connection to the server, an alert will be sent to all Peppers within the same room as an object formatted as follows:
 
-```
-
+```textmate
+let microbitList = {
+    room_id:  <room_id of Pepper that sent request>,
+    microbit_list: [{
+        roomID: <var>
+        uuid: <UUID assigned to device connection>
+        name: <name assigned to microbit by user>
+        paired: <boolean: always false for now>
+        paired_uuid: <UUID of paired Pepper || null >
+    }, ........]
+}
 ```
 
 
@@ -93,7 +102,7 @@ socket.send(jsonMessage);
 
 The return Micro:Bit list will be in this format:
 
- ```text
+```textmate
 let microbitList = {
     room_id:  <room_id of Pepper that sent request>,
     microbit_list: [{
