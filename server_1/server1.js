@@ -299,6 +299,7 @@ function registerGlobalDevice(params) {
 function unregisterLocalDevice(connection) {
     try{
         devices_map.get(connection.id.room_id).get(connection.id.device_type).delete(connection.id.uuid);
+        updatePeppersMicrobitList(connection.id.room_id, true);
         console.log('REMOVED LOCAL CONNECTION FROM MEMORY:');
         console.log(devices_map);
     } catch (error) {
@@ -314,6 +315,7 @@ function unregisterLocalDevice(connection) {
 function unregisterGlobalDevice(params) {
     try {
         secondary_devices.get(params.room_id).get(params.device_type).delete(params.uuid);
+        updatePeppersMicrobitList(params.room_id, true);
         console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map for the server relating to registered device: ');
         console.log(secondary_devices);
     } catch (error) {
