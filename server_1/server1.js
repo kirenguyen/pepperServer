@@ -623,7 +623,6 @@ function handshake(data, connection) {
             return false;
         }
 
-        connection.sendUTF('Pepper handshake response: ');
         connection.sendUTF(body);   //send back Flower names
 
         const names = {
