@@ -192,6 +192,7 @@ subscriber.on('message', function (channel, message) {
             if (msgObject.origin !== SERVER_ID) {
                 pairGlobalDevice(msgObject.message);
             }
+            updatePeppersMicrobitList(msgObject.room_id, false);
             break;
         case messageType.notifyPepper:
             if (msgObject.origin !== SERVER_ID) {
@@ -202,12 +203,14 @@ subscriber.on('message', function (channel, message) {
             if (msgObject.origin !== SERVER_ID) {
                 unpairGlobalDevice(msgObject.room_id, msgObject.message['device_type'], msgObject.message['uuid']);
             }
+            updatePeppersMicrobitList(msgObject.room_id, true);
             break;
         case messageType.removeDevice:
             // unregister device connected to other server
             if (msgObject.origin !== SERVER_ID){
                 unregisterGlobalDevice(msgObject.message);
             }
+            updatePeppersMicrobitList(msgObject.room_id, true);
             break;
         default:
             console.log('Message pubbed that fell into default case: ');
@@ -299,7 +302,7 @@ function registerGlobalDevice(params) {
 function unregisterLocalDevice(connection) {
     try{
         devices_map.get(connection.id.room_id).get(connection.id.device_type).delete(connection.id.uuid);
-        updatePeppersMicrobitList(connection.id.room_id, true);
+        // updatePeppersMicrobitList(connection.id.room_id, true);
         console.log('REMOVED LOCAL CONNECTION FROM MEMORY:');
         console.log(devices_map);
     } catch (error) {
@@ -315,7 +318,7 @@ function unregisterLocalDevice(connection) {
 function unregisterGlobalDevice(params) {
     try {
         secondary_devices.get(params.room_id).get(params.device_type).delete(params.uuid);
-        updatePeppersMicrobitList(params.room_id, true);
+        // updatePeppersMicrobitList(params.room_id, true);
         console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map for the server relating to registered device: ');
         console.log(secondary_devices);
     } catch (error) {
@@ -352,7 +355,7 @@ function unpairLocalDevice(connection){
         connection.id.setPairedUUID(null);
 
         console.log('Unpaired device that sent unpair request.');
-        updatePeppersMicrobitList(connection.id.room_id, true);
+        // updatePeppersMicrobitList(connection.id.room_id, true);
 
         const pairMsg = new RedisMessage();
         pairMsg.setOrigin(SERVER_ID);
@@ -398,7 +401,7 @@ function unpairGlobalDevice(roomID, type, uuid){
             connection.id.setPaired(false);
             connection.id.setPairedUUID(null);
 
-            updatePeppersMicrobitList(roomID, true);
+            // updatePeppersMicrobitList(roomID, true);
             console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map');
             return true;
         }
@@ -410,7 +413,7 @@ function unpairGlobalDevice(roomID, type, uuid){
             info.setPaired(false);
             info.setPairedUUID(null);
 
-            updatePeppersMicrobitList(roomID, true);
+            // updatePeppersMicrobitList(roomID, true);
             console.log('SUCCESSFULLY CLEANED UP PAIRING on secondary_devices map');
             return true;
         }
@@ -464,7 +467,7 @@ function pairLocalDevice(data, connection) {
         connection.id.setPaired(true);
         connection.id.setPairedUUID(data.microbit_id);
 
-        updatePeppersMicrobitList(connection.id.room_id, true);
+        // updatePeppersMicrobitList(connection.id.room_id, true);
 
         const updateMicrobit = new DeviceParameters();
         updateMicrobit.setUUID(connection.id.paired_uuid);
@@ -524,7 +527,7 @@ function pairGlobalDevice(params) {
             connection.id.setPaired(true);
             connection.id.setPairedUUID(pairedUUID);
 
-            updatePeppersMicrobitList(roomID, true);
+            // updatePeppersMicrobitList(roomID, true);
             console.log('SUCCESSFULLY UPDATED PAIRING on devices_map!');
             return true;
         }
@@ -536,7 +539,7 @@ function pairGlobalDevice(params) {
             info.setPaired(true);
             info.setPairedUUID(pairedUUID);
 
-            updatePeppersMicrobitList(roomID, true);
+            // updatePeppersMicrobitList(roomID, true);
             console.log('SUCCESSFULLY UPDATED PAIRING on secondary_devices map!');
             return true;
         }
