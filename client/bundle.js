@@ -12,6 +12,9 @@ const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.c
 // Server 2 (PERMANENTLY LOCKED DONT TOUCH IT)
 // const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
+// const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
+
+
 const msg = document.getElementById('msg');
 const box = document.getElementById('box');
 
