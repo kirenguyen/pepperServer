@@ -586,7 +586,9 @@ function login(data, connection) {
             console.error(error);
         }
 
+
         const responseBody = parseJSON(body);
+        connection.sendUTF(body);   //send Microbit back the API response
 
         const failedLogin = '900';
         if (!responseBody || responseBody.result === failedLogin) {
@@ -594,7 +596,6 @@ function login(data, connection) {
             return false;
         }
 
-        //TODO: send to Microbit whether or not it's accepted or rejected
 
         registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
             success => console.log('registerLocalDevice function has been called for microbit:', success)
@@ -638,6 +639,7 @@ function handshake(data, connection) {
 
         const responseBody = parseJSON(body);
         const failedLogin = '900';
+        connection.sendUTF(body);   //send back Flower names
 
         if (responseBody.result === failedLogin) {
             console.log('Failed handshake ' + body);
@@ -647,7 +649,6 @@ function handshake(data, connection) {
             return false;
         }
 
-        connection.sendUTF(body);   //send back Flower names
 
         const names = {
             robot_name_ja: responseBody['robot_name_ja'],

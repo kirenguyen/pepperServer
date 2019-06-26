@@ -36,7 +36,7 @@ function createMicrobit(name) {
     loginMessage.setMicrobitName(name);
     loginMessage.setMessageType(messageType.login);
     let jsonMessage = loginMessage.toJSON();
-    console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
+    // console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
     socket.send(jsonMessage);
 }
 
@@ -49,7 +49,7 @@ function createPepper(roomNumber) {
     roboMessage.setRobotId('');
     let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
-    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+    // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
 /**
@@ -61,7 +61,7 @@ function pairDevices(microbitUUID) {
     roboMessage.setMicrobitId(microbitUUID);
     let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
-    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+    // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
 /**
@@ -72,7 +72,7 @@ function unpairDevice() {
     roboMessage.setMessageType(messageType.unpairDevice);
     let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
-    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+    // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
 /**
@@ -83,7 +83,7 @@ function requestMicrobits(){
     roboMessage.setMessageType(messageType.requestMicrobits);
     let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
-    console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+    // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
 msg.addEventListener('keydown', e => {
