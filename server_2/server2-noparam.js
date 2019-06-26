@@ -726,7 +726,7 @@ function parseJSON(data) {
  * @param roomID room ID of micro:bit that was newly registered with registerLocalDevice()
  * @param uuid the value of the ID the micro:bit is uniquely mapped to assigned during registerLocalDevice()
  * @param name (s) of the micro:bit assigned to by the user
- * @param broadcast true for alerting other server (micro:bit was added to this server), false to just alert
+ * @param broadcast true for alerting other server (micro:bit was added to this server), false to just notifyPepper
  *        peppers on the server this function is called.
  */
 function alertPeppers(roomID, uuid, name, broadcast) {
@@ -734,7 +734,7 @@ function alertPeppers(roomID, uuid, name, broadcast) {
     const microbitInfo = {uuid: uuid, name: name, room_id: roomID, paired: false, paired_uuid: null};
 
     if (devices_map.has(roomID)) {
-        // alert on this server
+        // notifyPepper on this server
         devices_map.get(roomID).get(deviceType.robot).forEach((connection) => {
             connection.sendUTF('Alerting Peppers in room of new Microbit added!');
             connection.sendUTF(JSON.stringify(microbitInfo))

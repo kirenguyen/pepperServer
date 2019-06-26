@@ -9,6 +9,7 @@ const messageType = Object.freeze({
     // not to be used by client
     addMicrobit: 'addMicrobit',
     addRobot: 'addRobot',
+    notifyPepper: 'notifyPepper',
     finishPairing: 'finishPairing',
     finishUnpairing: 'finishUnpairing',
     removeDevice: 'removeDevice',
