@@ -624,7 +624,7 @@ function handshake(data, connection) {
         }
 
         connection.sendUTF('Pepper handshake response: ');
-        connection.sendUTF(JSON.stringify(response));   //send back Flower names
+        connection.sendUTF(JSON.stringify(body));   //send back Flower names
 
         const names = {
             robot_name_ja: responseBody['robot_name_ja'],
