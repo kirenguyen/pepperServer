@@ -29,6 +29,10 @@ subscriber.on('error', function (err) {
     console.log('Subscriber error: ' + String(err));
 });
 
+//TODO:
+// MAKE ALL ROOM_ID KEYS STRINGS.
+
+
 // Devices connected to this server; contains connections where connection.id == DeviceParameter class objects
 const devices_map = new Map();
 
@@ -252,22 +256,24 @@ subscriber.on('message', function (channel, message) {
  */
 function registerLocalDevice(roomID, type, connection, deviceName) {
     return new Promise(function (resolve) {
-        if (!devices_map.has(roomID)) {
+        const roomIdString = roomID.toString();
+
+        if (!devices_map.has(roomIdString)) {
             const room_map = new Map([
                 [deviceType.robot, new Map()],
                 [deviceType.microbit, new Map()],
             ]);
-            devices_map.set(roomID, room_map);
+            devices_map.set(roomIdString, room_map);
         }
 
         //identifying information to unregister device on closing
         connection.id = new DeviceParameters();
-        connection.id.setRoomID(roomID);
+        connection.id.setRoomID(roomIdString);
         connection.id.setName(deviceName);
         connection.id.setDeviceType(type);
         connection.id.setUUID(uuidv4());
 
-        devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
+        devices_map.get(roomIdString).get(type).set(connection.id.uuid, connection);
 
         console.log('!!!! Devices map after registering local device: ');
         console.log(devices_map);
@@ -276,7 +282,7 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
         if (type === deviceType.microbit) {
             const message = new RedisMessage();
             message.setMessageType(messageType.addMicrobit);
-            message.setRoomId(roomID);
+            message.setRoomId(roomIdString);
             message.setMessage(connection.id.build());
             message.setOrigin(SERVER_ID);
 
@@ -297,23 +303,25 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  */
 function registerGlobalDevice(params) {
 
-    if (!secondary_devices.has(params.room_id)) {
+    let roomID = params.room_id.toString();
+
+    if (!secondary_devices.has(roomID)) {
         console.log('Adding new room to secondary devices map');
         const room_map = new Map([
             [deviceType.robot, new Map()],
             [deviceType.microbit, new Map()],
         ]);
-        secondary_devices.set(params.room_id, room_map);
+        secondary_devices.set(roomID, room_map);
     }
 
     const deviceInfo = new DeviceParameters();
     deviceInfo.setDeviceType(params.device_type);
-    deviceInfo.setRoomID(params.room_id);
+    deviceInfo.setRoomID(roomID);
     deviceInfo.setUUID(params.uuid);
     deviceInfo.setName(params.name);
 
     // newly instantiate all of the same data as what is stored in the connection object locally
-    secondary_devices.get(params.room_id).get(params.device_type).set(params.uuid, deviceInfo);
+    secondary_devices.get(roomID).get(params.device_type).set(params.uuid, deviceInfo);
 
     console.log('UPDATED SECONDARY MAP for the server of the registered device: ');
     console.log(secondary_devices);
@@ -469,16 +477,19 @@ function checkValidPairing(roomID, type, targetUUID) {
  */
 function pairLocalDevice(data, connection) {
     try{
+        if(connection.id.device_type === deviceType.microbit){
+            console.log('Error: Tried to connect a Micro:Bit with a Micro:Bit');
+            return false;
+        }
+
         // check if the micro:bit is free
         if (!checkValidPairing(connection.id.room_id, deviceType.microbit, data.microbit_id)){
-            connection.sendUTF('Selected Micro:Bit is not available to be paired with');
             console.log('The selected Micro:Bit is already paired');
             return false;
         }
 
         // check if this Pepper is free
         if (!checkValidPairing(connection.id.room_id, deviceType.robot, connection.id.uuid)){
-            connection.sendUTF('Pepper is already paired! Please unpair first before attempting again');
             console.log('Pepper is already paired with a Micro:Bit. Please unpair first before attempting again');
             return false;
         }
@@ -739,6 +750,7 @@ function parseJSON(data) {
  * @param roomID alert Peppers in room with this ID
  */
 function alertPeppers(roomID) {
+    roomID = roomID.toString();
     if (devices_map.has(roomID)) {
         // notifyPepper on this server
         devices_map.get(roomID).get(deviceType.robot).forEach((connection) => {

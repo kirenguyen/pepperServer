@@ -478,21 +478,18 @@ function checkValidPairing(roomID, type, targetUUID) {
 function pairLocalDevice(data, connection) {
     try{
         if(connection.id.device_type === deviceType.microbit){
-            connection.sendUTF('Error: Tried to connect a Micro:Bit with a Micro:Bit');
             console.log('Error: Tried to connect a Micro:Bit with a Micro:Bit');
             return false;
         }
 
         // check if the micro:bit is free
         if (!checkValidPairing(connection.id.room_id, deviceType.microbit, data.microbit_id)){
-            connection.sendUTF('Selected Micro:Bit is not available to be paired with');
             console.log('The selected Micro:Bit is already paired');
             return false;
         }
 
         // check if this Pepper is free
         if (!checkValidPairing(connection.id.room_id, deviceType.robot, connection.id.uuid)){
-            connection.sendUTF('Pepper is already paired! Please unpair first before attempting again');
             console.log('Pepper is already paired with a Micro:Bit. Please unpair first before attempting again');
             return false;
         }
