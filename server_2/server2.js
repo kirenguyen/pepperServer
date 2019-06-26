@@ -96,7 +96,10 @@ wss.on('request', function (req) {
                 handshake(data, connection);
                 break;
             case messageType.requestMicrobits:
-                connection.sendUTF(JSON.stringify(requestAllMicrobits(connection)));
+                const microbitList = requestAllMicrobits(connection);
+                connection.sendUTF(JSON.stringify(microbitList));
+                console.log('REQUESTING MICROBIT LIST:');
+                console.log(microbitList);
                 break;
             case messageType.pairDevice:
                 pairLocalDevice(data, connection);
