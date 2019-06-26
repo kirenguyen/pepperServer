@@ -180,8 +180,8 @@ subscriber.on('message', function (channel, message) {
         case messageType.addMicrobit:
             if (msgObject.origin !== SERVER_ID) {
                 registerGlobalDevice(msgObject.message);
-                alertPeppersNewMicrobit(msgObject.message, false);
             }
+            alertPeppers(msgObject.room_id);
             break;
         case messageType.addRobot:
             if (msgObject.origin !== SERVER_ID) {
@@ -193,12 +193,12 @@ subscriber.on('message', function (channel, message) {
                 pairGlobalDevice(msgObject.message);
             }
             if ( msgObject.message.device_type === deviceType.microbit) {
-                updatePeppersMicrobitList(msgObject.room_id, false);
+                alertPeppers(msgObject.room_id);
             }
             break;
         case messageType.notifyPepper:
             if (msgObject.origin !== SERVER_ID) {
-                updatePeppersMicrobitList(msgObject.room_id, false)
+                alertPeppers(msgObject.room_id)
             }
             break;
         case messageType.finishUnpairing:
@@ -206,7 +206,7 @@ subscriber.on('message', function (channel, message) {
                 unpairGlobalDevice(msgObject.room_id, msgObject.message['device_type'], msgObject.message['uuid']);
             }
             if ( msgObject.message.device_type === deviceType.microbit) {
-                updatePeppersMicrobitList(msgObject.room_id, false);
+                alertPeppers(msgObject.room_id);
             }
             break;
         case messageType.removeDevice:
@@ -215,7 +215,7 @@ subscriber.on('message', function (channel, message) {
                 unregisterGlobalDevice(msgObject.message);
             }
             if ( msgObject.message.device_type === deviceType.microbit) {
-                updatePeppersMicrobitList(msgObject.room_id, false);
+                alertPeppers(msgObject.room_id);
             }
             break;
         default:
@@ -262,7 +262,13 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
 
         // notify all peppers that a microbit was added on this server
         if (type === deviceType.microbit) {
-            alertPeppersNewMicrobit(connection.id.build(), true);
+            const message = new RedisMessage();
+            message.setMessageType(messageType.addMicrobit);
+            message.setRoomId(roomID);
+            message.setMessage(connection.id.build());
+            message.setOrigin(SERVER_ID);
+
+            publisher.publish('socket', message.toJSON());
         }
         resolve('done');
     });
@@ -308,7 +314,6 @@ function registerGlobalDevice(params) {
 function unregisterLocalDevice(connection) {
     try{
         devices_map.get(connection.id.room_id).get(connection.id.device_type).delete(connection.id.uuid);
-        // updatePeppersMicrobitList(connection.id.room_id, true);
         console.log('REMOVED LOCAL CONNECTION FROM MEMORY:');
         console.log(devices_map);
     } catch (error) {
@@ -324,7 +329,6 @@ function unregisterLocalDevice(connection) {
 function unregisterGlobalDevice(params) {
     try {
         secondary_devices.get(params.room_id).get(params.device_type).delete(params.uuid);
-        // updatePeppersMicrobitList(params.room_id, true);
         console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map for the server relating to registered device: ');
         console.log(secondary_devices);
     } catch (error) {
@@ -361,7 +365,6 @@ function unpairLocalDevice(connection){
         connection.id.setPairedUUID(null);
 
         console.log('Unpaired device that sent unpair request.');
-        // updatePeppersMicrobitList(connection.id.room_id, true);
 
         const pairMsg = new RedisMessage();
         pairMsg.setOrigin(SERVER_ID);
@@ -407,7 +410,6 @@ function unpairGlobalDevice(roomID, type, uuid){
             connection.id.setPaired(false);
             connection.id.setPairedUUID(null);
 
-            // updatePeppersMicrobitList(roomID, true);
             console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map');
             return true;
         }
@@ -419,7 +421,6 @@ function unpairGlobalDevice(roomID, type, uuid){
             info.setPaired(false);
             info.setPairedUUID(null);
 
-            // updatePeppersMicrobitList(roomID, true);
             console.log('SUCCESSFULLY CLEANED UP PAIRING on secondary_devices map');
             return true;
         }
@@ -472,8 +473,6 @@ function pairLocalDevice(data, connection) {
 
         connection.id.setPaired(true);
         connection.id.setPairedUUID(data.microbit_id);
-
-        // updatePeppersMicrobitList(connection.id.room_id, true);
 
         const updateMicrobit = new DeviceParameters();
         updateMicrobit.setUUID(connection.id.paired_uuid);
@@ -533,7 +532,6 @@ function pairGlobalDevice(params) {
             connection.id.setPaired(true);
             connection.id.setPairedUUID(pairedUUID);
 
-            // updatePeppersMicrobitList(roomID, true);
             console.log('SUCCESSFULLY UPDATED PAIRING on devices_map!');
             return true;
         }
@@ -545,7 +543,6 @@ function pairGlobalDevice(params) {
             info.setPaired(true);
             info.setPairedUUID(pairedUUID);
 
-            // updatePeppersMicrobitList(roomID, true);
             console.log('SUCCESSFULLY UPDATED PAIRING on secondary_devices map!');
             return true;
         }
@@ -722,45 +719,12 @@ function parseJSON(data) {
     }
 }
 
-/**
- * Alerts all Peppers in the same room as the *newly* added micro:bit
- * that it been added/alerts the other server of the micro:bit's presence for reference.
- *
- * Sends list of all micro:bits, including the micro:bit described by params
- *
- * @param microbit DeviceParameters-like object (containing same attributes) describing the Micro:Bit that was just added
- * @param broadcast true for alerting other server (micro:bit was added to this server), false to just notifyPepper
- *        peppers on the server this function is called.
- *
- */
-function alertPeppersNewMicrobit(microbit, broadcast) {
-    if (devices_map.has(microbit.room_id)) {
-        // notifyPepper on this server
-        devices_map.get(microbit.room_id).get(deviceType.robot).forEach((connection) => {
-            connection.sendUTF('Alerting Peppers in room of new Microbit added!');
-            let microbitList = requestAllMicrobits(connection);
-            // microbitList.microbit_list.push(microbit);
-            connection.sendUTF(JSON.stringify(microbitList));
-        });
-    }
-
-    if (broadcast) {
-        const message = new RedisMessage();
-        message.setMessageType(messageType.addMicrobit);
-        message.setRoomId(microbit.room_id);
-        message.setMessage(microbit);
-        message.setOrigin(SERVER_ID);
-
-        publisher.publish('socket', message.toJSON());
-    }
-}
 
 /**
- * Sends Peppers in specified room updated list of Micro:Bit.
- * @param roomID
- * @param broadcast
+ * Sends Peppers in specified room updated list of Micro:Bits.
+ * @param roomID alert Peppers in room with this ID
  */
-function updatePeppersMicrobitList(roomID, broadcast) {
+function alertPeppers(roomID) {
     if (devices_map.has(roomID)) {
         // notifyPepper on this server
         devices_map.get(roomID).get(deviceType.robot).forEach((connection) => {
@@ -768,12 +732,4 @@ function updatePeppersMicrobitList(roomID, broadcast) {
             connection.sendUTF(JSON.stringify(requestAllMicrobits(connection)));
         });
     }
-
-    // if (broadcast) {
-    //     const message = new RedisMessage();
-    //     message.setMessageType(messageType.notifyPepper);
-    //     message.setRoomId(roomID);
-    //     message.setOrigin(SERVER_ID);
-    //     publisher.publish('socket', message.toJSON());
-    // }
 }
