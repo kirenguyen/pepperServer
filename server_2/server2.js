@@ -256,14 +256,14 @@ subscriber.on('message', function (channel, message) {
  */
 function registerLocalDevice(roomID, type, connection, deviceName) {
     return new Promise(function (resolve) {
-        const roomID = roomID.toString();
+        const roomIdString = roomID.toString();
 
-        if (!devices_map.has(roomID)) {
+        if (!devices_map.has(roomIdString)) {
             const room_map = new Map([
                 [deviceType.robot, new Map()],
                 [deviceType.microbit, new Map()],
             ]);
-            devices_map.set(roomID, room_map);
+            devices_map.set(roomIdString, room_map);
         }
 
         //identifying information to unregister device on closing
@@ -273,7 +273,7 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
         connection.id.setDeviceType(type);
         connection.id.setUUID(uuidv4());
 
-        devices_map.get(roomID).get(type).set(connection.id.uuid, connection);
+        devices_map.get(roomIdString).get(type).set(connection.id.uuid, connection);
 
         console.log('!!!! Devices map after registering local device: ');
         console.log(devices_map);
@@ -282,7 +282,7 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
         if (type === deviceType.microbit) {
             const message = new RedisMessage();
             message.setMessageType(messageType.addMicrobit);
-            message.setRoomId(roomID);
+            message.setRoomId(roomIdString);
             message.setMessage(connection.id.build());
             message.setOrigin(SERVER_ID);
 
