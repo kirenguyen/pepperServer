@@ -19,7 +19,8 @@ const REDIS_PORT = 6379;
 const REDIS_ENDPOINT = 'roboblocks-dev-001.pv4tra.0001.use2.cache.amazonaws.com';
 const publisher = redis.createClient(REDIS_PORT, REDIS_ENDPOINT);
 const subscriber = redis.createClient(REDIS_PORT, REDIS_ENDPOINT);
-subscriber.subscribe('socket');
+const TESTING_CHANNEL = 'testing-socket';
+subscriber.subscribe(TESTING_CHANNEL);
 
 publisher.on('error', function (err) {
     console.log('Publisher error:  ' + String(err));
@@ -167,6 +168,13 @@ wss.on('request', function (req) {
  * All messages received by subscriber must be children of 'RedisMessage' class.
  */
 subscriber.on('message', function (channel, message) {
+    if(channel !== TESTING_CHANNEL){
+        console.log('Message was not from me! Channel:');
+        console.log(channel);
+        return false;
+    }
+
+
     let msgObject = parseJSON(message);
 
     switch (msgObject.message_type) {
