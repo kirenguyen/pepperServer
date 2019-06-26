@@ -34,6 +34,11 @@ class DeviceParameters {
     toJSON(){
         return JSON.stringify(this.build());
     }
+
+    /**
+     * Creates a standard object, compatible with JSON stringify and WebSocket messages
+     * @returns {{room_id: null, paired_uuid: null, name: null, device_type: null, uuid: null, paired: boolean}}
+     */
     build(){
         return {
             uuid: this.uuid,

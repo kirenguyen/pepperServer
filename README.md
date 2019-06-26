@@ -90,7 +90,7 @@ socket.send(jsonMessage);
 
 The return Micro:Bit list will be in this format:
 
- ```
+ ```text
 let microbitList = {
     room_id:  <room_id of Pepper that sent request>,
     microbit_list: [{

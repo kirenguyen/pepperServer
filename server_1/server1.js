@@ -60,7 +60,6 @@ function originIsAllowed(origin) {
 /**
  * Sends a message to other server that this server has just (re)started
  * to clear cache of any devices that may have once been registered to this server.
- *
  */
 function serverStartCleanup() {
     const message = new RedisMessage();
@@ -127,7 +126,7 @@ wss.on('request', function (req) {
             message.setMessageType(messageType.removeDevice);
             message.setRoomId(connection.id.room_id);
             message.setOrigin(SERVER_ID);
-            message.setMessage(connection.id.build());  // DeviceParameter of device to be removed
+            message.setMessage(connection.id.build());
             publisher.publish('socket', message.toJSON());
 
         } else {
@@ -196,7 +195,6 @@ subscriber.on('message', function (channel, message) {
             break;
         case messageType.finishUnpairing:
             if (msgObject.origin !== SERVER_ID) {
-                console.log('??? here');
                 unpairGlobalDevice(msgObject.room_id, msgObject.message['device_type'], msgObject.message['uuid']);
             }
             break;
@@ -341,14 +339,12 @@ function unpairLocalDevice(connection){
         }
 
         // clear the memory of the paired device as well
-        console.log('about to win it all');
-        console.log(connection.id);
         unpairGlobalDevice(connection.id.room_id, oppositeType, connection.id.paired_uuid);
 
         connection.id.setPaired(false);
         connection.id.setPairedUUID(null);
 
-        console.log('UNPAIRED DEVICE(s) ON LOCAL MEMORY!!!');
+        console.log('Unpaired device that sent unpair request.');
 
         const pairMsg = new RedisMessage();
         pairMsg.setOrigin(SERVER_ID);
@@ -387,9 +383,6 @@ function unpairLocalDevice(connection){
  * @param uuid the UUID of the device that is to be cleared from partner
  */
 function unpairGlobalDevice(roomID, type, uuid){
-    console.log('About to unpair global device using following params');
-    console.log(roomID, type, uuid);
-
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(uuid)) {
             const connection = devices_map.get(roomID).get(type).get(uuid);
@@ -397,7 +390,6 @@ function unpairGlobalDevice(roomID, type, uuid){
             connection.id.setPairedUUID(null);
 
             console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map');
-            // console.log(connection);
             return true;
         }
     }
@@ -409,7 +401,6 @@ function unpairGlobalDevice(roomID, type, uuid){
             info.setPairedUUID(null);
 
             console.log('SUCCESSFULLY CLEANED UP PAIRING on secondary_devices map');
-            // console.log(info);
         } else {
             console.log("UNABLE TO UNPAIR SECOND DEVICE FOR SOME REASON");
         }
@@ -579,6 +570,8 @@ function login(data, connection) {
             return false;
         }
 
+        //TODO: send to Microbit whether or not it's accepted or rejected
+
         registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
             success => console.log('registerLocalDevice function has been called for microbit:', success)
         )
@@ -630,6 +623,8 @@ function handshake(data, connection) {
             return false;
         }
 
+        connection.sendUTF(responseBody);   //send back Flower names
+
         const names = {
             robot_name_ja: responseBody['robot_name_ja'],
             robot_name_en: responseBody['robot_name_en']
@@ -662,7 +657,7 @@ function handshake(data, connection) {
  *          uuid: <uuid version 4>          // uuid assigned to the microbit when it connected to a server
  *          name: <string>                  // user chosen name
  *          paired: true || false           // whether or not the microbit is already paired
- *          paired_uuid: <uuid version 4 if a device is paired to it, null otherwise>,
+ *          paired_uuid: <uuid version 4 of Pepper is paired to it, null otherwise>,
  *      }, ... ... ]
  *   }
  *
@@ -715,6 +710,10 @@ function parseJSON(data) {
  * Alerts all Peppers in the same room as the *newly* added micro:bit
  * that it been added/alerts the other server of the micro:bit's presence for reference.
  *
+ * //TODO: update all peppers in the same room as the microbit if it connects/disconnects from server,
+ * //TODO: or ANY change occurs
+ *
+ *
  * @param params DeviceParameters-like object (containing same attributes) describing the Micro:Bit that was just added
  * @param broadcast true for alerting other server (micro:bit was added to this server), false to just alert
  *        peppers on the server this function is called.
@@ -725,7 +724,7 @@ function alertPeppers(params, broadcast) {
         // alert on this server
         devices_map.get(params.room_id).get(deviceType.robot).forEach((connection) => {
             connection.sendUTF('Alerting Peppers in room of new Microbit added!');
-            connection.sendUTF(params)
+            connection.sendUTF(params)  //TODO: SEND ENTIRE MICROBIT LIST.
         });
     }
 
