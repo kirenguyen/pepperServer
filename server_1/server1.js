@@ -731,7 +731,7 @@ function alertPeppersNewMicrobit(microbit, broadcast) {
                 connection.sendUTF('Alerting Peppers in room of new Microbit added!');
                 let microbitList = requestAllMicrobits(connection);
                 microbitList.microbit_list.push(microbit);
-                connection.sendUTF(microbitList);
+                connection.sendUTF(JSON.stringify(microbitList));
             });
         }
 
@@ -759,7 +759,7 @@ function updatePeppersMicrobitList(roomID, broadcast) {
         // notifyPepper on this server
         devices_map.get(roomID).get(deviceType.robot).forEach((connection) => {
             connection.sendUTF('Notifying some change in Micro:Bit list');
-            connection.sendUTF(requestAllMicrobits(connection));
+            connection.sendUTF(JSON.stringify(requestAllMicrobits(connection)));
         });
     }
 
