@@ -97,8 +97,8 @@ wss.on('request', function (req) {
                 break;
             case messageType.requestMicrobits:
                 const microbitList = requestAllMicrobits(connection);
-                // connection.sendUTF(JSON.stringify(microbitList));
-                connection.sendUTF('requested microbit list');
+                connection.sendUTF(JSON.stringify(microbitList));
+                // connection.sendUTF('requested microbit list');
                 console.log('REQUESTING MICROBIT LIST:');
                 console.log(microbitList);
                 break;
