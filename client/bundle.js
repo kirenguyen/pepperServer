@@ -7,16 +7,23 @@ const messageType = messageConstants.messageType;
 
 // Create WebSocket connection.
 // Server 1
-// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
-// Server 2 (PERMANENTLY LOCKED DONT TOUCH IT)
-const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+// Server 2 (LOCKED DONT TOUCH IT)
+// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
 
 
-const msg = document.getElementById('msg');
-const box = document.getElementById('box');
+const command = document.getElementById('command');
+const log = document.getElementById('log');
+const connectPepper = document.getElementById('connect-pepper');
+const connectMicrobit = document.getElementById('connect-microbit');
+const pairMicrobit = document.getElementById('pair-microbit');
+const unpair = document.getElementById('unpair-device');
+const req = document.getElementById('request-microbits');
+
+const newline = '\r\n';
 
 // Connection opened
 socket.addEventListener('open', function (event) {
@@ -86,47 +93,34 @@ function requestMicrobits(){
     // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
-msg.addEventListener('keydown', e => {
-    console.log(e.key);
-    if(e.key === 'Enter') {
-        createMicrobit(msg.value);
-        let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Added microbit with name: ' + msg.value + '    ';
-        box.appendChild(paragraph);
-        msg.value = '';
-    }
-    if(e.key === 'Tab') {
-        createPepper(msg.value);
-        let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Added Pepper  ';
-        box.appendChild(paragraph);
-        msg.value = '';
-    }
+connectPepper.addEventListener('click', e => {
+    createPepper(command.value);
+    log.value += 'Added Pepper ' + command.value + newline;
+    command.value = '';
+});
 
-    if(e.key === 'Control') {
-        requestMicrobits();
-        let paragraph = document.createElement('paragraph');
-        paragraph.textContent = ' requested microbits';
-        box.appendChild(paragraph);
-        msg.value = '';
-    }
+connectMicrobit.addEventListener('click', e => {
+    createMicrobit(command.value);
+    log.value += 'Added microbit ' + command.value + newline;
+    command.value = '';
+});
 
-    if(e.key === '=') {
-        pairDevices(msg.value);
-        let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Just attempted pairing with microbit UUID: ' + msg.value;
-        box.appendChild(paragraph);
-        msg.value = '';
-    }
+pairMicrobit.addEventListener('click', e => {
+    pairDevices(command.value);
+    log.value += 'Just attempted pairing with microbit UUID: ' + command.value + newline;
+    command.value = '';
+});
 
-    if(e.key === '-'){
-        unpairDevice();
-        let paragraph = document.createElement('paragraph');
-        paragraph.textContent = 'Just attempted to disconnect pair connections';
-        box.appendChild(paragraph);
-        msg.value = '';
+unpair.addEventListener('click', e => {
+    unpairDevice();
+    log.value += 'Tried to unpair device' + newline;
+    command.value = '';
+});
 
-    }
+req.addEventListener('click', e => {
+    requestMicrobits();
+    log.value += 'Requested list of microbits' + newline;
+    command.value = '';
 });
 
 },{"../messages/message-constants":2,"../messages/microbit-message":3,"../messages/robo-message":4}],2:[function(require,module,exports){

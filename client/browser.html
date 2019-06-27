@@ -1,20 +1,7 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>TESTING ON 2 AWS SERVERS</title>-->
-<!--    <script src="bundle.js"></script>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h1>Client Example</h1>-->
-<!--<p>Open your browser's developer tools to see client/server activity.</p>-->
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Chat</title>
+    <title>Browser Test</title>
     <meta charset="UTF-8">
     <meta name="viewport" content=""width="device-width, initial-scale=1">
     <style>
@@ -28,8 +15,17 @@
     </style>
 </head>
 <body>
-<div id="box"></div>
-<input type="text" id="msg"></input>
+<div id="command-history">
+    <textarea id="log" rows="10" cols="80"></textarea>
+</div>
+<input type="text" id="command"></input>
+<button id="connect-pepper">Connect Pepper</button>
+<button id="connect-microbit">Connect Microbit</button>
+<button id ="request-microbits">Request Microbits</button>
+<br>
+<br>
+<button id ="pair-microbit">Pair Microbit</button>
+<button id="unpair-device">Unpair Device</button>
 <script src="bundle.js"></script>
 </body>
 </html>

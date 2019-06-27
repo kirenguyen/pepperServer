@@ -666,6 +666,7 @@ function handshake(data, connection) {
             return false;
         }
 
+        //TODO: see if you may need to add names dynamically :<
         const names = {
             robot_name_ja: responseBody['robot_name_ja'],
             robot_name_en: responseBody['robot_name_en']

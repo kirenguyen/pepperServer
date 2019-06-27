@@ -166,6 +166,11 @@ to make sure any changes are saved, use `watchify` by running:
 
 To see the functionality of the browser client, check `client.js` in the `/client` folder.
 
+When adding a Pepper, enter the `room_id` you want the Pepper to be in (ex: `1`, `2`).
+
+When adding a Micro:Bit, enter the `microbit_name` you want the Pepper to be in.
+
+When pairing a Micro:Bit, enter the 'UUID' of the Micro:Bit you want to pair to, then press the `Pair Micro:Bit` button.
 ### Issues
 
 Although I am using the /delete_user (API018) to cut the connection, if the server crashes before you can close the connection, you will need to manually disconnect the robot through mySQL.
