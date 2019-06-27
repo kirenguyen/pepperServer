@@ -29,10 +29,6 @@ subscriber.on('error', function (err) {
     console.log('Subscriber error: ' + String(err));
 });
 
-//TODO:
-// MAKE ALL ROOM_ID KEYS STRINGS.
-
-
 // Devices connected to this server; contains connections where connection.id == DeviceParameter class objects
 const devices_map = new Map();
 
@@ -102,7 +98,6 @@ wss.on('request', function (req) {
             case messageType.requestMicrobits:
                 const microbitList = requestAllMicrobits(connection);
                 connection.sendUTF(JSON.stringify(microbitList));
-                // connection.sendUTF('requested microbit list');
                 console.log('REQUESTING MICROBIT LIST:');
                 console.log(microbitList);
                 break;
@@ -140,6 +135,7 @@ wss.on('request', function (req) {
 
         } else {
             console.log('This connection was not set up with a device');
+            connection.sendUTF(failedResponse('This connection was not set up with a device'));
             return false;
         }
 
@@ -167,6 +163,7 @@ wss.on('request', function (req) {
         } catch (err) {
             console.log('Disconnecting a robot from the server failed');
             console.log(err);
+            connection.sendUTF(failedResponse('Disconnecting a robot from the server failed'));
         }
     });
 });
@@ -302,7 +299,6 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
  * @param params DeviceParams-like object describing the device to be registered into the server's cache
  */
 function registerGlobalDevice(params) {
-
     let roomID = params.room_id.toString();
 
     if (!secondary_devices.has(roomID)) {
@@ -485,12 +481,14 @@ function pairLocalDevice(data, connection) {
         // check if the micro:bit is free
         if (!checkValidPairing(connection.id.room_id, deviceType.microbit, data.microbit_id)){
             console.log('The selected Micro:Bit is already paired');
+            connection.sendUTF(failedResponse('The selected Micro:Bit is already paired'));
             return false;
         }
 
         // check if this Pepper is free
         if (!checkValidPairing(connection.id.room_id, deviceType.robot, connection.id.uuid)){
             console.log('Pepper is already paired with a Micro:Bit. Please unpair first before attempting again');
+            connection.sendUTF(failedResponse('Pepper is already paired with a Micro:Bit. Please unpair before attempting to connect again'));
             return false;
         }
 
@@ -693,7 +691,8 @@ function handshake(data, connection) {
  *
  * @param connection the websocket connection object of Pepper that sent the request for all Microbits
  * @return object with room id and list of microbit info objects; format is as following:
- *  { room_id: <var> ,                      // room ID of the microbits returned (same as the room Pepper is in)
+ *  { result: '000',                        // string code for success
+ *    room_id: <var> ,                      // room ID of the microbits returned (same as the room Pepper is in)
  *    microbit_list: [{
  *          roomID: <var>                   // roomID that this microbit is in
  *          uuid: <uuid version 4>          // uuid assigned to the microbit when it connected to a server
@@ -707,6 +706,7 @@ function handshake(data, connection) {
  */
 function requestAllMicrobits(connection) {
     const data = {
+        result: '000',
         room_id: connection.id.room_id,
         microbit_list: [],
     };
@@ -725,7 +725,6 @@ function requestAllMicrobits(connection) {
             data.microbit_list.push(microbit.build());
         });
     }
-
     return data;
 }
 
@@ -755,8 +754,19 @@ function alertPeppers(roomID) {
     if (devices_map.has(roomID)) {
         // notifyPepper on this server
         devices_map.get(roomID).get(deviceType.robot).forEach((connection) => {
-            connection.sendUTF('Notifying some change in Micro:Bit list');
             connection.sendUTF(JSON.stringify(requestAllMicrobits(connection)));
         });
     }
+}
+
+
+/**
+ * Creates a string JSON failed response to send back if a device failed.
+ * @param message
+ * @returns {string}
+ */
+function failedResponse(message){
+    const failureObject = {result: '900',
+        'error_message': message};
+    return JSON.stringify(failureObject);
 }

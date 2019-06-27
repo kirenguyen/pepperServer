@@ -92,21 +92,39 @@ function requestMicrobits(){
     // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
+
+
+
+
+
+
 connectPepper.addEventListener('click', e => {
+    if(command.value === ''){
+        log.value += 'Error: Please enter a room ID for your Pepper' + newline;
+        return false;
+    }
     createPepper(command.value);
     log.value += 'Added Pepper ' + command.value + newline;
     command.value = '';
 });
 
 connectMicrobit.addEventListener('click', e => {
+    if(command.value === ''){
+        log.value += 'Error: Please enter a name for your Micro:Bit' + newline;
+        return false;
+    }
     createMicrobit(command.value);
     log.value += 'Added microbit ' + command.value + newline;
     command.value = '';
 });
 
 pairMicrobit.addEventListener('click', e => {
+    if(command.value === ''){
+        log.value += 'Error: Please enter a Micro:Bit UUID to pair' + newline;
+        return false;
+    }
     pairDevices(command.value);
-    log.value += 'Just attempted pairing with microbit UUID: ' + command.value + newline;
+    log.value += 'Just attempted pairing with Micro:Bit UUID: ' + command.value + newline;
     command.value = '';
 });
 
@@ -118,6 +136,6 @@ unpair.addEventListener('click', e => {
 
 req.addEventListener('click', e => {
     requestMicrobits();
-    log.value += 'Requested list of microbits' + newline;
+    log.value += 'Requested list of Micro:Bits' + newline;
     command.value = '';
 });

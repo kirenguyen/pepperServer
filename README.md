@@ -1,6 +1,6 @@
 # pepperServer
 
-LAST UPDATED: 26/6/19
+LAST UPDATED: 27/6/19
 
 
 ### Running the Two Servers
@@ -15,6 +15,9 @@ The two servers are (port 3000):
 
 - `ec2-3-16-66-225.us-east-2.compute.amazonaws.com` (Server 2)
 
+### Messaging / WebSocket Protocol
+
+Once a device is connected to the server, it will need to send messages
 
 
 ## Connecting a Pepper
@@ -64,6 +67,7 @@ Upon successful connection to the server, an alert will be sent to all Peppers w
 
 ```textmate
 let microbitList = {
+    result: '000'
     room_id:  <room_id of Pepper that sent request>,
     microbit_list: [{
         roomID: <var>
@@ -104,6 +108,7 @@ The return Micro:Bit list will be in this format:
 
 ```textmate
 let microbitList = {
+    result: '000' 
     room_id:  <room_id of Pepper that sent request>,
     microbit_list: [{
         roomID: <var>
