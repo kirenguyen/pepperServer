@@ -7,16 +7,9 @@ const messageType = Object.freeze({
     requestMicrobits: 'requestMicrobits',
 
     // not to be used by client
-    addMicrobit: 'addMicrobit',
-    addRobot: 'addRobot',
-    notifyPepper: 'notifyPepper',
-    finishPairing: 'finishPairing',
-    finishUnpairing: 'finishUnpairing',
-    removeDevice: 'removeDevice',
     serverStart: 'serverStart',
+    connectionClosed: 'connectionClosed',
 });
-
-
 
 module.exports.deviceType = deviceType;
 module.exports.messageType = messageType;

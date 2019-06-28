@@ -769,6 +769,6 @@ function alertPeppers(roomID) {
  */
 function failedResponse(message){
     const failureObject = {'result': '900',
-        'error_message': message};
+        'failure_message': message};
     return JSON.stringify(failureObject);
 }

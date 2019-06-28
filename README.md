@@ -1,13 +1,13 @@
 # pepperServer
 
-LAST UPDATED: 27/6/19
+LAST UPDATED: 28/6/19
 
 
 ### Running the Two Servers
 
 Clone the repo and install all the `npm` dependencies with `npm install`. For reference, the node version I used while writing this is `v12.3.1`.
 
-There are two server directories, `/server_1` and `/server_2`. Each contains one file, each with a `server.js#` file; these are the server files that need to be run to establish the servers. I use `nodemon` to run the servers.
+There are two server directories, `/server_1` and `/server_2`. Each contains one file, each with a `server.js` file; these are the server files that need to be run to establish the servers. I use `nodemon` to run the servers.
 
 The two servers are (port 3000):
     
@@ -17,7 +17,21 @@ The two servers are (port 3000):
 
 ### Messaging / WebSocket Protocol
 
-Once a device is connected to the server, it will need to send messages
+Once a device is connected to the server, it will need to send messages; at the moment there are two classes dedicated to messaging, both located in the `/messages` directory.
+
+For Pepper, this is `robo-message.js` , and for Micro:Bits this is `microbit-message.js`.
+
+Nearly every message request will have a response. If the request failed, the `result` parameter of the object will be '900'.
+
+For server responses new to this server, the response object will look like the following: 
+
+```textmate
+let failureObject = {
+    result: '900',
+    failure_message: <string> //short description of the failure
+    message_type: messageType //the message type of the original request
+}
+```
 
 
 ## Connecting a Pepper
@@ -40,6 +54,27 @@ roboMessage.setMessage('no message');
 roboMessage.setRobotId('');             
 let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
+```
+
+Upon handshake of Pepper, the legacy response body will be sent to Pepper, from 【Ph.2.0】API仕様書:
+
+Success/成功:
+
+ ```javascript
+{
+    "result": "000",
+    "robot_name_ja": "\u30b3\u30b9\u30e2\u30b9",
+    "robot_name_en": "Cosmos",
+    "robot_id": "test"
+}
+```
+
+Failure/失敗:
+
+```javascript
+{
+    "result": "900"
+}
 ```
 
 
@@ -68,6 +103,7 @@ Upon successful connection to the server, an alert will be sent to all Peppers w
 ```textmate
 let microbitList = {
     result: '000'
+    message_type: messageType.login, //messageType.login is for Micro:Bit login
     room_id:  <room_id of Pepper that sent request>,
     microbit_list: [{
         roomID: <var>
@@ -79,6 +115,15 @@ let microbitList = {
 }
 ```
 
+This response will be sent to the Micro:Bit if successful login, otherwise a failure JSON will be sent back:
+
+```textmate
+let response = {
+    result: '000',
+    room_id: roomID     // room ID the Micro:Bit logged in to
+    message_type: messageType.login
+}
+```
 
 ## Requesting Micro:Bit List
 
@@ -108,7 +153,8 @@ The return Micro:Bit list will be in this format:
 
 ```textmate
 let microbitList = {
-    result: '000' 
+    result: '000',
+    message_type: messageType.requestMicrobits,
     room_id:  <room_id of Pepper that sent request>,
     microbit_list: [{
         roomID: <var>
@@ -140,10 +186,12 @@ let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
 ```
 
+This will also send back a Micro:Bit list to all Peppers in the same room as the two devices, even if pairing failed.
+
 ## Unpairing a Micro:Bit or Robot
 
 At the moment, you can send a message from a Micro:Bit or Robot to cut the pairing.
-The websocket connection must have a device that was paired.
+The websocket connection must have a device that was paired, but unpairing can still be called even if the device is not paired without failure.
 
 Make sure the messageType is `messageType.unpairDevice`. That's the only parameter; both devices in the pairing will be disconnected.
  
@@ -162,6 +210,8 @@ let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
 ```
 
+This will also send back a Micro:Bit list to all Peppers in the same room as the two devices.
+
 ### Misc
 
 To try out some of the functionality using the browser, use the `browser.html` located in `/client`;
@@ -171,11 +221,10 @@ to make sure any changes are saved, use `watchify` by running:
 
 To see the functionality of the browser client, check `client.js` in the `/client` folder.
 
-When adding a Pepper, enter the `room_id` you want the Pepper to be in (ex: `1`, `2`).
+- When adding a Pepper, enter the `room_id` you want the Pepper to be in (ex: `1`, `2`).
+- When adding a Micro:Bit, enter the `microbit_name` you want the Pepper to be in.
+- When pairing a Micro:Bit, enter the 'UUID' of the Micro:Bit you want to pair to, then press the `Pair Micro:Bit` button.
 
-When adding a Micro:Bit, enter the `microbit_name` you want the Pepper to be in.
-
-When pairing a Micro:Bit, enter the 'UUID' of the Micro:Bit you want to pair to, then press the `Pair Micro:Bit` button.
 ### Issues
 
 Although I am using the /delete_user (API018) to cut the connection, if the server crashes before you can close the connection, you will need to manually disconnect the robot through mySQL.
