@@ -7,10 +7,10 @@ const messageType = messageConstants.messageType;
 
 // Create WebSocket connection.
 // Server 1
-const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2 (LOCKED DONT TOUCH IT)
-// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
 
@@ -145,17 +145,15 @@ req.addEventListener('click', e => {
 const deviceType = Object.freeze({robot: 'robot', microbit: 'microbit', browser: 'browser'});
 const messageType = Object.freeze({
     login: 'login',
-    handshake: 'handshake', //legacy
+    handshake: 'handshake',
     pairDevice: 'pairDevice',
     unpairDevice: 'unpairDevice',
-    requestMicrobits: 'requestMicrobits', //manually request
-    connectionClosed: 'connectionClosed',
-
-
-
+    requestMicrobits: 'requestMicrobits',
 
     // not to be used by client
     serverStart: 'serverStart',
+    connectionClosed: 'connectionClosed',
+
 });
 
 module.exports.deviceType = deviceType;

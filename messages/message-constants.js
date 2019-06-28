@@ -1,17 +1,15 @@
 const deviceType = Object.freeze({robot: 'robot', microbit: 'microbit', browser: 'browser'});
 const messageType = Object.freeze({
     login: 'login',
-    handshake: 'handshake', //legacy
+    handshake: 'handshake',
     pairDevice: 'pairDevice',
     unpairDevice: 'unpairDevice',
-    requestMicrobits: 'requestMicrobits', //manually request
-    connectionClosed: 'connectionClosed',
-
-
-
+    requestMicrobits: 'requestMicrobits',
 
     // not to be used by client
     serverStart: 'serverStart',
+    connectionClosed: 'connectionClosed',
+
 });
 
 module.exports.deviceType = deviceType;

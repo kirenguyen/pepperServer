@@ -1,7 +1,7 @@
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 const request = require('request');
-const redis = require("redis");
+const redis = require('redis');
 const SERVER_ID = 'SERVER_ONE';
 
 const RedisMessage = require('../messages/redis-publisher-message');
