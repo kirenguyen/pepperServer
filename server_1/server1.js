@@ -606,10 +606,8 @@ function login(data, connection) {
             return false;
         }
 
-        body['message_type'] = messageType.login;
-        console.log('HIIIIIIII');
-        console.log(body);
-        connection.sendUTF(body);   //send Microbit back the API response
+        responseBody['message_type'] = messageType.login;
+        connection.sendUTF(responseBody);   //send Microbit back the API response
 
 
         registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
