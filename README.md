@@ -33,7 +33,6 @@ let failureObject = {
 }
 ```
 
-
 ## Connecting a Pepper
 In the `/messages` directory, there is a `robo-message.js` file, used to form the handshake between the server and Pepper.
 
@@ -60,7 +59,7 @@ Upon handshake of Pepper, the legacy response body will be sent to Pepper, from 
 
 Success/成功:
 
- ```javascript
+ ```textmate
 {
     "result": "000",
     "robot_name_ja": "\u30b3\u30b9\u30e2\u30b9",
@@ -71,12 +70,11 @@ Success/成功:
 
 Failure/失敗:
 
-```javascript
+```textmate
 {
     "result": "900"
 }
 ```
-
 
 ## Connecting a Micro:Bit to server
 Very similar to Pepper. This uses a different message at the moment, but I may later make Pepper and Micro:bit use the same one.
@@ -186,7 +184,8 @@ let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
 ```
 
-This will also send back a Micro:Bit list to all Peppers in the same room as the two devices, even if pairing failed.
+This will also send back a Micro:Bit list to all Peppers in the same room as the two devices, if pairing succeeded. If pairing failed, a failureObject as described in the protocol will be sent.
+The `message_type` parameter of the notification will be `messageType.pairDevice`.
 
 ## Unpairing a Micro:Bit or Robot
 
@@ -210,7 +209,8 @@ let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
 ```
 
-This will also send back a Micro:Bit list to all Peppers in the same room as the two devices.
+This will also send back a Micro:Bit list to all Peppers in the same room as the two devices; the `message_type` parameter will be set to `messageType.unpairDevice`.
+There will always be a Micro:Bit list response after a request.
 
 ### Misc
 

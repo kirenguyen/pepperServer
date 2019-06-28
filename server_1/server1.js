@@ -98,7 +98,6 @@ wss.on('request', function (req) {
             case messageType.requestMicrobits:
                 const microbitList = requestAllMicrobits(connection, messageType.requestMicrobits);
                 connection.sendUTF(JSON.stringify(microbitList));
-                console.log('REQUESTING MICROBIT LIST:');
                 console.log(microbitList);
                 break;
             case messageType.pairDevice:
@@ -135,7 +134,8 @@ wss.on('request', function (req) {
 
         } else {
             console.log('This connection was not set up with a device');
-            connection.sendUTF(failedResponse('This connection was not set up with a device'));
+            connection.sendUTF(failedResponse('This connection was not set up with a device',
+                messageType.connectionClosed));
             return false;
         }
 
@@ -163,7 +163,8 @@ wss.on('request', function (req) {
         } catch (err) {
             console.log('Disconnecting a robot from the server failed');
             console.log(err);
-            connection.sendUTF(failedResponse('Disconnecting a robot from the server failed'));
+            connection.sendUTF(failedResponse('Disconnecting a robot from the server failed',
+                messageType.connectionClosed));
         }
     });
 });
@@ -476,14 +477,16 @@ function pairLocalDevice(data, connection) {
         // check if the micro:bit is free
         if (!checkValidPairing(connection.id.room_id, deviceType.microbit, data.microbit_id)){
             console.log('The selected Micro:Bit is already paired');
-            connection.sendUTF(failedResponse('The selected Micro:Bit is already paired'));
+            connection.sendUTF(failedResponse('The selected Micro:Bit is already paired',
+                messageType.pairDevice));
             return false;
         }
 
         // check if this Pepper is free
         if (!checkValidPairing(connection.id.room_id, deviceType.robot, connection.id.uuid)){
             console.log('Pepper is already paired with a Micro:Bit. Please unpair first before attempting again');
-            connection.sendUTF(failedResponse('Pepper is already paired with a Micro:Bit. Please unpair before attempting to connect again'));
+            connection.sendUTF(failedResponse('Pepper is already paired with a Micro:Bit. ' +
+                'Please unpair before attempting to connect again', messageType.pairDevice));
             return false;
         }
 
@@ -595,10 +598,7 @@ function login(data, connection) {
             connection.sendUTF(body)
         }
 
-
         const responseBody = parseJSON(body);
-
-        //TODO: add message type to Micro:Bit login
 
         const failedLogin = '900';
         if (!responseBody || responseBody.result === failedLogin) {
@@ -682,7 +682,6 @@ function handshake(data, connection) {
                 message.setOrigin(SERVER_ID);
 
                 publisher.publish(REDIS_CHANNEL, message.toJSON());
-                console.log(success, ': sent message to add Pepper globally');
             });
 
     });
