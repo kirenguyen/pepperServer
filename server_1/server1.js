@@ -607,8 +607,7 @@ function login(data, connection) {
         }
 
         responseBody['message_type'] = messageType.login;
-        connection.sendUTF(responseBody);   //send Microbit back the API response
-
+        connection.sendUTF(JSON.stringify(responseBody));   //send Microbit back the API response
 
         registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
             success => console.log('registerLocalDevice function has been called for microbit:', success)
