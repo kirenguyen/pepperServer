@@ -603,15 +603,13 @@ function login(data, connection) {
         const failedLogin = '900';
         if (!responseBody || responseBody.result === failedLogin) {
             console.log('Failed to authenticate: ' + body);
-
             return false;
         }
 
-        body['message_type'] = messageType.login
+        body['message_type'] = messageType.login;
+        console.log('HIIIIIIII');
+        console.log(body);
         connection.sendUTF(body);   //send Microbit back the API response
-
-
-
 
 
         registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
