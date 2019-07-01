@@ -650,6 +650,9 @@ function pairGlobalDevice(params) {
  */
 function login(data, connection) {
     let loginPromise = new Promise(function(resolve, reject) {
+
+        console.log('11111111111111111111');
+
         let body = {
             'room_name': data.room_name,
             'password': data.password,
@@ -662,6 +665,8 @@ function login(data, connection) {
             },
             form: body
         };
+
+        console.log('222222222222222');
 
         request.post(options, function (error, response, body) {
             if (error) {
@@ -683,7 +688,11 @@ function login(data, connection) {
             registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
                 success => console.log('registerLocalDevice function has been called for microbit:', success)
             );
+
+            console.log('333333333333333333');
         });
+
+        console.log('44444444444444444');
         resolve();
     });
 
