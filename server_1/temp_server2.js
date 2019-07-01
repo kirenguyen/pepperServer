@@ -371,9 +371,9 @@ function unpairLocalDevice(connection){
         microbitWebsocketKey = connection.id.webSocketKey;
     }
 
-    // if both devices are not paired
-    if (!checkDevicePairStatus(connection.id.room_id, deviceType.robot, robotID) ||
-        !checkDevicePairStatus(connection.id.room_id, deviceType.microbit, microbitID)){
+    // do not attempt unpairing if both devices are not paired
+    if (!checkIfPaired(connection.id.room_id, deviceType.robot, robotID) ||
+        !checkIfPaired(connection.id.room_id, deviceType.microbit, microbitID)){
         connection.sendUTF(failedResponse('This device is not in a valid pair', messageType.unpairDevice));
         return false;
     }
@@ -502,7 +502,7 @@ function getWebsocketKey(roomID, type, targetUUID) {
  * @param targetUUID the UUID of the device to be paired to
  * @return boolean true if the Micro:Bit is paired, false otherwise
  */
-function checkDevicePairStatus(roomID, type, targetUUID) {
+function checkIfPaired(roomID, type, targetUUID) {
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(targetUUID)){
             return devices_map.get(roomID).get(type).get(targetUUID).id.paired;
@@ -511,6 +511,27 @@ function checkDevicePairStatus(roomID, type, targetUUID) {
     if(secondary_devices.has(roomID)){
         if (secondary_devices.get(roomID).get(type).has(targetUUID)){
             return secondary_devices.get(roomID).get(type).get(targetUUID).paired;
+        }
+    }
+    return false;
+}
+
+/**
+ * Asserts that a device assigned to the UUID exists
+ * @param roomID the room of the device that requested to be paired
+ * @param type the deviceType of the target device
+ * @param targetUUID the UUID of the device to be paired to
+ * @return boolean true if the device exists, false otherwise
+ */
+function checkDeviceExists(roomID, type, targetUUID) {
+    if(devices_map.has(roomID)) {
+        if (devices_map.get(roomID).get(type).has(targetUUID)){
+            return true;
+        }
+    }
+    if(secondary_devices.has(roomID)){
+        if (secondary_devices.get(roomID).get(type).has(targetUUID)){
+            return true;
         }
     }
     return false;
@@ -530,8 +551,13 @@ function pairLocalDevice(data, connection) {
         return false;
     }
 
+    if(!checkDeviceExists(data.microbit_id)){
+        console.log('Attempted to connect to an invalid Micro:Bit UUID');
+        connection.sendUTF(failedResponse('Attempted to connect to an invalid Micro:Bit UUID', messageType.pairDevice));
+    }
+
     // check if the micro:bit is free, grab the microbit websocket ID;
-    if (checkDevicePairStatus(connection.id.room_id, deviceType.microbit, data.microbit_id)){
+    if (checkIfPaired(connection.id.room_id, deviceType.microbit, data.microbit_id)){
         console.log('The selected Micro:Bit is already paired');
         connection.sendUTF(failedResponse('The selected Micro:Bit is already paired',
             messageType.pairDevice));
@@ -539,7 +565,7 @@ function pairLocalDevice(data, connection) {
     }
 
     // check if this Pepper is free
-    if (checkDevicePairStatus(connection.id.room_id, deviceType.robot, connection.id.uuid)){
+    if (checkIfPaired(connection.id.room_id, deviceType.robot, connection.id.uuid)){
         console.log('Pepper is already paired with a Micro:Bit. Please unpair first before attempting again');
         connection.sendUTF(failedResponse('Pepper is already paired with a Micro:Bit. ' +
             'Please unpair before attempting to connect again', messageType.pairDevice));
