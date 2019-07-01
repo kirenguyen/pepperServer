@@ -14,6 +14,7 @@ The two servers are (port 3000):
 - `ec2-3-14-134-47.us-east-2.compute.amazonaws.com` (Server 1)
 - `ec2-3-16-66-225.us-east-2.compute.amazonaws.com` (Server 2)
 
+
 ### Messaging / WebSocket Protocol
 
 Once a device is connected to the server, it will need to send messages; at the moment there are two classes dedicated to messaging, both located in the `/messages` directory.
@@ -135,6 +136,7 @@ Upon successful connection to the server, an alert will be sent to all Peppers w
 
 
 
+
 ```textmate
 {
     result: '000'
@@ -158,7 +160,7 @@ This response will be sent to the Micro:Bit if successful login, otherwise a fai
 {
     result: '000',
     room_id: roomID     // room ID the Micro:Bit logged in to
-    message_type: messageType.login
+    message_type: messageType.login ('login')
 }
 ```
 
@@ -200,7 +202,7 @@ The return Micro:Bit list will be in this format:
 ```textmate
 {
     result: '000',
-    message_type: messageType.requestMicrobits,
+    message_type: messageType.requestMicrobits ('requestMicrobits'),
     room_id:  <room_id of Pepper that sent request>,
     microbit_list: [{
         roomID: <var>
@@ -214,7 +216,7 @@ The return Micro:Bit list will be in this format:
 
 
 
-## Pairing a Robot to a Micro:Bit
+## Pairing a Micro:Bit to a Pepper
 
 The following is a sample script to pair a Pepper that has been connected to the server and performed the handshake to a Micro:Bit.
 
@@ -241,6 +243,15 @@ socket.send(jsonMessage);
 This will also send back a Micro:Bit list to all Peppers in the same room as the two devices, if pairing succeeded. If pairing failed, a failureObject as described in the protocol will be sent.
 The `message_type` parameter of the notification will be `messageType.pairDevice`.
 
+Pepper will also receive the following JSON string format upon successfully sending the POST request to update this pair in the server. If the API request failed, the `result` parameter will be '900'.
+ 
+
+```textmate
+{"result":"000","message_type":"pair"}
+```
+
+
+
 ## Unpairing a Micro:Bit or Robot
 
 At the moment, you can send a message from a Micro:Bit or Robot to cut the pairing.
@@ -264,9 +275,14 @@ socket.send(jsonMessage);
 ```
 
 
-
 This will also send back a Micro:Bit list to all Peppers in the same room as the two devices; the `message_type` parameter will be set to `messageType.unpairDevice`.
 There will always be a Micro:Bit list response after a request.
+
+Upon sending the POST request to the API to unpair, the device will also receive the following JSON string: 
+
+
+Pepper will also receive the following JSON string format upon successfully sending the POST request to update this pair in the server. If the API request failed, the `result` parameter will be '900'.
+
 
 ### Misc
 

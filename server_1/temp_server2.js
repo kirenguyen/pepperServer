@@ -551,7 +551,7 @@ function pairLocalDevice(data, connection) {
         return false;
     }
 
-    if(!checkDeviceExists(data.microbit_id)){
+    if(!checkDeviceExists(connection.id.room_id, deviceType.microbit, data.microbit_id)){
         console.log('Attempted to connect to an invalid Micro:Bit UUID');
         connection.sendUTF(failedResponse('Attempted to connect to an invalid Micro:Bit UUID', messageType.pairDevice));
         return false;
