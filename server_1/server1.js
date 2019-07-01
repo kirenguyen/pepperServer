@@ -649,8 +649,6 @@ function pairGlobalDevice(params) {
  * @param connection socket connection object of Pepper logging in
  */
 function login(data, connection) {
-    console.log('11111111111111111111');
-
     let body = {
         'room_name': data.room_name,
         'password': data.password,
@@ -663,8 +661,6 @@ function login(data, connection) {
         },
         form: body
     };
-
-    console.log('222222222222222');
 
     request.post(options, function (error, response, body) {
         if (error) {
@@ -693,9 +689,6 @@ function login(data, connection) {
                 'device_type': 2,   //device_type code for Micro:Bit
                 'robot_id': 0,
             };
-            console.log('PARAMETERS OF MICROBIT HANDSHAKE');
-
-            console.log(JSON.stringify(body));
 
             const options = {
                 uri: domain + 'project/node/save_user',
@@ -710,16 +703,16 @@ function login(data, connection) {
                     connection.sendUTF('database connection failed');
                 }
 
-                console.log('BODY OF MICROBIT HANDSHAKE');
-                console.log(body);
-                console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-
                 if (!body) {
                     connection.sendUTF(failedResponse('Micro:Bit handshake failed',
                         messageType.login));
                     return false;
                 }
-                connection.sendUTF(body);   //send Micro:Bit response
+
+                let responseBody = JSON.parse(body);
+                responseBody['message_type'] = messageType.login;
+
+                connection.sendUTF(JSON.stringify(responseBody));   //send Micro:Bit response
             });
         });
     });
