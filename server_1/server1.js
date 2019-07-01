@@ -528,9 +528,8 @@ function pairLocalDevice(data, connection) {
         return false;
     }
 
-
     // check if this Pepper is free
-    if (!checkDevicePairStatus(connection.id.room_id, deviceType.robot, connection.id.uuid)){
+    if (checkDevicePairStatus(connection.id.room_id, deviceType.robot, connection.id.uuid)){
         console.log('Pepper is already paired with a Micro:Bit. Please unpair first before attempting again');
         connection.sendUTF(failedResponse('Pepper is already paired with a Micro:Bit. ' +
             'Please unpair before attempting to connect again', messageType.pairDevice));
