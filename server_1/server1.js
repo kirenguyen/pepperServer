@@ -689,12 +689,16 @@ function login(data, connection) {
 
     loginPromise.then(success => {
         const body = {
-            'room_id': data.room_id,
+            'room_id': connection.id.room_id,
             'user_id': 0,
             'socket_id': connection.webSocketKey,
             'device_type': 2,   //device_type code for Micro:Bit
             'robot_id': 0,
         };
+        console.log('PARAMETERS OF MICROBIT HANDSHAKE');
+
+        console.log(JSON.stringify(body));
+
         const options = {
             uri: domain + 'project/node/save_user',
             headers: {
