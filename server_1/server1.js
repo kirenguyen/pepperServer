@@ -484,7 +484,7 @@ function getWebsocketKey(roomID, type, targetUUID) {
             return devices_map.get(roomID).get(type).get(targetUUID).id.websocket_key;
         }
     }
-    if(secondary_devices.has(roomID){
+    if(secondary_devices.has(roomID)){
         if (secondary_devices.get(roomID).get(type).has(targetUUID)){
             return secondary_devices.get(roomID).get(type).get(targetUUID).websocket_key;
         }
@@ -505,7 +505,7 @@ function checkDevicePairStatus(roomID, type, targetUUID) {
             return devices_map.get(roomID).get(type).get(targetUUID).id.paired;
         }
     }
-    if(secondary_devices.has(roomID){
+    if(secondary_devices.has(roomID)){
         if (secondary_devices.get(roomID).get(type).has(targetUUID)){
             return secondary_devices.get(roomID).get(type).get(targetUUID).paired;
         }
