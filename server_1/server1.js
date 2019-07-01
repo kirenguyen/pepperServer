@@ -479,7 +479,7 @@ function unpairGlobalDevice(roomID, type, uuid){
  */
 function getWebsocketKey(roomID, type, targetUUID) {
     if (devices_map.get(roomID).get(type).has(targetUUID)){
-        return devices_map.get(roomID).get(type).get(targetUUID).websocket_key;
+        return devices_map.get(roomID).get(type).get(targetUUID).id.websocket_key;
     } else if (secondary_devices.get(roomID).get(type).has(targetUUID)){
         return secondary_devices.get(roomID).get(type).get(targetUUID).websocket_key;
     } else {
