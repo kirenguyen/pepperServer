@@ -683,8 +683,8 @@ function login(data, connection) {
             registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
                 success => console.log('registerLocalDevice function has been called for microbit:', success)
             );
-            resolve();
         });
+        resolve();
     });
 
     loginPromise.then(success => {
