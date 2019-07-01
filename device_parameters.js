@@ -6,6 +6,7 @@ class DeviceParameters {
         this.paired = false;
         this.paired_uuid = null;
         this.device_type = null;
+        this.websocket_key = null;
     };
     setUUID(uuid){
         this.uuid = uuid;
@@ -29,6 +30,10 @@ class DeviceParameters {
     }
     setDeviceType(type){
         this.device_type = type;
+        return this;
+    }
+    setWebsocketKey(key){
+        this.websocket_key = key;
         return this;
     }
     toJSON(){

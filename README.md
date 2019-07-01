@@ -244,13 +244,11 @@ The `message_type` parameter of the notification will be `messageType.pairDevice
 ## Unpairing a Micro:Bit or Robot
 
 At the moment, you can send a message from a Micro:Bit or Robot to cut the pairing.
-The websocket connection must have a device that was paired, but unpairing can still be called even if the device is not paired without failure.
+The websocket connection must have a device that was paired, and the connection must have be paired before unpairing, otherwise a failedResponse object will be returned.
 
 Make sure the messageType is `messageType.unpairDevice`. That's the only parameter; both devices in the pairing will be disconnected.
 
 Here is a sample script for unpairing from Pepper:
-
-
 
 ```javascript
 const RoboMessage = require('../messages/robo-message');

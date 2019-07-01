@@ -1,6 +1,5 @@
 const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
-const messageType = messageConstants.messageType;
 
 class MicrobitMessage {
     constructor() {

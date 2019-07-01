@@ -1,7 +1,7 @@
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 const request = require('request');
-const redis = require("redis");
+const redis = require('redis');
 const SERVER_ID = 'SERVER_TWO';
 
 const RedisMessage = require('../messages/redis-publisher-message');
@@ -179,7 +179,6 @@ subscriber.on('message', function (channel, message) {
         console.log(channel);
         return false;
     }
-
 
     let msgObject = parseJSON(message);
 
@@ -631,7 +630,7 @@ function handshake(data, connection) {
         "room_id": data.room_id,
         "user_id": data.user_id,
         "socket_id": connection.webSocketKey,
-        "device_type": 1,
+        "device_type": 1,   //legacy device_type code for robot
         "robot_id": data.robot_id
     };
 
@@ -752,7 +751,7 @@ function parseJSON(data) {
 /**
  * Sends Peppers in specified room updated list of Micro:Bits.
  * @param roomID alert Peppers in room with this ID
- * @param msgType
+ * @param msgType the messageType that triggered this alert
  */
 function alertPeppers(roomID, msgType) {
     roomID = roomID.toString();
@@ -767,9 +766,9 @@ function alertPeppers(roomID, msgType) {
 
 /**
  * Creates a string JSON failed response to send back if a device failed.
- * @param message
+ * @param message a string description of when, where, or why the request failed
  * @param msgType the messageType of the original request that led to this failure
- * @returns {string}
+ * @returns {string} failed response object with failed result code '900'
  */
 function failedResponse(message, msgType){
     const failureObject = {
