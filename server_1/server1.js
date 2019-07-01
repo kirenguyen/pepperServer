@@ -603,6 +603,10 @@ function pairLocalDevice(data, connection) {
             console.log('Failed pairing ' + body);
             return false;
         }
+
+        responseBody['message_type'] = messageType.pairDevice;
+        connection.sendUTF(JSON.stringify(responseBody));
+
     });
     return true;
 }
