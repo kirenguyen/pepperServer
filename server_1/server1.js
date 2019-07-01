@@ -433,6 +433,9 @@ function unpairLocalDevice(connection){
             console.log('Failed deletion of pair ' + body);
             return false;
         }
+        responseBody['message_type'] = messageType.unpairDevice;
+        connection.send(JSON.stringify(responseBody));
+
     });
     return true;
 }
