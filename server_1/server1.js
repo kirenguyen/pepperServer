@@ -374,7 +374,8 @@ function unpairLocalDevice(connection){
     // if both devices are not paired
     if (!checkDevicePairStatus(connection.id.room_id, deviceType.robot, robotID) ||
     !checkDevicePairStatus(connection.id.room_id, deviceType.microbit, microbitID)){
-        connection.sendUTF(failedResponse('This device is not in a valid pair', messageType.unpairDevice))
+        connection.sendUTF(failedResponse('This device is not in a valid pair', messageType.unpairDevice));
+        return false;
     }
 
     // clear the memory of the paired device as well
@@ -478,13 +479,17 @@ function unpairGlobalDevice(roomID, type, uuid){
  * @return boolean websocket_key if the Micro:Bit is available for pairDevice, false otherwise
  */
 function getWebsocketKey(roomID, type, targetUUID) {
-    if (devices_map.get(roomID).get(type).has(targetUUID)){
-        return devices_map.get(roomID).get(type).get(targetUUID).id.websocket_key;
-    } else if (secondary_devices.get(roomID).get(type).has(targetUUID)){
-        return secondary_devices.get(roomID).get(type).get(targetUUID).websocket_key;
-    } else {
-        return false;
+    if(devices_map.has(roomID)) {
+        if (devices_map.get(roomID).get(type).has(targetUUID)){
+            return devices_map.get(roomID).get(type).get(targetUUID).id.websocket_key;
+        }
     }
+    if(secondary_devices.has(roomID){
+        if (secondary_devices.get(roomID).get(type).has(targetUUID)){
+            return secondary_devices.get(roomID).get(type).get(targetUUID).websocket_key;
+        }
+    }
+    return false;
 }
 
 /**
@@ -495,16 +500,18 @@ function getWebsocketKey(roomID, type, targetUUID) {
  * @return boolean true if the Micro:Bit is paired, false otherwise
  */
 function checkDevicePairStatus(roomID, type, targetUUID) {
-    if (devices_map.get(roomID).get(type).has(targetUUID)){
-        return devices_map.get(roomID).get(type).get(targetUUID).id.paired;
-    } else if (secondary_devices.get(roomID).get(type).has(targetUUID)){
-        return secondary_devices.get(roomID).get(type).get(targetUUID).paired;
-    } else {
-        return false;
+    if(devices_map.has(roomID)) {
+        if (devices_map.get(roomID).get(type).has(targetUUID)){
+            return devices_map.get(roomID).get(type).get(targetUUID).id.paired;
+        }
     }
+    if(secondary_devices.has(roomID){
+        if (secondary_devices.get(roomID).get(type).has(targetUUID)){
+            return secondary_devices.get(roomID).get(type).get(targetUUID).paired;
+        }
+    }
+    return false;
 }
-
-
 
 /**
  *  Pepper on this server wants to pair with a Micro:Bit in the room, send notice to all servers
