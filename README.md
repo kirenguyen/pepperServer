@@ -261,6 +261,8 @@ Make sure the messageType is `messageType.unpairDevice`. That's the only paramet
 
 Here is a sample script for unpairing from Pepper:
 
+
+
 ```javascript
 const RoboMessage = require('../messages/robo-message');
 const messageConstants = require('../messages/message-constants');
@@ -275,13 +277,20 @@ socket.send(jsonMessage);
 ```
 
 
+
 This will also send back a Micro:Bit list to all Peppers in the same room as the two devices; the `message_type` parameter will be set to `messageType.unpairDevice`.
 There will always be a Micro:Bit list response after a request.
 
 Upon sending the POST request to the API to unpair, the device will also receive the following JSON string: 
 
 
-Pepper will also receive the following JSON string format upon successfully sending the POST request to update this pair in the server. If the API request failed, the `result` parameter will be '900'.
+
+```text
+{"result":"000","message_type":"unpairDevice"}
+```
+
+
+Same as pairing device, but with a different message_type.
 
 
 ### Misc
