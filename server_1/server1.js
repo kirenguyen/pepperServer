@@ -708,8 +708,8 @@ function login(data, connection) {
                 connection.sendUTF('database connection failed');
             }
             if (!body) {
-                connection.sendUTF(failedResponse('This connection was not set up with a device',
-                    messageType.connectionClosed));
+                connection.sendUTF(failedResponse('Micro:Bit handshake failed',
+                    messageType.login));
                 return false;
             }
             connection.sendUTF(body);   //send Micro:Bit response
