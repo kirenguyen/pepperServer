@@ -488,7 +488,7 @@ function getWebsocketKey(roomID, type, targetUUID) {
 }
 
 /**
- * Checks the status of a device's pairing
+ * Return the status of a device's pairing
  * @param roomID the room of the device that requested to be paired
  * @param type the deviceType of the target device
  * @param targetUUID the UUID of the device to be paired to
@@ -496,9 +496,9 @@ function getWebsocketKey(roomID, type, targetUUID) {
  */
 function checkDevicePairStatus(roomID, type, targetUUID) {
     if (devices_map.get(roomID).get(type).has(targetUUID)){
-        return !devices_map.get(roomID).get(type).get(targetUUID).id.paired;
+        return devices_map.get(roomID).get(type).get(targetUUID).id.paired;
     } else if (secondary_devices.get(roomID).get(type).has(targetUUID)){
-        return !secondary_devices.get(roomID).get(type).get(targetUUID).paired;
+        return secondary_devices.get(roomID).get(type).get(targetUUID).paired;
     } else {
         return false;
     }
