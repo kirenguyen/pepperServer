@@ -649,92 +649,81 @@ function pairGlobalDevice(params) {
  * @param connection socket connection object of Pepper logging in
  */
 function login(data, connection) {
-    let loginPromise = new Promise(function(resolve, reject) {
+    console.log('11111111111111111111');
 
-        console.log('11111111111111111111');
+    let body = {
+        'room_name': data.room_name,
+        'password': data.password,
+    };
 
-        let body = {
-            'room_name': data.room_name,
-            'password': data.password,
-        };
+    let options = {
+        uri: domain + 'project/login',
+        headers: {
+            'Content-type': 'application/x-www-form-urlencoded',
+        },
+        form: body
+    };
 
-        let options = {
-            uri: domain + 'project/login',
-            headers: {
-                'Content-type': 'application/x-www-form-urlencoded',
-            },
-            form: body
-        };
+    console.log('222222222222222');
 
-        console.log('222222222222222');
+    request.post(options, function (error, response, body) {
+        if (error) {
+            console.error(error);
+            connection.sendUTF(body);
+        }
 
-        request.post(options, function (error, response, body) {
-            if (error) {
-                console.error(error);
-                connection.sendUTF(body);
-            }
+        const responseBody = parseJSON(body);
 
-            const responseBody = parseJSON(body);
+        const failedLogin = '900';
+        if (!responseBody || responseBody.result === failedLogin) {
+            console.log('Failed to authenticate: ' + body);
+            return false;
+        }
 
-            const failedLogin = '900';
-            if (!responseBody || responseBody.result === failedLogin) {
-                console.log('Failed to authenticate: ' + body);
-                reject('Failed to authenticate: ' + body);
-            }
+        responseBody['message_type'] = messageType.login;
+        connection.sendUTF(JSON.stringify(responseBody));   //send Microbit back the API response
 
-            responseBody['message_type'] = messageType.login;
-            connection.sendUTF(JSON.stringify(responseBody));   //send Microbit back the API response
+        registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
+            success => console.log('registerLocalDevice function has been called for microbit:', success)
+        ).then(success => {
+            const body = {
+                'room_id': connection.id.room_id,
+                'user_id': 0,
+                'socket_id': connection.webSocketKey,
+                'device_type': 2,   //device_type code for Micro:Bit
+                'robot_id': 0,
+            };
+            console.log('PARAMETERS OF MICROBIT HANDSHAKE');
 
-            registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
-                success => console.log('registerLocalDevice function has been called for microbit:', success)
-            );
+            console.log(JSON.stringify(body));
 
-            console.log('333333333333333333');
-        });
+            const options = {
+                uri: domain + 'project/node/save_user',
+                headers: {
+                    'Content-type': 'application/x-www-form-urlencoded',
+                },
+                form: body
+            };
+            request.post(options, function (error, response, body) {
+                if (error) {
+                    console.error(error);
+                    connection.sendUTF('database connection failed');
+                }
 
-        console.log('44444444444444444');
-        resolve();
-    });
+                console.log('BODY OF MICROBIT HANDSHAKE');
+                console.log(body);
+                console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
-    loginPromise.then(success => {
-        const body = {
-            'room_id': connection.id.room_id,
-            'user_id': 0,
-            'socket_id': connection.webSocketKey,
-            'device_type': 2,   //device_type code for Micro:Bit
-            'robot_id': 0,
-        };
-        console.log('PARAMETERS OF MICROBIT HANDSHAKE');
-
-        console.log(JSON.stringify(body));
-
-        const options = {
-            uri: domain + 'project/node/save_user',
-            headers: {
-                'Content-type': 'application/x-www-form-urlencoded',
-            },
-            form: body
-        };
-        request.post(options, function (error, response, body) {
-            if (error) {
-                console.error(error);
-                connection.sendUTF('database connection failed');
-            }
-
-            console.log('BODY OF MICROBIT HANDSHAKE');
-            console.log(body);
-            console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-
-            if (!body) {
-                connection.sendUTF(failedResponse('Micro:Bit handshake failed',
-                    messageType.login));
-                return false;
-            }
-            connection.sendUTF(body);   //send Micro:Bit response
+                if (!body) {
+                    connection.sendUTF(failedResponse('Micro:Bit handshake failed',
+                        messageType.login));
+                    return false;
+                }
+                connection.sendUTF(body);   //send Micro:Bit response
+            });
         });
     });
 }
-
 
 /**
  * Saves Pepper to a room on this server (handshake procedure)
