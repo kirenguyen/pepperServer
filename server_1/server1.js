@@ -606,6 +606,7 @@ function pairLocalDevice(data, connection) {
 
         responseBody['message_type'] = messageType.pairDevice;
         connection.sendUTF(JSON.stringify(responseBody));
+        console.log('successfully paired pepper to a micro:bit');
 
     });
     return true;
