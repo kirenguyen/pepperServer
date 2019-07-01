@@ -571,6 +571,9 @@ function pairLocalDevice(data, connection) {
     publisher.publish(REDIS_CHANNEL, pairMessage.toJSON());
 
     const microbitKey = getWebsocketKey(connection.id.room_id, deviceType.microbit, data.microbit_id);
+
+    console.log('*@(#$&)*(Y)(*@!#8@!# MICROBIT KEY: ' + microbitKey);
+
     const body = {
         'room_id': connection.id.room_id,
         'socket_id': microbitKey,
