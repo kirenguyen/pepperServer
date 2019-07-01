@@ -554,6 +554,7 @@ function pairLocalDevice(data, connection) {
     if(!checkDeviceExists(data.microbit_id)){
         console.log('Attempted to connect to an invalid Micro:Bit UUID');
         connection.sendUTF(failedResponse('Attempted to connect to an invalid Micro:Bit UUID', messageType.pairDevice));
+        return false;
     }
 
     // check if the micro:bit is free, grab the microbit websocket ID;
