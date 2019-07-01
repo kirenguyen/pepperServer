@@ -707,6 +707,11 @@ function login(data, connection) {
                 console.error(error);
                 connection.sendUTF('database connection failed');
             }
+
+            console.log('BODY OF MICROBIT HANDSHAKE');
+            console.log(body);
+            console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+
             if (!body) {
                 connection.sendUTF(failedResponse('Micro:Bit handshake failed',
                     messageType.login));
