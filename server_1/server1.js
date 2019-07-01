@@ -582,15 +582,11 @@ function pairLocalDevice(data, connection) {
 
     const microbitKey = getWebsocketKey(connection.id.room_id, deviceType.microbit, data.microbit_id);
 
-    console.log('*@(#$&)*(Y)(*@!#8@!# MICROBIT KEY: ' + microbitKey);
-
     const body = {
         'room_id': connection.id.room_id,
         'socket_id': microbitKey,
         'robot_id': connection.webSocketKey,
     };
-
-    console.log(JSON.stringify(body));
 
     const options = {
         uri: domain + 'project/node/save_pair',
