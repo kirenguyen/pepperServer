@@ -102,7 +102,6 @@ wss.on('request', function (req) {
                 console.log(microbitList);
                 break;
             case messageType.requestPeppers:
-                //TODO: return Pepper list from API call instead???
                 const pepperList = requestAllPeppers(connection);
                 connection.sendUTF(JSON.stringify(pepperList));
                 console.log(pepperList);
@@ -111,7 +110,6 @@ wss.on('request', function (req) {
                 receivedActionMessage(data, connection);
                 break;
             case messageType.pairDevice:
-                //TODO: make sure the first parameter passed in is the ID of what 'connection' wants to pair with
                 pairLocalDevice(data.target_id, connection);
                 break;
             case messageType.unpairDevice:
@@ -839,7 +837,7 @@ function handshake(data, connection) {
             return false;
         }
 
-        // TODO: names will be empty object for browser???
+        // names will be empty for browser log-in
         let names = {};
         Object.keys(responseBody).forEach(function (key) {
             if(key.startsWith('robot_name')){
@@ -849,7 +847,6 @@ function handshake(data, connection) {
 
         registerLocalDevice(data.room_id, data.device_type, connection, names).then(
             success => {
-
                 const message = new RedisMessage();
                 message.setMessageType(messageType.handshake);
                 message.setRoomId(data.room_id);
@@ -858,7 +855,7 @@ function handshake(data, connection) {
 
                 publisher.publish(REDIS_CHANNEL, message.toJSON());
 
-                // Browser automatically pairs to data.robot_id at handshake time
+                // Browser automatically pairs to data.robot_id at handshake time via /save_user
                 if (data.device_type === deviceType.browser) {
                     pairLocalDevice(data.robot_id, connection);
                 }
@@ -944,14 +941,14 @@ function requestAllPeppers(connection){
 }
 
 /**
- * Micro:Bit sent an 'action message', forward it to Pepper.
+ * Device sent an 'action message', forward it to paired Device.
  * @param data MicrobitMessage object sent from Micro:Bit, to be forwarded entirely to Pepper
  * @param connection Microbit's registered connection
  */
 function receivedActionMessage(data, connection) {
-    if(!connection.id.paired || !(connection.id.paired_type === deviceType.robot)){
-        console.log('Micro:Bit is not paired properly, cannot send an action command');
-        connection.sendUTF(failedResponse('Micro:Bit is not paired, cannot send an action',messageType.action));
+    if(!connection.id.paired){
+        console.log('Device is not paired properly, cannot send an action command');
+        connection.sendUTF(failedResponse('Device is not paired, cannot send an action', messageType.action));
         return false;
     }
 
@@ -961,33 +958,38 @@ function receivedActionMessage(data, connection) {
     message.setOrigin(SERVER_ID);
 
     const messageContents = {
-        message: data.message,
-        robot_id: data.robot_id,    //TODO: Pepper websocket key?
+        room_id: connection.id.room_id,
+        device_id: connection.id.device_id,
+        device_type: connection.id.device_type,
+        message: data, //SEND THE ENTIRE THING //TODO: make sure all action messages must be ENTIRELY sent
+        paired_id: connection.id.paired_id,
+        paired_type: connection.id.paired_type,
     };
 
     message.setMessage(messageContents);
-
     publisher.publish(REDIS_CHANNEL, message.toJSON());
 }
 /**
  * Handles Redis Published command to forward an Action message to the appropriate Pepper
  * @param data message object pubbed from Micro:Bit.
  *
- * {
- *     device_id: id of device that originally sent the Action message to be forwarded
- *     message: (entire message from Micro:Bit)
- *     robot_id: the websocket key of the robot the message is intended to be sent to
- *               //TODO: should presumably be the same ID as the ID the device is paired to
- * }
+ *  connection = connection that originally sent the action message
+ *  messageContents = {
+ *       room_id: connection.id.room_id,
+ *       device_id: connection.id.device_id,
+ *       device_type: connection.id.device_type,
+ *       message: the action message
+ *       paired_id: connection.id.paired_id,
+ *       paired_type: connection.id.paired_type,
+ *   }
  */
 function forwardActionMessage(data){
-
     console.log(data);
 
     //check only devices_map
     let found = false;
     if(devices_map.has(data.room_id)){
-        if(devices_map.get(data.room_id).get(deviceType.robot).has(data.robot_id)){
+        if(devices_map.get(data.room_id).get(data.paired_type).has(data.paired_id)){
             found = true;
         }
     }
@@ -995,10 +997,6 @@ function forwardActionMessage(data){
     if(!found) {
         console.log('Paired microbit sent action, paired Pepper not on this server');
         return false;
-    }
-
-    if(data.robot_id !== devices_map.get(data.room_id).get(deviceType.robot).get(data.robot_id).id.paired_id){
-        console.log('!!!!!!!!!!!!!!!!!! ???????????? microbit or browser wants to send a message to a device it is not paired to');
     }
 
     console.log('Device paired to Micro:Bit is connected to this server, performing action!');
@@ -1009,13 +1007,12 @@ function forwardActionMessage(data){
     message.setMessageType(messageType.sendACKMessage);
     message.setRoomId(data.room_id);
     message.setMessage({
-        device_id: data.message.device_id,
-        device_type: data.message.device_type,
+        device_id: data.device_id,
+        device_type: data.device_type,
         room_id: data.room_id,
         message: 'ACK', //TODO: possibly change this, this is what is sent to Micro:Bit/Browser
     });
     message.setOrigin(SERVER_ID);
-
     publisher.publish(REDIS_CHANNEL, message.toJSON());
 }
 
@@ -1039,6 +1036,7 @@ function sendACKMessage(data){
     }
     console.log('Original device that sent the action message not on this server');
 }
+
 
 /////////////////////// MISC FUNCTIONS /////////////////////////////
 
