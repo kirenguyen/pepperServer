@@ -27,9 +27,10 @@ const pairPepper = document.getElementById('pair-pepper');
 const unpair = document.getElementById('unpair-device');
 const reqMicrobits = document.getElementById('request-microbits');
 const reqPeppers = document.getElementById('request-peppers');
-const leftAButton = document.getElementById('left-button');
-const rightBButton = document.getElementById('right-button');
 
+const microbitAction = document.getElementById('microbit-button');
+const pepperAction = document.getElementById('pepper-action');
+const browserAction = document.getElementById('browser-action');
 
 
 
@@ -139,16 +140,40 @@ function requestPeppers(){
     // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
-function leftAMicrobitButton(){
-    const message = new MicrobitMessage();
-    message.setMessageType(messageType.action);
-    message.setMessage();
-    let jsonMessage = message.toJSON();
-    socket.send(jsonMessage);
+
+function browserActionFunction(robotID){
+    let message = {
+        'room_id': '1',
+        'user_id': 'user_id',
+        'robot_id': robotID,
+        'device_type': 'browser',
+        'message_type': 'action',
+        'message': {
+            'namespace ': 'webcon',
+            'event ': 'GREENFLAG',
+        }
+    }
+    socket.send(JSON.stringify(message));
+}
+
+function pepperActionFunction(robotID){
+    let message = {
+        'room_id': '1',
+        'user_id': '3',
+        'robot_id': robotID,
+        'device_type': 'robot',
+        'message_type': 'action',
+        'message': {
+        'namespace': 'screen',
+            'event': 'show',
+            'value': 'image_file'
+    }
+    };
+    socket.send(JSON.stringify(message));
 }
 
 
-function rightBMicrobitButton(robotID){
+function microbitActionFunction(robotID){
     let message = {
         room_id: '1',
         user_id: 'whatever',
@@ -192,7 +217,7 @@ connectMicrobit.addEventListener('click', e => {
 
 connectBrowser.addEventListener('click', e => {
     if(command.value === ''){
-        log.value += 'Error: Please enter a room for your Browser' + newline;
+        log.value += 'Error: Please enter a Pepper ID to connect to for your Browser' + newline;
         return false;
     }
     createBrowser(command.value);
@@ -238,18 +263,23 @@ reqPeppers.addEventListener('click', e => {
     command.value = '';
 });
 
-leftAButton.addEventListener('click', e => {
-    leftAMicrobitButton();
-    log.value += 'Pressed left A button' + newline;
+microbitAction.addEventListener('click', e => {
+    microbitActionFunction(command.value);
+    log.value += 'Micro:Bit sent an action message' + newline;
     command.value = '';
 });
 
-rightBButton.addEventListener('click', e => {
-    rightBMicrobitButton(command.value);
-    log.value += 'Pressed right B button' + newline;
+pepperAction.addEventListener('click', e => {
+    pepperActionFunction(command.value);
+    log.value += 'Pepper sent an action message' + newline;
     command.value = '';
 });
 
+browserAction.addEventListener('click', e => {
+    browserActionFunction(command.value);
+    log.value += 'Browser sent an action message' + newline;
+    command.value = '';
+});
 },{"../messages/browser-message":2,"../messages/message-constants":3,"../messages/microbit-message":4,"../messages/robo-message":5}],2:[function(require,module,exports){
 const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
