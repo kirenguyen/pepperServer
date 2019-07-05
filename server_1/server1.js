@@ -374,6 +374,10 @@ function unpairLocalDevice(connection){
     const oppositeType = connection.id.paired_type;
     const oppositeID = connection.id.paired_id;
 
+    console.log("OPPOSITE TYPE: " + oppositeType);
+    console.log("OPPOSITE ID: " + oppositeID);
+
+
     // do not attempt unpairing if both devices are not paired
     if (!checkIfPaired(connection.id.room_id, connection.id.device_type, connection.id.device_id) ||
         !checkIfPaired(connection.id.room_id, oppositeType, oppositeID)){
@@ -479,11 +483,11 @@ function unpairGlobalDevice(roomID, type, deviceID){
             connection.id.setPairedID(null);
             connection.id.setPairedType(null);
 
-            connection.sendUTF({
+            connection.sendUTF(JSON.stringify({
                 result: '000',
                 message_type: messageType.unpairDevice,
                 message: 'This device was just unpaired.'
-            });
+            }));
             console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map');
             return true;
         }
@@ -512,6 +516,9 @@ function unpairGlobalDevice(roomID, type, deviceID){
  * @return boolean true if the Micro:Bit is paired, false otherwise
  */
 function checkIfPaired(roomID, type, deviceID) {
+
+    console.log('checkIfPaired of: ' + roomID, type, deviceID);
+
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(deviceID)){
             return devices_map.get(roomID).get(type).get(deviceID).id.paired;
@@ -683,11 +690,11 @@ function pairGlobalDevice(params) {
             connection.id.setPairedID(pairedID);
 
             // notify this device that it was just paired
-            connection.sendUTF({
+            connection.sendUTF(JSON.stringify({
                 result: '000',
                 message_type: messageType.pairDevice,
                 message: 'This device was just paired.'
-            });
+            }));
             console.log('SUCCESSFULLY UPDATED PAIRING on devices_map!');
             return true;
         }
