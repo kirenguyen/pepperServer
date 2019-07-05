@@ -21,26 +21,16 @@ Once a device is connected to the server, it will need to send messages; at the 
 
 For Pepper, this is `robo-message.js` , and for Micro:Bits this is `microbit-message.js`.
 
-Nearly every message request will have a response. If the request failed, the `result` parameter of the object will be '900'. For server responses new to this server, the response object will look like the following: 
+If there was some error or failure in sending a message, a failedError string object will be returned:
 
 
+##### Parameters:
 
-```textmate
-let failureObject = {
-    result: '900',
-    failure_message: <string> //short description of the failure
-    message_type: messageType //the message type of the original request
-}
-```
+- `result` : `'900'` to indicate failure
+- `failure_message`: short description of what went wrong
+- `message_type` : one of the types described below, indicating the action that failed
 
-
-
-Successful responses, as described in detail below, will also contain a `message_type` parameter in the response object, except for when performing the robot handshake.
-
-The value of the parameter can be one of the following (string):
-
-
-
+######  Message Types (message_type): 
 ```textmate
 'login': Micro:Bit logged in.
 'pairDevice': Pepper successfully connected to server.
@@ -49,6 +39,15 @@ The value of the parameter can be one of the following (string):
 'connectionClosed': A Micro:Bit disconnected from the server. 
 ```
 
+##### Example:
+
+```textmate
+{
+    result: '900',
+    failure_message: The Micro:Bit is already paired,
+    message_type: messageType.pairDevice
+}
+```
 
 
 ## Connecting a Pepper

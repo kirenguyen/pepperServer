@@ -1,15 +1,16 @@
 class DeviceParameters {
     constructor() {
-        this.uuid = null;
+        this.device_id = null;
         this.name = null;
         this.room_id = null;
         this.paired = false;
-        this.paired_uuid = null;
+        this.paired_id = null;
+        this.paired_type = null;
         this.device_type = null;
         this.websocket_key = null;
     };
-    setUUID(uuid){
-        this.uuid = uuid;
+    setDeviceID(id){
+        this.device_id = id;
         return this;
     }
     setName(name){
@@ -24,8 +25,12 @@ class DeviceParameters {
         this.paired = paired;
         return this;
     }
-    setPairedUUID(pairedUUID){
-        this.paired_uuid = pairedUUID;
+    setPairedID(pairedID){
+        this.paired_id = pairedID;
+        return this;
+    }
+    setPairedType(pairedType){
+        this.paired_type = pairedType;
         return this;
     }
     setDeviceType(type){
@@ -42,15 +47,16 @@ class DeviceParameters {
 
     /**
      * Creates a standard object, compatible with JSON stringify and WebSocket messages
-     * @returns {{room_id: null, paired_uuid: null, name: null, device_type: null, uuid: null, paired: boolean}}
+     * @returns {{room_id: null, target_uuid: null, name: null, device_type: null, uuid: null, paired: boolean}}
      */
     build(){
         return {
-            uuid: this.uuid,
+            device_id: this.device_id,
             name: this.name,
             room_id: this.room_id,
             paired: this.paired,
-            paired_uuid: this.paired_uuid,
+            paired_id: this.paired_id,
+            paired_type: this.paired_type,
             device_type: this.device_type,
         };
     }

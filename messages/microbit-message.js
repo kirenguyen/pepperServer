@@ -9,6 +9,7 @@ class MicrobitMessage {
             microbit_name: null,
             device_type: deviceType.microbit,
             message_type: null,
+            message: null,
         }
     }
     setRoomName(roomName) {
@@ -25,6 +26,10 @@ class MicrobitMessage {
     }
     setMessageType(messageType) {
         this._message.message_type = messageType;
+        return this;
+    }
+    setMessage(action) {
+        this._message.message = action;
         return this;
     }
     toJSON(){

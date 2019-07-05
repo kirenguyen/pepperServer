@@ -1,16 +1,16 @@
 const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
 
-class RoboMessage {
+class BrowserMessage {
     constructor() {
         this._message = {
             room_id: null,
             user_id: null,
             robot_id: null,
-            target_id: null,              // always null unless messageType === pairDevice
-            device_type: deviceType.robot,
+            device_type: deviceType.browser,
+            target_uuid: null,
             message_type: null,
-            message: null
+            message: null,
         }
     }
     setRoomId(roomId) {
@@ -25,12 +25,12 @@ class RoboMessage {
         this._message.robot_id = robotId;
         return this;
     }
-    setTargetID(uuid) {
-        this._message.target_id = uuid;
-        return this;
-    }
     setMessageType(messageType) {
         this._message.message_type = messageType;
+        return this;
+    }
+    setTargetdUUID(uuid){
+        this._message.target_uuid = uuid;
         return this;
     }
     setMessage(message) {
@@ -41,4 +41,4 @@ class RoboMessage {
         return JSON.stringify(this._message);
     }
 }
-module.exports = RoboMessage;
+module.exports = BrowserMessage;

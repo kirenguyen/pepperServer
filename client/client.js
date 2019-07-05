@@ -1,5 +1,6 @@
 const MicrobitMessage = require('../messages/microbit-message');
 const RoboMessage = require('../messages/robo-message');
+const BrowserMessage = require('../messages/browser-message');
 
 const messageConstants = require('../messages/message-constants');
 const messageType = messageConstants.messageType;
@@ -18,9 +19,15 @@ const command = document.getElementById('command');
 const log = document.getElementById('log');
 const connectPepper = document.getElementById('connect-pepper');
 const connectMicrobit = document.getElementById('connect-microbit');
+const connectBrowser = document.getElementById('connect-browser');
 const pairMicrobit = document.getElementById('pair-microbit');
 const unpair = document.getElementById('unpair-device');
 const req = document.getElementById('request-microbits');
+const leftAButton = document.getElementById('left-button');
+const rightBButton = document.getElementById('right-button');
+
+
+
 
 const newline = '\r\n';
 
@@ -34,6 +41,18 @@ socket.addEventListener('message', function (event) {
     console.log(event.data);
 });
 
+
+function createBrowser(roomNumber) {
+    const browserMessage = new BrowserMessage();
+    browserMessage.setRoomId(roomNumber.toString());
+    browserMessage.setUserId(129);
+    browserMessage.setMessageType(messageType.handshake);
+    browserMessage.setMessage('no message');
+    browserMessage.setRobotId('');
+    let jsonMessage = browserMessage.toJSON();
+    socket.send(jsonMessage);
+    // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+}
 
 function createMicrobit(name) {
     const loginMessage = new MicrobitMessage();
@@ -59,12 +78,12 @@ function createPepper(roomNumber) {
 }
 
 /**
- * @param microbitUUID UUID of MicroBit to be paired
+ * @param microbitID ID of MicroBit to be paired
  */
-function pairDevices(microbitUUID) {
+function pairDevices(microbitID) {
     const roboMessage = new RoboMessage();
     roboMessage.setMessageType(messageType.pairDevice);
-    roboMessage.setMicrobitId(microbitUUID);
+    roboMessage.setTargetID(microbitID);
     let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
     // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
@@ -92,9 +111,35 @@ function requestMicrobits(){
     // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
 
+function leftAMicrobitButton(){
+    const message = new MicrobitMessage();
+    message.setMessageType(messageType.action);
+    message.setMessage();
+    let jsonMessage = message.toJSON();
+    socket.send(jsonMessage);
+}
 
-
-
+function rightBMicrobitButton(robotID){
+    const message = new MicrobitMessage();
+    message.setMessageType(messageType.action);
+    message.setMessage({
+        'room_id': '1',
+        'user_id': '129',
+        'robot_id': robotID,
+        'device_type': 'browser',
+        'message_type': 'action',
+        'message': {
+            'namespace ': 'microbit',
+            'event ': 'BUTTON',
+            'value': {
+                'button': 'B',
+                'state': null
+            }
+        }
+    } );
+    let jsonMessage = message.toJSON();
+    socket.send(jsonMessage);
+}
 
 
 
@@ -118,6 +163,16 @@ connectMicrobit.addEventListener('click', e => {
     command.value = '';
 });
 
+connectBrowser.addEventListener('click', e => {
+    if(command.value === ''){
+        log.value += 'Error: Please enter a room for your Browser' + newline;
+        return false;
+    }
+    createBrowser(command.value);
+    log.value += 'Added browser ' + command.value + newline;
+    command.value = '';
+});
+
 pairMicrobit.addEventListener('click', e => {
     if(command.value === ''){
         log.value += 'Error: Please enter a Micro:Bit UUID to pair' + newline;
@@ -137,5 +192,17 @@ unpair.addEventListener('click', e => {
 req.addEventListener('click', e => {
     requestMicrobits();
     log.value += 'Requested list of Micro:Bits' + newline;
+    command.value = '';
+});
+
+leftAButton.addEventListener('click', e => {
+    leftAMicrobitButton();
+    log.value = 'Pressed left A button' + newline;
+    command.value = '';
+});
+
+rightBButton.addEventListener('click', e => {
+    rightBMicrobitButton(command.value);
+    log.value = 'Pressed right B button' + newline;
     command.value = '';
 });

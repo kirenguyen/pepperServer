@@ -6,10 +6,12 @@ const messageType = Object.freeze({
     unpairDevice: 'unpairDevice',
     requestMicrobits: 'requestMicrobits',
 
+    action: 'action',
+
     // not to be used by client
     serverStart: 'serverStart',
     connectionClosed: 'connectionClosed',
-
+    sendACKMessage: 'sendACKMessage',
 });
 
 module.exports.deviceType = deviceType;

@@ -4,7 +4,7 @@ const request = require('request');
 const redis = require('redis');
 const SERVER_ID = 'SERVER_TWO';
 
-const RedisMessage = require('../messages/redis-publisher-message');
+const RedisMessage = require('../messages/redis-message');
 const uuidv4 = require('uuid/v4');
 
 const domain = 'https://roboblocks.xyz/';
@@ -360,14 +360,14 @@ function unpairLocalDevice(connection){
     if (connection.id.device_type === deviceType.robot){
         oppositeType = deviceType.microbit;
         robotID = connection.id.uuid;
-        microbitID = connection.id.paired_uuid;
+        microbitID = connection.id.target_uuid;
         robotWebsocketKey = connection.id.webSocketKey;
-        microbitWebsocketKey = getWebsocketKey(connection.id.room_id, deviceType.microbit, connection.id.paired_uuid);
+        microbitWebsocketKey = getWebsocketKey(connection.id.room_id, deviceType.microbit, connection.id.target_uuid);
     } else {
         oppositeType = deviceType.robot;
-        robotID = connection.id.paired_uuid;
+        robotID = connection.id.target_uuid;
         microbitID = connection.id.uuid;
-        robotWebsocketKey = getWebsocketKey(connection.id.room_id, deviceType.robot, connection.id.paired_uuid);
+        robotWebsocketKey = getWebsocketKey(connection.id.room_id, deviceType.robot, connection.id.target_uuid);
         microbitWebsocketKey = connection.id.webSocketKey;
     }
 
@@ -379,7 +379,7 @@ function unpairLocalDevice(connection){
     }
 
     // clear the memory of the paired device as well
-    unpairGlobalDevice(connection.id.room_id, oppositeType, connection.id.paired_uuid);
+    unpairGlobalDevice(connection.id.room_id, oppositeType, connection.id.target_uuid);
 
     connection.id.setPaired(false);
     connection.id.setPairedUUID(null);
@@ -577,7 +577,7 @@ function pairLocalDevice(data, connection) {
     connection.id.setPairedUUID(data.microbit_id);
 
     const updateMicrobit = new DeviceParameters();
-    updateMicrobit.setUUID(connection.id.paired_uuid);
+    updateMicrobit.setUUID(connection.id.target_uuid);
     updateMicrobit.setPairedUUID(connection.id.uuid);
     updateMicrobit.setRoomID(connection.id.room_id);
     updateMicrobit.setDeviceType(deviceType.microbit);
@@ -599,7 +599,7 @@ function pairLocalDevice(data, connection) {
 
     // update all the microbits across servers to show this pair (reverse the paired uuid's/type)
     const microbitUpdate = new DeviceParameters();
-    microbitUpdate.setUUID(connection.id.paired_uuid);
+    microbitUpdate.setUUID(connection.id.target_uuid);
     microbitUpdate.setPairedUUID(connection.id.uuid);
     microbitUpdate.setDeviceType(deviceType.microbit);
     microbitUpdate.setRoomID(connection.id.room_id);
@@ -655,7 +655,7 @@ function pairGlobalDevice(params) {
     const roomID = params.room_id;
     const type = params.device_type;
     const uuid = params.uuid;
-    const pairedUUID = params.paired_uuid;
+    const pairedUUID = params.target_uuid;
 
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(uuid)) {
@@ -845,7 +845,7 @@ function handshake(data, connection) {
  *          uuid: <uuid version 4>          // uuid assigned to the microbit when it connected to a server
  *          name: <string>                  // user chosen name
  *          paired: true || false           // whether or not the microbit is already paired
- *          paired_uuid: <uuid version 4 of Pepper is paired to it, null otherwise>,
+ *          target_uuid: <uuid version 4 of Pepper is paired to it, null otherwise>,
  *      }, ... ... ]
  *   }
  *
