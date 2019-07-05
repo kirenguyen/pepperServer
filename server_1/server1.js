@@ -797,7 +797,7 @@ function login(data, connection) {
 function handshake(data, connection) {
 
     if (data.device_type === deviceType.browser){
-        if( checkIfPaired(data.robot_id) || !checkDeviceExists(data.room_id, deviceType.robot, data.robot_id)){
+        if( checkIfPaired(data.room_id, deviceType.robot, data.robot_id) || !checkDeviceExists(data.room_id, deviceType.robot, data.robot_id)){
             connection.sendUTF(failedResponse('The Pepper is invalid or already paired'), messageType.handshake);
             return false;
         }
