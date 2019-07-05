@@ -5,6 +5,7 @@ const BrowserMessage = require('../messages/browser-message');
 
 const messageConstants = require('../messages/message-constants');
 const messageType = messageConstants.messageType;
+const deviceType = messageConstants.deviceType;
 
 // Create WebSocket connection.
 // Server 1
@@ -49,7 +50,7 @@ function createBrowser(robotID) {
     const browserMessage = new BrowserMessage();
     browserMessage.setRoomID('1');
     browserMessage.setUserID(129);
-    browserMessage.setRobotId(robotID)
+    browserMessage.setRobotId(robotID);
     browserMessage.setMessageType(messageType.handshake);
     browserMessage.setMessage('no message');
     let jsonMessage = browserMessage.toJSON();

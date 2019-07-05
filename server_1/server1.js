@@ -1000,7 +1000,7 @@ function forwardActionMessage(data){
     }
 
     console.log('Device paired to Micro:Bit is connected to this server, performing action!');
-    devices_map.get(room_id).get(deviceType.robot).get(data.robot_id).sendUTF(data.message);
+    devices_map.get(data.room_id).get(deviceType.robot).get(data.robot_id).sendUTF(data.message);
 
     // send ACK message back to acknowledge that everything went fine
     const message = new RedisMessage();
@@ -1028,9 +1028,9 @@ function forwardActionMessage(data){
  */
 function sendACKMessage(data){
     if(devices_map.has(data.room_id)){
-        if(devices_map.get(data.room_id).get(data.device_type).has(data.robot_id)){
+        if(devices_map.get(data.room_id).get(data.device_type).has(data.device_id)){
             console.log('SENDING ACK MESSAGE!');
-            devices_map.get(room_id).get(deviceType.robot).get(data.robot_id).sendUTF(data.message);
+            devices_map.get(data.room_id).get(deviceType.robot).get(data.robot_id).sendUTF(data.message);
             return true;
         }
     }
