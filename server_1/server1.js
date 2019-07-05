@@ -983,7 +983,7 @@ function forwardActionMessage(data){
     //check only devices_map
     let found = false;
     if(devices_map.has(data.room_id)){
-        if(devices_map.get(data.room_id).get(deviceType.robot).has(data.message.robot_id)){
+        if(devices_map.get(data.room_id).get(deviceType.robot).has(data.robot_id)){
             found = true;
         }
     }

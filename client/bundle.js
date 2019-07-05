@@ -149,20 +149,13 @@ function rightBMicrobitButton(robotID){
     const message = new MicrobitMessage();
     message.setMessageType(messageType.action);
     message.setMessage({
-        'room_id': '1',
-        'user_id': '129',
-        'robot_id': robotID,
-        'device_type': 'browser',
-        'message_type': 'action',
-        'message': {
-            'namespace ': 'microbit',
-            'event ': 'BUTTON',
-            'value': {
-                'button': 'B',
-                'state': null
-            }
+        'namespace ': 'microbit',
+        'event ': 'BUTTON',
+        'value': {
+            'button': 'B',
+            'state': null
         }
-    } );
+    });
     let jsonMessage = message.toJSON();
     socket.send(jsonMessage);
 }
@@ -239,13 +232,13 @@ reqPeppers.addEventListener('click', e => {
 
 leftAButton.addEventListener('click', e => {
     leftAMicrobitButton();
-    log.value = 'Pressed left A button' + newline;
+    log.value += 'Pressed left A button' + newline;
     command.value = '';
 });
 
 rightBButton.addEventListener('click', e => {
     rightBMicrobitButton(command.value);
-    log.value = 'Pressed right B button' + newline;
+    log.value += 'Pressed right B button' + newline;
     command.value = '';
 });
 
