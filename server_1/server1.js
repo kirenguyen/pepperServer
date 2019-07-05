@@ -682,6 +682,9 @@ function pairGlobalDevice(params) {
     const pairedID = params.paired_id;
     const pairedType = params.paired_type;
 
+    console.log('PAIR GLOBAL DEVICE PARAMS:', roomID, type, device_id, pairedID, pairedType);
+
+
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(device_id)) {
             const connection = devices_map.get(roomID).get(type).get(device_id);
