@@ -957,7 +957,7 @@ function receivedActionMessage(data, connection) {
     message.setOrigin(SERVER_ID);
 
     const messageContents = {
-        message: data,
+        message: data.message,
         robot_id: data.robot_id,    //TODO: Pepper websocket key?
     };
 
@@ -979,8 +979,6 @@ function receivedActionMessage(data, connection) {
 function forwardActionMessage(data){
 
     console.log(data);
-
-    console.log(JSON.stringify(data));
 
     //check only devices_map
     let found = false;
