@@ -5,6 +5,7 @@ const messageType = Object.freeze({
     pairDevice: 'pairDevice',
     unpairDevice: 'unpairDevice',
     requestMicrobits: 'requestMicrobits',
+    requestPeppers: 'requestPeppers',
 
     action: 'action',
 

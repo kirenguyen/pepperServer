@@ -21,8 +21,10 @@ const connectPepper = document.getElementById('connect-pepper');
 const connectMicrobit = document.getElementById('connect-microbit');
 const connectBrowser = document.getElementById('connect-browser');
 const pairMicrobit = document.getElementById('pair-microbit');
+const pairPepper = document.getElementById('pair-pepper');
 const unpair = document.getElementById('unpair-device');
-const req = document.getElementById('request-microbits');
+const reqMicrobits = document.getElementById('request-microbits');
+const reqPeppers = document.getElementById('request-peppers');
 const leftAButton = document.getElementById('left-button');
 const rightBButton = document.getElementById('right-button');
 
@@ -80,7 +82,7 @@ function createPepper(roomNumber) {
 /**
  * @param microbitID ID of MicroBit to be paired
  */
-function pairDevices(microbitID) {
+function pairRobotDevice(microbitID) {
     const roboMessage = new RoboMessage();
     roboMessage.setMessageType(messageType.pairDevice);
     roboMessage.setTargetID(microbitID);
@@ -88,6 +90,19 @@ function pairDevices(microbitID) {
     socket.send(jsonMessage);
     // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
+
+/**
+ * @param robotID ID of Pepper to be paired
+ */
+function pairBrowserDevice(robotID){
+    const browserMessage = new BrowserMessage();
+    browserMessage.setMessageType(messageType.pairDevice);
+    browserMessage.setTargetID(robotID);
+    let jsonMessage = browserMessage.toJSON();
+    socket.send(jsonMessage);
+    // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+}
+
 
 /**
  * Needs to be called on the same connection that a paired Pepper/Microbit is on
@@ -106,6 +121,17 @@ function unpairDevice() {
 function requestMicrobits(){
     const roboMessage = new RoboMessage();
     roboMessage.setMessageType(messageType.requestMicrobits);
+    let jsonMessage = roboMessage.toJSON();
+    socket.send(jsonMessage);
+    // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
+}
+
+/**
+ * Needs to be called on the same connection that a Browser has already connected with
+ */
+function requestPeppers(){
+    const roboMessage = new BrowserMessage();
+    roboMessage.setMessageType(messageType.requestPeppers);
     let jsonMessage = roboMessage.toJSON();
     socket.send(jsonMessage);
     // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
@@ -175,11 +201,21 @@ connectBrowser.addEventListener('click', e => {
 
 pairMicrobit.addEventListener('click', e => {
     if(command.value === ''){
-        log.value += 'Error: Please enter a Micro:Bit UUID to pair' + newline;
+        log.value += 'Error: Please enter a Micro:Bit ID to pair' + newline;
         return false;
     }
-    pairDevices(command.value);
-    log.value += 'Just attempted pairing with Micro:Bit UUID: ' + command.value + newline;
+    pairRobotDevice(command.value);
+    log.value += 'Just attempted pairing with Micro:Bit ID: ' + command.value + newline;
+    command.value = '';
+});
+
+pairPepper.addEventListener('click', e => {
+    if(command.value === ''){
+        log.value += 'Error: Please enter a Pepper ID to pair' + newline;
+        return false;
+    }
+    pairBrowserDevice(command.value);
+    log.value += 'Just attempted pairing with Pepper ID: ' + command.value + newline;
     command.value = '';
 });
 
@@ -189,9 +225,15 @@ unpair.addEventListener('click', e => {
     command.value = '';
 });
 
-req.addEventListener('click', e => {
+reqMicrobits.addEventListener('click', e => {
     requestMicrobits();
     log.value += 'Requested list of Micro:Bits' + newline;
+    command.value = '';
+});
+
+reqPeppers.addEventListener('click', e => {
+    requestPeppers();
+    log.value += 'Requested list of Peppers' + newline;
     command.value = '';
 });
 

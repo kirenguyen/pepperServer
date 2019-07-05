@@ -101,6 +101,12 @@ wss.on('request', function (req) {
                 connection.sendUTF(JSON.stringify(microbitList));
                 console.log(microbitList);
                 break;
+            case messageType.requestPeppers:
+                //TODO: return Pepper list from API call instead
+                const pepperList = requestAllPeppers(connection);
+                connection.sendUTF(JSON.stringify(pepperList));
+                console.log(pepperList);
+                break;
             case messageType.action:
                 receivedActionMessage(data, connection);
                 break;
@@ -557,11 +563,11 @@ function checkDeviceExists(roomID, type, deviceID) {
 
 
 /**
- *  Pepper on this server wants to pair with a Micro:Bit in the room, send notice to all servers
+ *  Pepper or Browser on this server wants to pair with a deevice in the room, send notice to all servers
  *  to update pairDevice upon success.
  *
- *  @param data Pepper's message contents (RoboMessage)
- *  @param connection Pepper's registered connection that requested to pair with a Micro:Bit
+ *  @param data Browser or Pepper's message contents (RoboMessage or BrowserMessage)
+ *  @param connection Browser or Pepper's registered connection that requested to pair with a Micro:Bit
  *  @return boolean false if the target device cannot be paired, true if successful
  */
 function pairLocalDevice(data, connection) {
@@ -582,7 +588,7 @@ function pairLocalDevice(data, connection) {
 
     // Browser --> Robot, Robot --> Micro:Bit, select target type and ID accordingly
     const targetDeviceType = connection.id.device_type === deviceType.robot ? deviceType.microbit : deviceType.robot;
-    const targetDeviceID = connection.id.device_type === deviceType.robot ? data.target_id : data.robot_id;
+    const targetDeviceID = data.target_id;  //TODO: make sure this is actually how it's done. Fix otherwise.
 
     console.log('Target pairing device: ' + targetDeviceType + ' and its corresponding ID: ' + targetDeviceID);
 
@@ -682,9 +688,6 @@ function pairGlobalDevice(params) {
     const device_id = params.device_id;
     const pairedID = params.paired_id;
     const pairedType = params.paired_type;
-
-    console.log('PAIR GLOBAL DEVICE PARAMS:', roomID, type, device_id, pairedID, pairedType);
-
 
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(device_id)) {
@@ -918,6 +921,35 @@ function requestAllMicrobits(connection, type) {
     return data;
 }
 
+/**
+ * Acquires list of Peppers from API call to send to Browser that requested it
+ * @param connection Browser connection that requested this list of Peppers
+ */
+function requestAllPeppers(connection){
+    //TODO: CHANGE THIS ENTIRELY
+
+    const data = {
+        result: '000',
+        room_id: connection.id.room_id,
+        pepper_list: [],
+    };
+
+    // Collect all microbits on this server in the same room as connection.id.room_id
+    if (devices_map.has(connection.id.room_id)) {
+        devices_map.get(connection.id.room_id).get(deviceType.robot).forEach((value) => {
+            // value is the connection object stored after registration of microbit
+            data.microbit_list.push(value.id.build());
+        });
+    }
+
+    // Collect all microbits from other servers in the same room
+    if(secondary_devices.has(connection.id.room_id)) {
+        secondary_devices.get(connection.id.room_id).get(deviceType.robot).forEach((pepper) => {
+            data.microbit_list.push(pepper.build());
+        });
+    }
+    return data;
+}
 
 /**
  * Micro:Bit sent an 'action message', forward it to Pepper.

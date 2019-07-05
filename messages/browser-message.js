@@ -6,9 +6,8 @@ class BrowserMessage {
         this._message = {
             room_id: null,
             user_id: null,
-            robot_id: null,
             device_type: deviceType.browser,
-            target_uuid: null,
+            target_id: null,    //null if message_type !== messageType.pairDevice
             message_type: null,
             message: null,
         }
@@ -21,16 +20,12 @@ class BrowserMessage {
         this._message.user_id = userId;
         return this;
     }
-    setRobotId(robotId) {
-        this._message.robot_id = robotId;
-        return this;
-    }
     setMessageType(messageType) {
         this._message.message_type = messageType;
         return this;
     }
-    setTargetdUUID(uuid){
-        this._message.target_uuid = uuid;
+    setTargetID(uuid){
+        this._message.target_id = uuid;
         return this;
     }
     setMessage(message) {
