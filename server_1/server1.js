@@ -380,10 +380,6 @@ function unpairLocalDevice(connection){
     const oppositeType = connection.id.paired_type;
     const oppositeID = connection.id.paired_id;
 
-    console.log("OPPOSITE TYPE: " + oppositeType);
-    console.log("OPPOSITE ID: " + oppositeID);
-
-
     // do not attempt unpairing if both devices are not paired
     if (!checkIfPaired(connection.id.room_id, connection.id.device_type, connection.id.device_id) ||
         !checkIfPaired(connection.id.room_id, oppositeType, oppositeID)){
@@ -522,9 +518,6 @@ function unpairGlobalDevice(roomID, type, deviceID){
  * @return boolean true if the Micro:Bit is paired, false otherwise
  */
 function checkIfPaired(roomID, type, deviceID) {
-
-    console.log('checkIfPaired of: ' + roomID, type, deviceID);
-
     if(devices_map.has(roomID)) {
         if (devices_map.get(roomID).get(type).has(deviceID)){
             return devices_map.get(roomID).get(type).get(deviceID).id.paired;
@@ -589,8 +582,6 @@ function pairLocalDevice(data, connection) {
     // Browser --> Robot, Robot --> Micro:Bit, select target type and ID accordingly
     const targetDeviceType = connection.id.device_type === deviceType.robot ? deviceType.microbit : deviceType.robot;
     const targetDeviceID = data.target_id;  //TODO: make sure this is actually how it's done. Fix otherwise.
-
-    console.log('Target pairing device: ' + targetDeviceType + ' and its corresponding ID: ' + targetDeviceID);
 
     // check if the device that wishes to get paired to exists
     if(!checkDeviceExists(connection.id.room_id, targetDeviceType, targetDeviceID)){
