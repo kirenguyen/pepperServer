@@ -510,11 +510,11 @@ function unpairGlobalDevice(roomID, type, deviceID){
 
 
 /**
- * Return the status of a device's pairing
+ * Return the status of a device's pairing, if it exists
  * @param roomID the room of the device that requested to be paired
  * @param type the deviceType of the target device
  * @param deviceID the ID of the device to check
- * @return boolean true if the Micro:Bit is paired, false otherwise
+ * @return boolean true if the Micro:Bit is paired, false if ID doesn't exist or is paired
  */
 function checkIfPaired(roomID, type, deviceID) {
     if(devices_map.has(roomID)) {
@@ -797,7 +797,8 @@ function login(data, connection) {
 function handshake(data, connection) {
 
     if (data.device_type === deviceType.browser){
-        if(checkIfPaired(data.robot_id)){
+
+        if(checkIfPaired(data.robot_id) || !checkDeviceExists(data.robot_id)){
             connection.sendUTF(failedResponse('The Pepper is invalid or already paired'), messageType.handshake);
             return false;
         }
