@@ -857,14 +857,13 @@ function handshake(data, connection) {
                 message.setOrigin(SERVER_ID);
 
                 publisher.publish(REDIS_CHANNEL, message.toJSON());
+
+                // Browser automatically pairs to data.robot_id at handshake time
+                if (data.device_type === deviceType.browser) {
+                    pairLocalDevice(data.robot_id, connection);
+                }
             });
-
     });
-
-    // Browser automatically pairs to data.robot_id at handshake time
-    if (data.device_type === deviceType.browser) {
-        pairLocalDevice(data.robot_id, connection);
-    }
 }
 
 

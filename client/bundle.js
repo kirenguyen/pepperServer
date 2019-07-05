@@ -45,10 +45,11 @@ socket.addEventListener('message', function (event) {
 });
 
 
-function createBrowser(roomNumber) {
+function createBrowser(robotID) {
     const browserMessage = new BrowserMessage();
-    browserMessage.setRoomId(roomNumber.toString());
-    browserMessage.setUserId(129);
+    browserMessage.setRoomID('1');
+    browserMessage.setUserID(129);
+    browserMessage.setRobotId(robotID)
     browserMessage.setMessageType(messageType.handshake);
     browserMessage.setMessage('no message');
     let jsonMessage = browserMessage.toJSON();
@@ -257,18 +258,23 @@ class BrowserMessage {
         this._message = {
             room_id: null,
             user_id: null,
+            robot_id: null,
             device_type: deviceType.browser,
             target_id: null,    //null if message_type !== messageType.pairDevice
             message_type: null,
             message: null,
         }
     }
-    setRoomId(roomId) {
-        this._message.room_id = roomId;
+    setRoomID(roomID) {
+        this._message.room_id = roomID;
         return this;
     }
-    setUserId(userId) {
-        this._message.user_id = userId;
+    setUserID(userID) {
+        this._message.user_id = userID;
+        return this;
+    }
+    setRobotId(robotID){
+        this._message.robot_id = robotID;
         return this;
     }
     setMessageType(messageType) {

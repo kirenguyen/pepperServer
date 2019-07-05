@@ -44,10 +44,11 @@ socket.addEventListener('message', function (event) {
 });
 
 
-function createBrowser(roomNumber) {
+function createBrowser(robotID) {
     const browserMessage = new BrowserMessage();
-    browserMessage.setRoomId(roomNumber.toString());
-    browserMessage.setUserId(129);
+    browserMessage.setRoomID('1');
+    browserMessage.setUserID(129);
+    browserMessage.setRobotId(robotID)
     browserMessage.setMessageType(messageType.handshake);
     browserMessage.setMessage('no message');
     let jsonMessage = browserMessage.toJSON();
