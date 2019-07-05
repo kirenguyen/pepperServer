@@ -1000,7 +1000,7 @@ function forwardActionMessage(data){
     }
 
     console.log('Device paired to Micro:Bit is connected to this server, performing action!');
-    devices_map.get(data.room_id).get(data.paired_type).get(data.paired_id).sendUTF(data.message);
+    devices_map.get(data.room_id).get(data.paired_type).get(data.paired_id).sendUTF(JSON.stringify(data.message));
 
     // send ACK message back to acknowledge that everything went fine
     const message = new RedisMessage();
