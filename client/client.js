@@ -144,19 +144,25 @@ function leftAMicrobitButton(){
     socket.send(jsonMessage);
 }
 
+
 function rightBMicrobitButton(robotID){
-    const message = new MicrobitMessage();
-    message.setMessageType(messageType.action);
-    message.setMessage({
-        'namespace ': 'microbit',
-        'event ': 'BUTTON',
-        'value': {
-            'button': 'B',
-            'state': null
+    let message = {
+        room_id: '1',
+        user_id: 'whatever',
+        robot_id: robotID,
+        device_type: deviceType.microbit,   //TODO: examples on https://roboken.backlog.jp/wiki/SCRATCH/Connect+function+application+protocol
+                                            // have this as a 'browser' type
+        message_type: messageType.action,
+        message: {
+            namespace: deviceType.microbit,
+            event: 'BUTTON',
+            value: {
+                button: 'B',
+                state: null,
+            }
         }
-    });
-    let jsonMessage = message.toJSON();
-    socket.send(jsonMessage);
+    };
+    socket.send(JSON.stringify(message));
 }
 
 

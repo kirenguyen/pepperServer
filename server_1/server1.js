@@ -102,7 +102,7 @@ wss.on('request', function (req) {
                 console.log(microbitList);
                 break;
             case messageType.requestPeppers:
-                //TODO: return Pepper list from API call instead
+                //TODO: return Pepper list from API call instead???
                 const pepperList = requestAllPeppers(connection);
                 connection.sendUTF(JSON.stringify(pepperList));
                 console.log(pepperList);
@@ -111,7 +111,8 @@ wss.on('request', function (req) {
                 receivedActionMessage(data, connection);
                 break;
             case messageType.pairDevice:
-                pairLocalDevice(data, connection);
+                //TODO: make sure the first parameter passed in is the ID of what 'connection' wants to pair with
+                pairLocalDevice(data.target_id, connection);
                 break;
             case messageType.unpairDevice:
                 unpairLocalDevice(connection);
@@ -556,14 +557,14 @@ function checkDeviceExists(roomID, type, deviceID) {
 
 
 /**
- *  Pepper or Browser on this server wants to pair with a deevice in the room, send notice to all servers
+ *  Pepper or Browser on this server wants to pair with a device in the room, send notice to all servers
  *  to update pairDevice upon success.
  *
- *  @param data Browser or Pepper's message contents (RoboMessage or BrowserMessage)
+ *  @param targetID ID of device to be paired with the connection
  *  @param connection Browser or Pepper's registered connection that requested to pair with a Micro:Bit
  *  @return boolean false if the target device cannot be paired, true if successful
  */
-function pairLocalDevice(data, connection) {
+function pairLocalDevice(targetID, connection) {
 
     if(connection.id.device_type === deviceType.microbit){
         console.log('Error: Tried to initiate connection from a device that does not initiate pairing (Micro:Bit)');
@@ -581,17 +582,16 @@ function pairLocalDevice(data, connection) {
 
     // Browser --> Robot, Robot --> Micro:Bit, select target type and ID accordingly
     const targetDeviceType = connection.id.device_type === deviceType.robot ? deviceType.microbit : deviceType.robot;
-    const targetDeviceID = data.target_id;  //TODO: make sure this is actually how it's done. Fix otherwise.
 
     // check if the device that wishes to get paired to exists
-    if(!checkDeviceExists(connection.id.room_id, targetDeviceType, targetDeviceID)){
+    if(!checkDeviceExists(connection.id.room_id, targetDeviceType, targetID)){
         console.log('Attempted to connect to an invalid target device ID');
         connection.sendUTF(failedResponse('Attempted to connect to an invalid target device ID', messageType.pairDevice));
         return false;
     }
 
     // check if the target device is unpaired
-    if (checkIfPaired(connection.id.room_id, targetDeviceType, targetDeviceID)){
+    if (checkIfPaired(connection.id.room_id, targetDeviceType, targetID)){
         console.log('The selected target device is already paired, type: ' + targetDeviceType);
         connection.sendUTF(failedResponse('The selected target device of type: ' + targetDeviceType + ', is already paired',
             messageType.pairDevice));
@@ -600,7 +600,7 @@ function pairLocalDevice(data, connection) {
 
     connection.id.setPaired(true);
     connection.id.setPairedType(targetDeviceType);
-    connection.id.setPairedID(targetDeviceID);
+    connection.id.setPairedID(targetID);
 
     // switch the ID/Paired ID to update the other device in this pair
     const updateTargetDevice = new DeviceParameters();
@@ -860,6 +860,11 @@ function handshake(data, connection) {
             });
 
     });
+
+    // Browser automatically pairs to data.robot_id at handshake time
+    if (data.device_type === deviceType.browser) {
+        pairLocalDevice(data.robot_id, connection);
+    }
 }
 
 
