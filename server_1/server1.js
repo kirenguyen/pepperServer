@@ -610,6 +610,7 @@ function pairLocalDevice(data, connection) {
     updateTargetDevice.setDeviceID(connection.id.paired_id);
     updateTargetDevice.setPairedID(connection.id.device_id);
     updateTargetDevice.setRoomID(connection.id.room_id);
+    updateTargetDevice.setPairedType(connection.id.device_type);
     updateTargetDevice.setDeviceType(targetDeviceType);
 
     // register that the targetDevice is now paired to this Pepper with the correct information
