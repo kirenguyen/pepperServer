@@ -795,6 +795,15 @@ function login(data, connection) {
  * @param connection socket connection object
  */
 function handshake(data, connection) {
+
+    if (data.device_type === deviceType.browser){
+        if(checkIfPaired(data.robot_id)){
+            connection.sendUTF(failedResponse('The Pepper is invalid or already paired'), messageType.handshake);
+            return false;
+        }
+    }
+
+
     const deviceCode = data.device_type === deviceType.robot ? 1 : 0;
 
     const body = {
