@@ -51,7 +51,6 @@ function createBrowser(roomNumber) {
     browserMessage.setUserId(129);
     browserMessage.setMessageType(messageType.handshake);
     browserMessage.setMessage('no message');
-    browserMessage.setRobotId('');
     let jsonMessage = browserMessage.toJSON();
     socket.send(jsonMessage);
     // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);

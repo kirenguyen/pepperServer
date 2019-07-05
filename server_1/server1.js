@@ -938,14 +938,14 @@ function requestAllPeppers(connection){
     if (devices_map.has(connection.id.room_id)) {
         devices_map.get(connection.id.room_id).get(deviceType.robot).forEach((value) => {
             // value is the connection object stored after registration of microbit
-            data.microbit_list.push(value.id.build());
+            data.pepper_list.push(value.id.build());
         });
     }
 
     // Collect all microbits from other servers in the same room
     if(secondary_devices.has(connection.id.room_id)) {
         secondary_devices.get(connection.id.room_id).get(deviceType.robot).forEach((pepper) => {
-            data.microbit_list.push(pepper.build());
+            data.pepper_list.push(pepper.build());
         });
     }
     return data;
