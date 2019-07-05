@@ -1030,7 +1030,7 @@ function sendACKMessage(data){
     if(devices_map.has(data.room_id)){
         if(devices_map.get(data.room_id).get(data.device_type).has(data.device_id)){
             console.log('SENDING ACK MESSAGE!');
-            devices_map.get(data.room_id).get(data.device_type).get(data.device_id).sendUTF(data.message);
+            devices_map.get(data.room_id).get(data.device_type).get(data.device_id).sendUTF(JSON.stringify(data.message));
             return true;
         }
     }

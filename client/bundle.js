@@ -28,7 +28,7 @@ const unpair = document.getElementById('unpair-device');
 const reqMicrobits = document.getElementById('request-microbits');
 const reqPeppers = document.getElementById('request-peppers');
 
-const microbitAction = document.getElementById('microbit-button');
+const microbitAction = document.getElementById('microbit-action');
 const pepperAction = document.getElementById('pepper-action');
 const browserAction = document.getElementById('browser-action');
 
@@ -152,7 +152,7 @@ function browserActionFunction(robotID){
             'namespace ': 'webcon',
             'event ': 'GREENFLAG',
         }
-    }
+    };
     socket.send(JSON.stringify(message));
 }
 
