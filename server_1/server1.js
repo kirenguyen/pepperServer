@@ -783,10 +783,7 @@ function login(data, connection) {
                     return false;
                 }
 
-                let responseBody = JSON.parse(body);
-                responseBody['message_type'] = messageType.login;
-
-                connection.sendUTF(JSON.stringify(responseBody));   //send Micro:Bit response
+                return true;
             });
         });
     });
@@ -971,7 +968,7 @@ function receivedActionMessage(data, connection) {
 /**
  * Handles Redis Published command to forward an Action message to the appropriate Pepper
  * @param data message object pubbed from Micro:Bit.
- * Redis Message contents contain:
+ *
  * {
  *     device_id: id of device that originally sent the Action message to be forwarded
  *     message: (entire message from Micro:Bit)
@@ -980,10 +977,15 @@ function receivedActionMessage(data, connection) {
  * }
  */
 function forwardActionMessage(data){
+
+    console.log(data);
+
+    console.log(JSON.stringify(data));
+
     //check only devices_map
     let found = false;
     if(devices_map.has(data.room_id)){
-        if(devices_map.get(data.room_id).get(deviceType.robot).has(data.robot_id)){
+        if(devices_map.get(data.room_id).get(deviceType.robot).has(data.message.robot_id)){
             found = true;
         }
     }
