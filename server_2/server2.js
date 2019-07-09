@@ -155,10 +155,6 @@ wss.on('request', function (req) {
         }
 
         try {
-            // no need to call /delete_user for browser
-            if(connection.id.device_type === deviceType.browser){
-                return true;
-            }
 
             // disconnect Pepper or Micro:Bit device from the cloud storage
             const url = domain + 'project/node/delete_user';
