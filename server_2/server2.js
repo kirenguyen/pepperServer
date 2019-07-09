@@ -155,8 +155,7 @@ wss.on('request', function (req) {
         }
 
         try {
-
-            // disconnect Pepper or Micro:Bit device from the cloud storage
+            // disconnect device from the cloud storage
             const url = domain + 'project/node/delete_user';
             const options = {
                 uri: url,
@@ -644,6 +643,9 @@ function pairLocalDevice(targetID, connection) {
             },
             form: body
         };
+
+        console.log('!!!!@#*@!&# ABOUT TO CALL SAVE_PAIR!!! BODY OF SAVE_PAIR REQUEST: ');
+        console.log(options);
 
         request.post(options, function (error, response, body) {
             if (error) {
