@@ -839,6 +839,8 @@ function handshake(data, connection) {
         const failedLogin = '900';
 
         connection.sendUTF(body);   //send back Flower names or legacy error response
+        console.log(responseBody);
+
 
         if (responseBody.result === failedLogin) {
             console.log('Failed handshake ' + body);
@@ -852,6 +854,7 @@ function handshake(data, connection) {
                 names[key] = responseBody[key];
             }
         });
+
 
         registerLocalDevice(data.room_id, data.device_type, connection, names).then(
             success => {

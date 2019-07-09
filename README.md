@@ -307,6 +307,10 @@ To see the functionality of the browser client, check `client.js` in the `/clien
 - When adding a Micro:Bit, enter the `microbit_name` you want the Pepper to be in.
 - When pairing a Micro:Bit, enter the 'ID' of the Micro:Bit you want to pair to, then press the `Pair Micro:Bit` button.
 
+- When adding a browser connection to the server, request the list of Peppers and input the device key of the Pepper you wish this browser to be paired with upon connection.
+
+
+
 ### Issues
 
 Although I am using the /delete_user (API018) to cut the connection, if the server crashes before you can close the connection, you will need to manually disconnect the robot through mySQL.
