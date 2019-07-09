@@ -88,7 +88,14 @@ wss.on('request', function (req) {
             return false;
         }
 
-        switch (data.message_type) {
+        if (!connection.hasOwnProperty('id')){
+            if (data.message_type !== messageType.login && data.message_type !== messageType.handshake) {
+                connection.sendUTF(failedResponse('Attempted to perform an action that on a connection not registered as a device yet', data.message_type))
+                return false;
+            }
+        }
+
+            switch (data.message_type) {
             case messageType.login:
                 login(data, connection);
                 break;

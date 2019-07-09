@@ -88,6 +88,13 @@ wss.on('request', function (req) {
             return false;
         }
 
+        if (!connection.hasOwnProperty('id')){
+            if (data.message_type !== messageType.login && data.message_type !== messageType.handshake) {
+                connection.sendUTF(failedResponse('Attempted to perform an action that on a connection not registered as a device yet', data.message_type))
+                return false;
+            }
+        }
+
         switch (data.message_type) {
             case messageType.login:
                 login(data, connection);
@@ -795,9 +802,11 @@ function login(data, connection) {
  */
 function handshake(data, connection) {
 
+    const stringRoomID = data.room_id.toString();
+
     if (data.device_type === deviceType.browser){
-        if( checkIfPaired(data.room_id, deviceType.robot, data.robot_id) || !checkDeviceExists(data.room_id, deviceType.robot, data.robot_id)){
-            connection.sendUTF(failedResponse('The Pepper is invalid or already paired'), messageType.handshake);
+        if( checkIfPaired(stringRoomID, deviceType.robot, data.robot_id) || !checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id)){
+            connection.sendUTF(failedResponse('The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
             return false;
         }
     }
@@ -806,7 +815,7 @@ function handshake(data, connection) {
     const deviceCode = data.device_type === deviceType.robot ? 1 : 0;
 
     const body = {
-        'room_id': data.room_id,
+        'room_id': stringRoomID,
         'user_id': data.user_id,
         'socket_id': connection.webSocketKey,
         'device_type': deviceCode,   //legacy device_type code for robot/browser for login
@@ -839,6 +848,8 @@ function handshake(data, connection) {
         const failedLogin = '900';
 
         connection.sendUTF(body);   //send back Flower names or legacy error response
+        console.log(responseBody);
+
 
         if (responseBody.result === failedLogin) {
             console.log('Failed handshake ' + body);
@@ -853,7 +864,8 @@ function handshake(data, connection) {
             }
         });
 
-        registerLocalDevice(data.room_id, data.device_type, connection, names).then(
+
+        registerLocalDevice(stringRoomID, data.device_type, connection, names).then(
             success => {
                 const message = new RedisMessage();
                 message.setMessageType(messageType.handshake);
