@@ -822,6 +822,9 @@ function handshake(data, connection) {
         'robot_id': data.robot_id,
     };
 
+    console.log('!!!!! BEFORE API SAVE_USER CALL');
+    console.log(body);
+
     const options = {
         uri: domain + 'project/node/save_user',
         headers: {
