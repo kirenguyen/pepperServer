@@ -888,7 +888,7 @@ function handshake(data, connection) {
  *          name: <string>                  // user chosen name
  *          paired: true || false           // whether or not the microbit is already paired
  *          paired_id: <websocket key of Pepper paired to it, null otherwise>,
- *          paired_type: null || 'robot'
+ *          paired_type: deviceType this device is paired to
  *      }, ... ... ]
  *   }
  *
@@ -924,7 +924,7 @@ function requestAllMicrobits(connection, type) {
  * @param connection Browser connection that requested this list of Peppers
  */
 function requestAllPeppers(connection){
-    //TODO: CHANGE THIS ENTIRELY
+    //TODO: CHANGE THIS ENTIRELY???
 
     const data = {
         result: '000',
@@ -970,7 +970,7 @@ function receivedActionMessage(data, connection) {
         room_id: connection.id.room_id,
         device_id: connection.id.device_id,
         device_type: connection.id.device_type,
-        message: data, //SEND THE ENTIRE THING //TODO: make sure all action messages must be ENTIRELY sent
+        message: data, //SEND THE ENTIRE THING //TODO: make sure all action messages are ENTIRELY sent??
         paired_id: connection.id.paired_id,
         paired_type: connection.id.paired_type,
     };
@@ -1019,7 +1019,7 @@ function forwardActionMessage(data){
         device_id: data.device_id,
         device_type: data.device_type,
         room_id: data.room_id,
-        message: 'ACK', //TODO: possibly change this, this is what is sent to Micro:Bit/Browser
+        message: 'ACK_RESPONSE', //TODO: possibly change this, this is what is sent to Micro:Bit/Browser
     });
     message.setOrigin(SERVER_ID);
     publisher.publish(REDIS_CHANNEL, message.toJSON());

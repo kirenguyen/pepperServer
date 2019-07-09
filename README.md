@@ -1,6 +1,6 @@
 # pepperServer
 
-LAST UPDATED: 28/6/19
+LAST UPDATED: 8/7/19
 
 ### Running the Two Servers
 
@@ -138,15 +138,16 @@ Upon successful connection to the server, an alert will be sent to all Peppers w
 
 ```textmate
 {
-    result: '000'
-    message_type: messageType.login, //messageType.login is for Micro:Bit login
+    result: '000',
+    message_type: messageType.login,
     room_id:  <room_id of Pepper that sent request>,
     microbit_list: [{
         roomID: <var>
-        uuid: <UUID assigned to device connection>
+        device_id: <websocket key>   
         name: <name assigned to microbit by user>
         paired: <boolean: always false for now>
-        paired_uuid: <UUID of paired Pepper || null >
+        paired_id: <ID of paired device || null >
+        paired_type: deviceType this device is paired to
     }, ........]
 }
 ```
@@ -205,10 +206,11 @@ The return Micro:Bit list will be in this format:
     room_id:  <room_id of Pepper that sent request>,
     microbit_list: [{
         roomID: <var>
-        uuid: <UUID assigned to device connection>
+        device_id: <websocket key>   
         name: <name assigned to microbit by user>
         paired: <boolean: always false for now>
-        paired_uuid: <UUID of paired Pepper || null >
+        paired_id: <ID of paired device || null >
+        paired_type: deviceType this device is paired to
     }, ........]
 }
 ```
@@ -219,7 +221,7 @@ The return Micro:Bit list will be in this format:
 
 The following is a sample script to pair a Pepper that has been connected to the server and performed the handshake to a Micro:Bit.
 
-You will need to get the UUID of the Micro:Bit you want to pair Pepper to; only Pepper can send a message to pair with a Micro:Bit.
+You will need to get the ID of the Micro:Bit you want to pair Pepper to; only Pepper can send a message to pair with a Micro:Bit.
 
 
 
@@ -232,7 +234,7 @@ const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.c
 
 const roboMessage = new RoboMessage();
 roboMessage.setMessageType(messageType.pairDevice);
-roboMessage.setMicrobitId(microbitUUID);    //request the list of Micro:Bits to pick a UUID
+roboMessage.setDeviceID(deviceID);    //request the list of Micro:Bits to pick an ID
 let jsonMessage = roboMessage.toJSON();
 socket.send(jsonMessage);
 ```
@@ -303,7 +305,7 @@ To see the functionality of the browser client, check `client.js` in the `/clien
 
 - When adding a Pepper, enter the `room_id` you want the Pepper to be in (ex: `1`, `2`).
 - When adding a Micro:Bit, enter the `microbit_name` you want the Pepper to be in.
-- When pairing a Micro:Bit, enter the 'UUID' of the Micro:Bit you want to pair to, then press the `Pair Micro:Bit` button.
+- When pairing a Micro:Bit, enter the 'ID' of the Micro:Bit you want to pair to, then press the `Pair Micro:Bit` button.
 
 ### Issues
 
