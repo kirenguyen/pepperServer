@@ -39,7 +39,7 @@ const server = http.createServer(function (request, response) {
     response.end('Just sent the headers');
 }).listen(SERVER_PORT, function () {
     console.log('Server 1 listening on port: ' + SERVER_PORT);
-    // serverStartCleanup();
+    serverStartCleanup();
 });
 
 wss = new WebSocketServer({
@@ -68,12 +68,6 @@ function serverStartCleanup() {
     message.setMessageType(messageType.serverStart);
     publisher.publish(REDIS_CHANNEL, message.toJSON());
 }
-
-wss.onclose = function() {
-    console.log('!!!!! BYE BITCH, SERVER CLOSING');
-};
-
-wss.onopen = serverStartCleanup;
 
 /**
  * Called upon client connection attempt
