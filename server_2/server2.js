@@ -795,9 +795,11 @@ function login(data, connection) {
  */
 function handshake(data, connection) {
 
+    const stringRoomID = data.room_id.toString();
+
     if (data.device_type === deviceType.browser){
-        if( checkIfPaired(data.room_id, deviceType.robot, data.robot_id) || !checkDeviceExists(data.room_id, deviceType.robot, data.robot_id)){
-            connection.sendUTF(failedResponse('The Pepper is invalid or already paired'), messageType.handshake);
+        if( checkIfPaired(stringRoomID, deviceType.robot, data.robot_id) || !checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id)){
+            connection.sendUTF(failedResponse('The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
             return false;
         }
     }
@@ -806,7 +808,7 @@ function handshake(data, connection) {
     const deviceCode = data.device_type === deviceType.robot ? 1 : 0;
 
     const body = {
-        'room_id': data.room_id,
+        'room_id': stringRoomID,
         'user_id': data.user_id,
         'socket_id': connection.webSocketKey,
         'device_type': deviceCode,   //legacy device_type code for robot/browser for login
@@ -856,7 +858,7 @@ function handshake(data, connection) {
         });
 
 
-        registerLocalDevice(data.room_id, data.device_type, connection, names).then(
+        registerLocalDevice(stringRoomID, data.device_type, connection, names).then(
             success => {
                 const message = new RedisMessage();
                 message.setMessageType(messageType.handshake);
