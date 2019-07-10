@@ -84,6 +84,8 @@ wss.on('request', function (req) {
     connection.webSocketKey = req.httpRequest.headers['sec-websocket-key'];
 
     connection.on('message', function (message) {
+        console.log(message);
+        console.log(message.utf8Data);
         let data = parseJSON(message.utf8Data);
         if (!data) {
             return false;
@@ -91,7 +93,7 @@ wss.on('request', function (req) {
 
         if (!connection.hasOwnProperty('id')){
             if (data.message_type !== messageType.login && data.message_type !== messageType.handshake) {
-                connection.sendUTF(failedJSONResponse('Attempted to perform an action that on a connection not registered as a device yet', data.message_type))
+                console.log('Cannot perform action for connection that has not registered and is attempting to perform an action');
                 return false;
             }
         }
@@ -1180,6 +1182,7 @@ function failedJSONResponse(message, msgType) {
  * @return JSON object if successful parsing
  */
 function parseMicrobitString(message) {
+    console.log(message);
     let string = message.toString();
     console.log(typeof message);
     console.log('?????');
@@ -1200,5 +1203,6 @@ function parseMicrobitString(message) {
     loginObject['user_name'] = parsedObject[stringParams.user_name];
     loginObject['message_type'] = messageType.login;
 
+    console.log('!!!! LOGIN OBJECT: ');
     return loginObject;
 }
