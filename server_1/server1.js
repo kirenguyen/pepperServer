@@ -1131,8 +1131,13 @@ function parseJSON(data) {
     try {
         return JSON.parse(data);
     } catch (err) {
-        console.log('Data was not a parsable JSON');
-        console.log(err);
+        if(err instanceof SyntaxError) {
+            console.log('Data was not a parsable JSON. Attempting to parse string instead');
+            console.log(err);
+            return parseMicrobitString(data);
+        } else {
+            throw err;
+        }
     }
 }
 
@@ -1190,6 +1195,7 @@ function parseMicrobitString(message) {
     loginObject['room_name'] = parsedObject[stringParams.room_name];
     loginObject['room_pass'] = parsedObject[stringParams.room_pass];
     loginObject['user_name'] = parsedObject[stringParams.user_name];
+    loginObject['message_type'] = messageType.login;
 
     return loginObject;
 }
