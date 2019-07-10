@@ -719,7 +719,7 @@ function pairGlobalDevice(params) {
  * @param connection socket connection object of Pepper logging in
  */
 function login(data, connection) {
-    let loginObject = createMicrobitLoginObject(message);
+    let loginObject = createMicrobitLoginObject(data);
 
     let body = {
         'room_name': loginObject.room_name,
