@@ -182,27 +182,15 @@ function pepperActionFunction(robotID){
 }
 
 
-function microbitActionFunction(robotID){
-    let message = {
-        room_id: '1',
-        user_id: 'whatever',
-        robot_id: robotID,
-        device_type: deviceType.microbit,   //TODO: examples on https://roboken.backlog.jp/wiki/SCRATCH/Connect+function+application+protocol
-                                            // have this as a 'browser' type
-        message_type: messageType.action,
-        message: {
-            namespace: deviceType.microbit,
-            event: 'BUTTON',
-            value: {
-                button: 'B',
-                state: null,
-            }
-        }
-    };
-    socket.send(JSON.stringify(message));
+function microbitActionFunction(){
+    let message = stringParams.message_type + stringParams.delimiter + messageType.action + stringParams.param_delimiter +
+    'a\t0' +
+    'x\t1' +
+    'y\t2' +
+    'z\t3';
+
+    socket.send(message);
 }
-
-
 
 connectPepper.addEventListener('click', e => {
     if(command.value === ''){

@@ -978,7 +978,7 @@ function receivedActionMessage(data, connection) {
         room_id: connection.id.room_id,
         device_id: connection.id.device_id,
         device_type: connection.id.device_type,
-        message: createActionMessageObject(connection.id.device_type, data), //SEND THE ENTIRE THING //TODO: make sure all action messages are ENTIRELY sent and/or parse Micro:Bit's action message
+        message: createActionMessageObject(data, connection), //SEND THE ENTIRE THING //TODO: make sure all action messages are ENTIRELY sent and/or parse Micro:Bit's action message
         paired_id: connection.id.paired_id,
         paired_type: connection.id.paired_type,
     };
