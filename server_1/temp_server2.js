@@ -12,6 +12,7 @@ const messageConstants = require('../messages/message-constants');
 const DeviceParameters = require('../device_parameters');
 const deviceType = messageConstants.deviceType;
 const messageType = messageConstants.messageType;
+const stringParams = messageConstants.stringParameters;
 const SERVER_PORT = 3000;
 
 const REDIS_PORT = 6379;
@@ -90,7 +91,7 @@ wss.on('request', function (req) {
 
         if (!connection.hasOwnProperty('id')){
             if (data.message_type !== messageType.login && data.message_type !== messageType.handshake) {
-                connection.sendUTF(failedResponse('Attempted to perform an action that on a connection not registered as a device yet', data.message_type))
+                console.log('Cannot perform action for connection that has not registered and is attempting to perform an action');
                 return false;
             }
         }
@@ -113,6 +114,7 @@ wss.on('request', function (req) {
                 console.log(pepperList);
                 break;
             case messageType.action:
+                //send the ENTIRE message, not just the embedded message
                 receivedActionMessage(data, connection);
                 break;
             case messageType.pairDevice:
@@ -149,8 +151,6 @@ wss.on('request', function (req) {
 
         } else {
             console.log('This connection was not set up with a device');
-            connection.sendUTF(failedResponse('This connection was not set up with a device',
-                messageType.connectionClosed));
             return false;
         }
 
@@ -173,7 +173,7 @@ wss.on('request', function (req) {
         } catch (err) {
             console.log('Disconnecting a device from the server failed');
             console.log(err);
-            connection.sendUTF(failedResponse('Disconnecting a device from the server failed',
+            connection.sendUTF(failedResponse(connection.id.device_type, 'Disconnecting a device from the server failed',
                 messageType.connectionClosed));
         }
     });
@@ -383,7 +383,7 @@ function unpairLocalDevice(connection){
     // do not attempt unpairing if both devices are not paired
     if (!checkIfPaired(connection.id.room_id, connection.id.device_type, connection.id.device_id) ||
         !checkIfPaired(connection.id.room_id, oppositeType, oppositeID)){
-        connection.sendUTF(failedResponse('This device is not in a valid pairing', messageType.unpairDevice));
+        connection.sendUTF(failedResponse(connection.id.device_type, 'This device is not in a valid pairing', messageType.unpairDevice));
         console.log('This device is not in a valid pairing');
         return false;
     }
@@ -458,12 +458,13 @@ function unpairLocalDevice(connection){
         const responseBody = parseJSON(body);
         const failedLogin = '900';
 
+        sendUnpairMessage(connection);
+
         if (responseBody.result === failedLogin) {
             console.log('Failed deletion of pair ' + body);
             return false;
         }
-        responseBody['message_type'] = messageType.unpairDevice;
-        connection.send(JSON.stringify(responseBody));
+
     });
     return true;
 }
@@ -485,11 +486,7 @@ function unpairGlobalDevice(roomID, type, deviceID){
             connection.id.setPairedID(null);
             connection.id.setPairedType(null);
 
-            connection.sendUTF(JSON.stringify({
-                result: '000',
-                message_type: messageType.unpairDevice,
-                message: 'This device was just unpaired.'
-            }));
+            sendUnpairMessage(connection);
             console.log('SUCCESSFULLY CLEANED UP PAIRING on devices_map');
             return true;
         }
@@ -505,7 +502,7 @@ function unpairGlobalDevice(roomID, type, deviceID){
             return true;
         }
     }
-    console.log('Unsuccessfully attempted to unpair global device');
+    console.log('!!!!!!!!! Unsuccessfully attempted to unpair global device');
     return false;
 }
 
@@ -567,14 +564,14 @@ function pairLocalDevice(targetID, connection) {
 
     if(connection.id.device_type === deviceType.microbit){
         console.log('Error: Tried to initiate connection from a device that does not initiate pairing (Micro:Bit)');
-        connection.sendUTF('This device cannot initiate a pairing', messageType.pairDevice);
+        connection.sendUTF(failedResponse(connection.id.device_type,'This device cannot initiate a pairing', messageType.pairDevice));
         return false;
     }
 
     // check if the device that wishes to create a pairing is free
     if (checkIfPaired(connection.id.room_id, connection.id.device_type, connection.id.device_id)){
         console.log('Device requesting to pair is already paired. Please unpair first before attempting again');
-        connection.sendUTF(failedResponse('Device of type: ' + connection.id.device_type + ' is already paired. ' +
+        connection.sendUTF(failedResponse(connection.id.device_type, 'Device of type: ' + connection.id.device_type + ' is already paired. ' +
             'Please unpair before attempting to connect again', messageType.pairDevice));
         return false;
     }
@@ -585,14 +582,14 @@ function pairLocalDevice(targetID, connection) {
     // check if the device that wishes to get paired to exists
     if(!checkDeviceExists(connection.id.room_id, targetDeviceType, targetID)){
         console.log('Attempted to connect to an invalid target device ID');
-        connection.sendUTF(failedResponse('Attempted to connect to an invalid target device ID', messageType.pairDevice));
+        connection.sendUTF(failedResponse(connection.id.device_type, 'Attempted to connect to an invalid target device ID', messageType.pairDevice));
         return false;
     }
 
     // check if the target device is unpaired
     if (checkIfPaired(connection.id.room_id, targetDeviceType, targetID)){
         console.log('The selected target device is already paired, type: ' + targetDeviceType);
-        connection.sendUTF(failedResponse('The selected target device of type: ' + targetDeviceType + ', is already paired',
+        connection.sendUTF(failedResponse(connection.id.device_type, 'The selected target device of type: ' + targetDeviceType + ', is already paired',
             messageType.pairDevice));
         return false;
     }
@@ -611,9 +608,6 @@ function pairLocalDevice(targetID, connection) {
 
     // register that the targetDevice is now paired to this Pepper with the correct information
     pairGlobalDevice(updateTargetDevice);
-
-    console.log('CHECKING that the map entry is equivalent to the updated connection after pairDevice');
-    console.log(devices_map.get(connection.id.room_id).get(connection.id.device_type).get(connection.id.device_id) === connection);
 
     const pairMessage = new RedisMessage();
     pairMessage.setOrigin(SERVER_ID);
@@ -643,9 +637,6 @@ function pairLocalDevice(targetID, connection) {
             },
             form: body
         };
-
-        console.log('!!!!@#*@!&# ABOUT TO CALL SAVE_PAIR!!! BODY OF SAVE_PAIR REQUEST: ');
-        console.log(options);
 
         request.post(options, function (error, response, body) {
             if (error) {
@@ -689,13 +680,7 @@ function pairGlobalDevice(params) {
             connection.id.setPairedType(pairedType);
             connection.id.setPairedID(pairedID);
 
-            // notify this device that it was just paired
-            connection.sendUTF(JSON.stringify({
-                result: '000',
-                message_type: messageType.pairDevice,
-                message: 'This device was just paired.'
-            }));
-            console.log('SUCCESSFULLY UPDATED PAIRING on devices_map!');
+            sendPairMessage(connection);
             return true;
         }
     }
@@ -720,15 +705,19 @@ function pairGlobalDevice(params) {
 
 /**
  * Handles login attempts of micro:bit, which is a combination of TWO API calls.
- * @param data message object of micro:bit containing device_type, room_id, microbit_name, password, etc.
- *        (MicrobitMessage object type)
+ * @param data parsed JSON object of micro:bit's login message
  * @param connection socket connection object of Pepper logging in
  */
 function login(data, connection) {
+    let loginObject = createMicrobitLoginObject(data);
+
     let body = {
-        'room_name': data.room_name,
-        'password': data.password,
+        'room_name': loginObject.room_name,
+        'password': loginObject.room_pass,
     };
+
+    console.log('Login body: ');
+    console.log(body);
 
     let options = {
         uri: domain + 'project/login',
@@ -746,16 +735,16 @@ function login(data, connection) {
 
         const responseBody = parseJSON(body);
 
+        sendMicrobitLoginResponse(connection, responseBody);
+
         const failedLogin = '900';
         if (!responseBody || responseBody.result === failedLogin) {
             console.log('Failed to authenticate: ' + body);
             return false;
         }
 
-        responseBody['message_type'] = messageType.login;
-        connection.sendUTF(JSON.stringify(responseBody));   //send Microbit back the API response
 
-        registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.microbit_name).then(
+        registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, loginObject.user_name).then(
             success => {console.log('registerLocalDevice function has been called for microbit:', success)}
         ).then(success => {
             const body = {
@@ -780,7 +769,7 @@ function login(data, connection) {
                 }
 
                 if (!body) {
-                    connection.sendUTF(failedResponse('Micro:Bit handshake failed',
+                    connection.sendUTF(failedResponse(connection.id.device_type,'Micro:Bit handshake failed',
                         messageType.login));
                     return false;
                 }
@@ -805,7 +794,7 @@ function handshake(data, connection) {
     // check that
     if (data.device_type === deviceType.browser){
         if( checkIfPaired(stringRoomID, deviceType.robot, data.robot_id) || !checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id)){
-            connection.sendUTF(failedResponse('The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
+            connection.sendUTF(failedResponse(connection.id.device_type, 'The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
             return false;
         }
     }
@@ -851,7 +840,6 @@ function handshake(data, connection) {
 
         connection.sendUTF(body);   //send back Flower names or legacy error response
         console.log(responseBody);
-
 
         if (responseBody.result === failedLogin) {
             console.log('Failed handshake ' + body);
@@ -937,8 +925,6 @@ function requestAllMicrobits(connection, type) {
  * @param connection Browser connection that requested this list of Peppers
  */
 function requestAllPeppers(connection){
-    //TODO: CHANGE THIS ENTIRELY???
-
     const data = {
         result: '000',
         room_id: connection.id.room_id,
@@ -964,13 +950,18 @@ function requestAllPeppers(connection){
 
 /**
  * Device sent an 'action message', forward it to paired Device.
- * @param data MicrobitMessage object sent from Micro:Bit, to be forwarded entirely to Pepper
- * @param connection Microbit's registered connection
+ * @param data object sent from Micro:Bit, Pepper, or Browser to their respective pair
+ * @param connection device's registered connection
  */
 function receivedActionMessage(data, connection) {
     if(!connection.id.paired){
         console.log('Device is not paired properly, cannot send an action command');
-        connection.sendUTF(failedResponse('Device is not paired, cannot send an action', messageType.action));
+        connection.sendUTF(failedResponse(connection.id.device_type,'Device is not paired, cannot send an action', messageType.action));
+        return false;
+    }
+
+    if(connection.id.device_type === deviceType.robot && connection.id.paired_type === deviceType.microbit){
+        connection.sendUTF(failedResponse(connection.id.device_type, 'Pepper cannot send an action message to its paired device (a Micro:Bit)', messageType.action));
         return false;
     }
 
@@ -983,7 +974,7 @@ function receivedActionMessage(data, connection) {
         room_id: connection.id.room_id,
         device_id: connection.id.device_id,
         device_type: connection.id.device_type,
-        message: data, //SEND THE ENTIRE THING //TODO: make sure all action messages are ENTIRELY sent??
+        message: createActionMessageObject(data, connection), //SEND THE ENTIRE THING //TODO: make sure all action messages are ENTIRELY sent and/or parse Micro:Bit's action message
         paired_id: connection.id.paired_id,
         paired_type: connection.id.paired_type,
     };
@@ -1065,6 +1056,67 @@ function sendACKMessage(data){
     console.log('Original device that sent the action message not on this server');
 }
 
+/**
+ * Sends a message to a device that it was paired
+ * @param connection registered connection object of device to send paired message to
+ */
+function sendPairMessage(connection){
+    if(connection.id.device_type === deviceType.microbit){
+        let message = stringParams.message_type + stringParams.delimiter + messageType.pairDevice + stringParams.param_delimiter +
+            stringParams.message + stringParams.delimiter + 'hogehoge' + stringParams.param_delimiter;
+        connection.sendUTF(message);
+        console.log('Sent successful pairing message to Micro:Bit!');
+        return true;
+    }
+    connection.sendUTF(JSON.stringify({
+        result: '000',
+        message_type: messageType.pairDevice,
+        message: 'This device was just paired.'
+    }));
+    console.log('Sent successful pairing message to ' + connection.id.device_type);
+    return true;
+}
+
+
+/**
+ * Sends a message to a device that it was paired
+ * @param connection registered connection object of device to send unpaired message to
+ */
+function sendUnpairMessage(connection){
+    if(connection.id.device_type === deviceType.microbit){
+        let message = stringParams.message_type + stringParams.delimiter + messageType.unpairDevice + stringParams.param_delimiter +
+            stringParams.message + stringParams.delimiter + 'hogehoge' + stringParams.param_delimiter;
+        connection.sendUTF(message);
+        console.log('Sent successful pairing message to Micro:Bit!');
+        return true;
+    }
+
+    connection.sendUTF(JSON.stringify({
+        result: '000',
+        message_type: messageType.unpairDevice,
+        message: 'This device was just unpaired.'
+    }));
+    console.log('Sent successful pairing message to ' + connection.id.device_type);
+    return true;
+}
+
+
+/**
+ * Sends Micro:Bit a string response of the API call to /login
+ * @param connection connection object of Micro:Bit (has not been registered yet; no id/DeviceParameter fields)
+ * @param response parsed JSON response object after attempt to log Micro:Bit in
+ */
+function sendMicrobitLoginResponse(connection, response) {
+    let result = '900';
+    if(response['result'] === '000'){
+        result = '000';
+    }
+
+    const message = stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
+        stringParams.result + stringParams.delimiter + result + stringParams.param_delimiter;
+    connection.sendUTF(message);
+}
+
 
 /////////////////////// MISC FUNCTIONS /////////////////////////////
 
@@ -1078,8 +1130,13 @@ function parseJSON(data) {
     try {
         return JSON.parse(data);
     } catch (err) {
-        console.log('Data was not a parsable JSON');
-        console.log(err);
+        if(err instanceof SyntaxError) {
+            console.log('Data was not a parsable JSON. Attempting to parse string instead');
+            return parseMicrobitString(data);
+        } else {
+            console.log(err);
+            throw err;
+        }
     }
 }
 
@@ -1102,15 +1159,98 @@ function alertPeppers(roomID, msgType) {
 
 /**
  * Creates a string JSON failed response to send back if a device failed.
+ * @param type deviceType of device that this failed response should be sent to
  * @param message a string description of when, where, or why the request failed
  * @param msgType the messageType of the original request that led to this failure
  * @returns {string} failed response object with failed result code '900'
  */
-function failedResponse(message, msgType) {
-    const failureObject = {
-        result: '900',
-        failure_message: message,
-        message_type: msgType,
+function failedResponse(type, message, msgType) {
+    let failureMessage;
+    if (type === deviceType.microbit){
+        failureMessage = stringParams.message_type + stringParams.delimiter + msgType + stringParams.param_delimiter +
+            stringParams.result + stringParams.delimiter + '900' + stringParams.param_delimiter +
+            stringParams.message + stringParams.delimiter + message + stringParams.param_delimiter;
+    } else {
+        failureMessage = JSON.stringify({
+            result: '900',
+            failure_message: message,
+            message_type: msgType,
+        });
+    }
+    return failureMessage;
+}
+
+/**
+ * @param message string of (param, value) pairs, written with messageConstants.stringParameter values
+ * and delimiters
+ * @return JSON object if successful parsing
+ */
+function parseMicrobitString(message) {
+    let string = message.toString();
+    let parameters = string.split(stringParams.param_delimiter).filter((value) => {
+        return value.length > 0;
+    });
+
+    const parsedObject = {};
+    parameters.forEach((value) => {
+        let paramName, paramValue;
+        [paramName, paramValue] = value.split(stringParams.delimiter);
+        parsedObject[paramName] = paramValue;
+    });
+
+    return parsedObject;
+}
+
+/**
+ * Create a JSON object from Micro:Bit's parsed string and return it to something that matches login() functionality
+ * @param data parsed JSON object of Micro:Bit's message
+ */
+function createMicrobitLoginObject(data) {
+    const loginObject = {};
+    loginObject['room_name'] = data[stringParams.room_name];
+    loginObject['room_pass'] = data[stringParams.room_pass];
+    loginObject['user_name'] = data[stringParams.user_name];
+    loginObject['message_type'] = messageType.login;
+    return loginObject;
+}
+
+
+/**
+ * Create a JSON object from Micro:Bit's parsed action message and return it to something that matches ActionMessage
+ * forwarding capabilities
+ * @param data original Action object of device
+ * @param connection connection object of Micro:Bit that sent the paired message
+ */
+function createActionMessageObject(data, connection) {
+    // Pepper and Browser do not need to refactor the data
+    if(connection.id.device_type !== deviceType.microbit){
+        return data;
+    }
+
+    //TODO: FINALIZE THIS LATER
+    const roboMicrobitSensor = {
+        roboMicrobitTemperature: 0,
+        roboMicrobitLightLevel: 0,
+        roboMicrobitCompassHeading: 0,
+        roboMicrobitAccelerometer: {
+            x: data['x'],
+            y: data['y'],
+            z: data['z'],
+            a: data['a']
+        },
+        roboMicrobitCustomMessage: ''
     };
-    return JSON.stringify(failureObject);
+
+    return {
+        room_id: connection.id.room_id,
+        user_id: connection.id.name,
+        robot_id: connection.id.paired_id,
+        device_type: connection.id.device_type,
+        message_type: messageType.action,
+        message: {
+            namespace: connection.id.device_type,
+            event: null,
+            values: roboMicrobitSensor,
+        }
+    };
 }

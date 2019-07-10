@@ -925,8 +925,6 @@ function requestAllMicrobits(connection, type) {
  * @param connection Browser connection that requested this list of Peppers
  */
 function requestAllPeppers(connection){
-    //TODO: CHANGE THIS ENTIRELY???
-
     const data = {
         result: '000',
         room_id: connection.id.room_id,
@@ -1250,8 +1248,8 @@ function createActionMessageObject(data, connection) {
        device_type: connection.id.device_type,
        message_type: messageType.action,
        message: {
-           namespace: connection.id.device_type, //TODO check this
-           event: null, //TODO change this
+           namespace: connection.id.device_type,
+           event: null,
            values: roboMicrobitSensor,
        }
    };

@@ -365,53 +365,6 @@ const messageType = Object.freeze({
 module.exports.deviceType = deviceType;
 module.exports.messageType = messageType;
 module.exports.stringParameters = stringParameters;
-
-/**
- * Change
- *
-
- device_type	microbit    // it could be convenient if keep device type
- message_type	action
- x	-560
- y	128
- z	1232
- a	727
- C	727     //
- X	727     //
- A	1       //
- B	1       //
-
-
- INTO THIS DOWN HERE
-
- message = {
-           'room_id': roomId,
-           'user_id': userid,
-           'robot_id': robotId,
-           'device_type': 'browser',
-           'message_type': 'action',
-           'message': {
-                       'namespace ': 'microbit',
-                       'event ': 'SENSOR',
-                       'value': roboMicrobitSensor
-           }
-}
-
- roboMicrobitSensor =
- {
-           roboMicrobitTemperature: 0,
-           roboMicrobitLightLevel: 0,
-           roboMicrobitCompassHeading: 0,
-           roboMicrobitAccelerometer: {
-                      x: 0,
-                      y: 0,
-                      z: 0,
-                      a: 0
-           },
-           roboMicrobitCustomMessage: ''
-}
- */
-
 },{}],4:[function(require,module,exports){
 const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
