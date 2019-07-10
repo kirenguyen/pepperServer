@@ -715,15 +715,15 @@ function pairGlobalDevice(params) {
 
 /**
  * Handles login attempts of micro:bit, which is a combination of TWO API calls.
- * @param message string of micro:bit for login
+ * @param data parsed JSON object of micro:bit's login message
  * @param connection socket connection object of Pepper logging in
  */
-function login(message, connection) {
-    let data = parseMicrobitString(message);
+function login(data, connection) {
+    let loginObject = createMicrobitLoginObject(message);
 
     let body = {
-        'room_name': data.room_name,
-        'password': data.room_pass,
+        'room_name': loginObject.room_name,
+        'password': loginObject.room_pass,
     };
 
     console.log('Login body: ');
@@ -754,7 +754,7 @@ function login(message, connection) {
         }
 
 
-        registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, data.user_name).then(
+        registerLocalDevice(responseBody.room_id, deviceType.microbit, connection, loginObject.user_name).then(
             success => {console.log('registerLocalDevice function has been called for microbit:', success)}
         ).then(success => {
             const body = {
@@ -1179,7 +1179,6 @@ function failedJSONResponse(message, msgType) {
 }
 
 /**
- * Create a JSON object from Micro:Bit's string and return it to something that matches login() functionality
  * @param message string of (param, value) pairs, written with messageConstants.stringParameter values
  * and delimiters
  * @return JSON object if successful parsing
@@ -1197,13 +1196,18 @@ function parseMicrobitString(message) {
         parsedObject[paramName] = paramValue;
     });
 
-    const loginObject = {};
-    loginObject['room_name'] = parsedObject[stringParams.room_name];
-    loginObject['room_pass'] = parsedObject[stringParams.room_pass];
-    loginObject['user_name'] = parsedObject[stringParams.user_name];
-    loginObject['message_type'] = messageType.login;
+    return parsedObject;
+}
 
-    console.log('!!!! LOGIN OBJECT: ');
-    console.log(loginObject);
+/**
+ * Create a JSON object from Micro:Bit's parsed string and return it to something that matches login() functionality
+ * @param data parsed JSON object of Micro:Bit's message
+ */
+function createMicrobitLoginObject(data) {
+    const loginObject = {};
+    loginObject['room_name'] = data[stringParams.room_name];
+    loginObject['room_pass'] = data[stringParams.room_pass];
+    loginObject['user_name'] = data[stringParams.user_name];
+    loginObject['message_type'] = messageType.login;
     return loginObject;
 }
