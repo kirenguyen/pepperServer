@@ -1180,14 +1180,14 @@ function failedJSONResponse(message, msgType) {
  * @return JSON object if successful parsing
  */
 function parseMicrobitString(message) {
-    let parameters = message.split(stringParameters.param_delimiter).filter((value) => {
+    let parameters = message.split(stringParams.param_delimiter).filter((value) => {
         return value.length > 0;
     });
 
     const parsedObject = {};
     parameters.forEach((value) => {
         let paramName, paramValue;
-        [paramName, paramValue] = value.split(stringParameters.delimiter);
+        [paramName, paramValue] = value.split(stringParams.delimiter);
         parsedObject[paramName] = paramValue;
     });
 
