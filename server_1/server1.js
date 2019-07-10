@@ -152,7 +152,7 @@ wss.on('request', function (req) {
 
         } else {
             console.log('This connection was not set up with a device');
-            connection.sendUTF(failedJSONResponse('This connection was not set up with a device',
+            connection.sendUTF(failedResponse(connection.id.device_type, 'This connection was not set up with a device',
                 messageType.connectionClosed));
             return false;
         }
@@ -176,7 +176,7 @@ wss.on('request', function (req) {
         } catch (err) {
             console.log('Disconnecting a device from the server failed');
             console.log(err);
-            connection.sendUTF(failedJSONResponse('Disconnecting a device from the server failed',
+            connection.sendUTF(failedResponse(connection.id.device_type, 'Disconnecting a device from the server failed',
                 messageType.connectionClosed));
         }
     });
@@ -386,7 +386,7 @@ function unpairLocalDevice(connection){
     // do not attempt unpairing if both devices are not paired
     if (!checkIfPaired(connection.id.room_id, connection.id.device_type, connection.id.device_id) ||
         !checkIfPaired(connection.id.room_id, oppositeType, oppositeID)){
-        connection.sendUTF(failedJSONResponse('This device is not in a valid pairing', messageType.unpairDevice));
+        connection.sendUTF(failedResponse(connection.id.device_type, 'This device is not in a valid pairing', messageType.unpairDevice));
         console.log('This device is not in a valid pairing');
         return false;
     }
@@ -575,7 +575,7 @@ function pairLocalDevice(targetID, connection) {
     // check if the device that wishes to create a pairing is free
     if (checkIfPaired(connection.id.room_id, connection.id.device_type, connection.id.device_id)){
         console.log('Device requesting to pair is already paired. Please unpair first before attempting again');
-        connection.sendUTF(failedJSONResponse('Device of type: ' + connection.id.device_type + ' is already paired. ' +
+        connection.sendUTF(failedResponse(connection.id.device_type, 'Device of type: ' + connection.id.device_type + ' is already paired. ' +
             'Please unpair before attempting to connect again', messageType.pairDevice));
         return false;
     }
@@ -586,14 +586,14 @@ function pairLocalDevice(targetID, connection) {
     // check if the device that wishes to get paired to exists
     if(!checkDeviceExists(connection.id.room_id, targetDeviceType, targetID)){
         console.log('Attempted to connect to an invalid target device ID');
-        connection.sendUTF(failedJSONResponse('Attempted to connect to an invalid target device ID', messageType.pairDevice));
+        connection.sendUTF(failedResponse(connection.id.device_type, 'Attempted to connect to an invalid target device ID', messageType.pairDevice));
         return false;
     }
 
     // check if the target device is unpaired
     if (checkIfPaired(connection.id.room_id, targetDeviceType, targetID)){
         console.log('The selected target device is already paired, type: ' + targetDeviceType);
-        connection.sendUTF(failedJSONResponse('The selected target device of type: ' + targetDeviceType + ', is already paired',
+        connection.sendUTF(failedResponse(connection.id.device_type, 'The selected target device of type: ' + targetDeviceType + ', is already paired',
             messageType.pairDevice));
         return false;
     }
@@ -779,7 +779,7 @@ function login(data, connection) {
                 }
 
                 if (!body) {
-                    connection.sendUTF(failedJSONResponse('Micro:Bit handshake failed',
+                    connection.sendUTF(failedResponse(connection.id.device_type,'Micro:Bit handshake failed',
                         messageType.login));
                     return false;
                 }
@@ -804,7 +804,7 @@ function handshake(data, connection) {
     // check that
     if (data.device_type === deviceType.browser){
         if( checkIfPaired(stringRoomID, deviceType.robot, data.robot_id) || !checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id)){
-            connection.sendUTF(failedJSONResponse('The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
+            connection.sendUTF(failedResponse(connection.id.device_type, 'The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
             return false;
         }
     }
@@ -968,7 +968,7 @@ function requestAllPeppers(connection){
 function receivedActionMessage(data, connection) {
     if(!connection.id.paired){
         console.log('Device is not paired properly, cannot send an action command');
-        connection.sendUTF(failedJSONResponse('Device is not paired, cannot send an action', messageType.action));
+        connection.sendUTF(failedResponse(connection.id.device_type,'Device is not paired, cannot send an action', messageType.action));
         return false;
     }
 
@@ -1165,17 +1165,25 @@ function alertPeppers(roomID, msgType) {
 
 /**
  * Creates a string JSON failed response to send back if a device failed.
+ * @param type deviceType of device that this failed response should be sent to
  * @param message a string description of when, where, or why the request failed
  * @param msgType the messageType of the original request that led to this failure
  * @returns {string} failed response object with failed result code '900'
  */
-function failedJSONResponse(message, msgType) {
-    const failureObject = {
-        result: '900',
-        failure_message: message,
-        message_type: msgType,
-    };
-    return JSON.stringify(failureObject);
+function failedResponse(type, message, msgType) {
+    let failureMessage;
+    if (type === deviceType.microbit){
+        failureMessage = stringParams.message_type + stringParams.delimiter + msgType + stringParams.param_delimiter +
+        stringParams.result + stringParams.delimiter + '900' + stringParams.param_delimiter +
+        stringParams.message + stringParams.delimiter + message + stringParams.param_delimiter;
+    } else {
+        failureMessage = JSON.stringify({
+            result: '900',
+            failure_message: message,
+            message_type: msgType,
+        });
+    }
+    return failureMessage;
 }
 
 /**

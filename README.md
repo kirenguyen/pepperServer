@@ -15,13 +15,14 @@ The two servers are (port 3000):
 - `ec2-3-16-66-225.us-east-2.compute.amazonaws.com` (Server 2)
 
 
+
 ### Messaging / WebSocket Protocol
 
 Once a device is connected to the server, it will need to send messages; at the moment there are two classes dedicated to messaging, both located in the `/messages` directory.
 
-For Pepper, this is `robo-message.js` , and for Micro:Bits this is `microbit-message.js`.
+For Pepper, this is `robo-message.js` , and for Micro:Bits this will be a string comprised of values and parameters/delimiters as defined by the `message-constants.js` file.
 
-If there was some error or failure in sending a message, a failedError string object will be returned:
+If there was some error or failure in sending a message, either a failedError string object will be returned, or a string if it's a Micro:Bit.
 
 
 ##### Parameters:
@@ -31,6 +32,9 @@ If there was some error or failure in sending a message, a failedError string ob
 - `message_type` : one of the types described below, indicating the action that failed
 
 ######  Message Types (message_type): 
+
+
+
 ```textmate
 'login': Micro:Bit logged in.
 'pairDevice': Pepper successfully connected to server.
@@ -39,7 +43,13 @@ If there was some error or failure in sending a message, a failedError string ob
 'connectionClosed': A Micro:Bit disconnected from the server. 
 ```
 
+
+
+
 ##### Example:
+
+
+For a browser or Pepper:
 
 ```textmate
 {
@@ -48,6 +58,19 @@ If there was some error or failure in sending a message, a failedError string ob
     message_type: messageType.pairDevice
 }
 ```
+
+
+For a Micro:Bit:
+
+
+
+```textmate
+result    900
+message    The Micro:Bit is already paired
+message_type    pairDevice
+```
+
+
 
 
 ## Connecting a Pepper
@@ -108,24 +131,26 @@ Failure/失敗:
 
 ## Connecting a Micro:Bit to server
 
-Very similar to Pepper. This uses a different message at the moment, but I may later make Pepper and Micro:bit use the same one.
+As Micro:Bit messages are strings, the string formats to send to connect are located on RoboKen at [this link](https://roboken.backlog.jp/wiki/SCRATCH/Wifi+module+message+protocol).
 
-In the same `/messages` directory, there is a `microbit-message.js` file, used to login the micro:bit to the server.
-
-Sample script for sending (to server 2). Please fix the node module paths accordingly.
-
+Sample string for sending (to server 2). 
 
 
 ```javascript
 const MicrobitMessage = require('../messages/microbit-message');
+const messageType = messageConstants.messageType;
+const deviceType = messageConstants.deviceType;
+const stringParams = messageConstants.stringParameters;
 
 const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
-const loginMessage = new MicrobitMessage();
-loginMessage.setRoomName('room1');
-loginMessage.setPassword('test1234');   
-loginMessage.setMicrobitName('microbit1');    
-let jsonMessage = loginMessage.toJSON();
+const microbitLogin =
+        stringParams.room_name + stringParams.delimiter + 'room1' + stringParams.param_delimiter +
+        stringParams.room_pass + stringParams.delimiter + 'test1234' + stringParams.param_delimiter +
+        stringParams.user_name + stringParams.delimiter + name + stringParams.param_delimiter +
+        stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
+        stringParams.device_type + stringParams.delimiter + deviceType.microbit + stringParams.param_delimiter;
+
 socket.send(jsonMessage);
 ```
 
@@ -154,15 +179,16 @@ Upon successful connection to the server, an alert will be sent to all Peppers w
 
 
 
-This response will be sent to the Micro:Bit if successful login, otherwise a failure JSON will be sent back:
+This response will be sent to the Micro:Bit, as in the format given in the Roboken linked above:
+
+
 
 ```textmate
-{
-    result: '000',
-    room_id: roomID     // room ID the Micro:Bit logged in to
-    message_type: messageType.login ('login')
-}
+message_type	login      
+result	(000 or 900)
 ```
+
+
 
 
 
@@ -244,12 +270,26 @@ socket.send(jsonMessage);
 This will also send back a Micro:Bit list to all Peppers in the same room as the two devices, if pairing succeeded. If pairing failed, a failureObject as described in the protocol will be sent.
 The `message_type` parameter of the notification will be `messageType.pairDevice`.
 
-Pepper will also receive the following JSON string format upon successfully sending the POST request to update this pair in the server. If the API request failed, the `result` parameter will be '900'.
- 
+Peppers/Browsers will also receive the following JSON string format upon successfully sending the POST request to update this pair in the server. If the API request failed, the `result` parameter will be '900'.
+
+
 
 ```textmate
 {"result":"000","message_type":"pair"}
 ```
+
+
+
+Micro:Bit will receive a similar string that looks like:
+
+
+
+```textmate
+message_type	pairDevice   
+message	hogehoge
+```
+
+
 
 
 
@@ -282,13 +322,25 @@ socket.send(jsonMessage);
 This will also send back a Micro:Bit list to all Peppers in the same room as the two devices; the `message_type` parameter will be set to `messageType.unpairDevice`.
 There will always be a Micro:Bit list response after a request.
 
-Upon sending the POST request to the API to unpair, the device will also receive the following JSON string: 
+Upon sending the POST request to the API to unpair, the device will also receive the following JSON string if it is a Pepper or a browser: 
 
 
 
 ```text
 {"result":"000","message_type":"unpairDevice"}
 ```
+
+
+
+If the device is a Micro:Bit, the Micro:Bit connection will receive: 
+
+
+
+```textmate
+message_type unpairDevice  
+message	hogehoge
+```
+
 
 
 Same as pairing device, but with a different message_type.
