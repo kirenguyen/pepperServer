@@ -5,8 +5,8 @@ class MicrobitMessage {
     constructor() {
         this._message = {
             room_name: null,
-            password: null,
-            microbit_name: null,
+            room_pass: null,
+            user_name: null,
             device_type: deviceType.microbit,
             message_type: null,
             message: null,
@@ -17,11 +17,11 @@ class MicrobitMessage {
         return this;
     }
     setPassword(password) {
-        this._message.password = password;
+        this._message.room_pass = password;
         return this;
     }
-    setMicrobitName(microbitName) {
-        this._message.microbit_name = microbitName;
+    setUserName(microbitName) {
+        this._message.user_name = microbitName;
         return this;
     }
     setMessageType(messageType) {
@@ -37,3 +37,4 @@ class MicrobitMessage {
     }
 }
 module.exports = MicrobitMessage;
+

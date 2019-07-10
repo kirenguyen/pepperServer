@@ -6,15 +6,16 @@ const BrowserMessage = require('../messages/browser-message');
 const messageConstants = require('../messages/message-constants');
 const messageType = messageConstants.messageType;
 const deviceType = messageConstants.deviceType;
+const stringParams = messageConstants.stringParameters;
 
 // Create WebSocket connection.
 // Server 1
-const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2 (LOCKED DONT TOUCH IT)
 // const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
-// const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
+const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
 
 
 const command = document.getElementById('command');
@@ -60,14 +61,22 @@ function createBrowser(robotID) {
 }
 
 function createMicrobit(name) {
-    const loginMessage = new MicrobitMessage();
-    loginMessage.setRoomName('room1');
-    loginMessage.setPassword('test1234');   //all joining room 1
-    loginMessage.setMicrobitName(name);
-    loginMessage.setMessageType(messageType.login);
-    let jsonMessage = loginMessage.toJSON();
-    // console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
-    socket.send(jsonMessage);
+    // const loginMessage = new MicrobitMessage();
+    // loginMessage.setRoomName('room1');
+    // loginMessage.setPassword('test1234');   //all joining room 1
+    // loginMessage.setUserName(name);
+    // loginMessage.setMessageType(messageType.login);
+    // let message = loginMessage.toJSON();
+    // // console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
+
+    const microbitLogin =
+        stringParams.room_name + stringParams.delimiter + 'room1' + stringParams.param_delimiter +
+        stringParams.room_pass + stringParams.delimiter + 'test1234' + stringParams.param_delimiter +
+        stringParams.user_name + stringParams.delimiter + name + stringParams.param_delimiter +
+        stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
+        stringParams.device_type + stringParams.delimiter + deviceType.microbit + stringParams.param_delimiter;
+
+    socket.send(microbitLogin);
 }
 
 function createPepper(roomNumber) {
@@ -326,7 +335,30 @@ class BrowserMessage {
 }
 module.exports = BrowserMessage;
 },{"./message-constants":3}],3:[function(require,module,exports){
-const deviceType = Object.freeze({robot: 'robot', microbit: 'microbit', browser: 'browser'});
+const deviceType = Object.freeze({
+    robot: 'robot',
+    microbit: 'microbit',
+    browser: 'browser',
+});
+
+const stringParameters = Object.freeze({
+    delimiter: '\t',
+    param_delimiter: '\n',
+
+    room_name: 'room_name',
+    room_pass: 'room_pass',
+    user_name: 'user_name',
+    device_type: 'device_type',
+    message_type: 'message_type',
+
+    result: 'result',
+    room_id: 'room_id',
+    message: 'message',
+
+});
+
+
+
 const messageType = Object.freeze({
     login: 'login',
     handshake: 'handshake',
@@ -345,6 +377,53 @@ const messageType = Object.freeze({
 
 module.exports.deviceType = deviceType;
 module.exports.messageType = messageType;
+module.exports.stringParameters = stringParameters;
+
+/**
+ * Change
+ *
+
+ device_type	microbit    // it could be convenient if keep device type
+ message_type	action
+ x	-560
+ y	128
+ z	1232
+ a	727
+ C	727     //
+ X	727     //
+ A	1       //
+ B	1       //
+
+
+ INTO THIS DOWN HERE
+
+ message = {
+           'room_id': roomId,
+           'user_id': userid,
+           'robot_id': robotId,
+           'device_type': 'browser',
+           'message_type': 'action',
+           'message': {
+                       'namespace ': 'microbit',
+                       'event ': 'SENSOR',
+                       'value': roboMicrobitSensor
+           }
+}
+
+ roboMicrobitSensor =
+ {
+           roboMicrobitTemperature: 0,
+           roboMicrobitLightLevel: 0,
+           roboMicrobitCompassHeading: 0,
+           roboMicrobitAccelerometer: {
+                      x: 0,
+                      y: 0,
+                      z: 0,
+                      a: 0
+           },
+           roboMicrobitCustomMessage: ''
+}
+ */
 
 },{}],4:[function(require,module,exports){
 const messageConstants = require('./message-constants');
@@ -354,8 +433,8 @@ class MicrobitMessage {
     constructor() {
         this._message = {
             room_name: null,
-            password: null,
-            microbit_name: null,
+            room_pass: null,
+            user_name: null,
             device_type: deviceType.microbit,
             message_type: null,
             message: null,
@@ -366,11 +445,11 @@ class MicrobitMessage {
         return this;
     }
     setPassword(password) {
-        this._message.password = password;
+        this._message.room_pass = password;
         return this;
     }
-    setMicrobitName(microbitName) {
-        this._message.microbit_name = microbitName;
+    setUserName(microbitName) {
+        this._message.user_name = microbitName;
         return this;
     }
     setMessageType(messageType) {
@@ -386,6 +465,8 @@ class MicrobitMessage {
     }
 }
 module.exports = MicrobitMessage;
+
+
 },{"./message-constants":3}],5:[function(require,module,exports){
 const messageConstants = require('./message-constants');
 const deviceType = messageConstants.deviceType;
