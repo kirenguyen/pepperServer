@@ -726,6 +726,9 @@ function login(message, connection) {
         'password': data.room_pass,
     };
 
+    console.log('Login body: ');
+    console.log(body);
+
     let options = {
         uri: domain + 'project/login',
         headers: {
@@ -1183,7 +1186,6 @@ function failedJSONResponse(message, msgType) {
  */
 function parseMicrobitString(message) {
     let string = message.toString();
-
     let parameters = string.split(stringParams.param_delimiter).filter((value) => {
         return value.length > 0;
     });
@@ -1202,5 +1204,6 @@ function parseMicrobitString(message) {
     loginObject['message_type'] = messageType.login;
 
     console.log('!!!! LOGIN OBJECT: ');
+    console.log(loginObject);
     return loginObject;
 }
