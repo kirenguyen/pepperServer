@@ -155,12 +155,7 @@ wss.on('request', function (req) {
         }
 
         try {
-            // no need to call /delete_user for browser
-            if(connection.id.device_type === deviceType.browser){
-                return true;
-            }
-
-            // disconnect Pepper or Micro:Bit device from the cloud storage
+            // disconnect device from the cloud storage
             const url = domain + 'project/node/delete_user';
             const options = {
                 uri: url,
@@ -649,6 +644,9 @@ function pairLocalDevice(targetID, connection) {
             form: body
         };
 
+        console.log('!!!!@#*@!&# ABOUT TO CALL SAVE_PAIR!!! BODY OF SAVE_PAIR REQUEST: ');
+        console.log(options);
+
         request.post(options, function (error, response, body) {
             if (error) {
                 console.error(error);
@@ -804,6 +802,7 @@ function handshake(data, connection) {
 
     const stringRoomID = data.room_id.toString();
 
+    // check that
     if (data.device_type === deviceType.browser){
         if( checkIfPaired(stringRoomID, deviceType.robot, data.robot_id) || !checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id)){
             connection.sendUTF(failedResponse('The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
@@ -821,6 +820,9 @@ function handshake(data, connection) {
         'device_type': deviceCode,   //legacy device_type code for robot/browser for login
         'robot_id': data.robot_id,
     };
+
+    console.log('!!!!! BEFORE API SAVE_USER CALL');
+    console.log(body);
 
     const options = {
         uri: domain + 'project/node/save_user',
@@ -1022,6 +1024,11 @@ function forwardActionMessage(data){
     console.log('Device paired to Micro:Bit is connected to this server, performing action!');
     devices_map.get(data.room_id).get(data.paired_type).get(data.paired_id).sendUTF(JSON.stringify(data.message));
 
+    // only send ACK response if Micro:Bit sent action message
+    if(data.device_type === deviceType.robot || data.device_type === deviceType.browser){
+        return true;
+    }
+
     // send ACK message back to acknowledge that everything went fine
     const message = new RedisMessage();
     message.setMessageType(messageType.sendACKMessage);
@@ -1032,6 +1039,7 @@ function forwardActionMessage(data){
         room_id: data.room_id,
         message: 'ACK_RESPONSE', //TODO: possibly change this, this is what is sent to Micro:Bit/Browser
     });
+
     message.setOrigin(SERVER_ID);
     publisher.publish(REDIS_CHANNEL, message.toJSON());
 }
