@@ -151,8 +151,6 @@ wss.on('request', function (req) {
 
         } else {
             console.log('This connection was not set up with a device');
-            connection.sendUTF(failedResponse(connection.id.device_type, 'This connection was not set up with a device',
-                messageType.connectionClosed));
             return false;
         }
 

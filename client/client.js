@@ -180,13 +180,12 @@ function pepperActionFunction(robotID){
     socket.send(JSON.stringify(message));
 }
 
-
 function microbitActionFunction(){
     let message = stringParams.message_type + stringParams.delimiter + messageType.action + stringParams.param_delimiter +
-    'a\t0' +
-    'x\t1' +
-    'y\t2' +
-    'z\t3';
+    'a\t0\n' +
+    'x\t1\n' +
+    'y\t2\n' +
+    'z\t3\n';
 
     socket.send(message);
 }
