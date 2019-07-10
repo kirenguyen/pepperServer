@@ -461,8 +461,7 @@ function unpairLocalDevice(connection){
         const responseBody = parseJSON(body);
         const failedLogin = '900';
 
-        responseBody['message_type'] = messageType.unpairDevice;
-        connection.send(JSON.stringify(responseBody));
+        sendUnpairMessage(connection);
 
         if (responseBody.result === failedLogin) {
             console.log('Failed deletion of pair ' + body);
@@ -568,7 +567,7 @@ function pairLocalDevice(targetID, connection) {
 
     if(connection.id.device_type === deviceType.microbit){
         console.log('Error: Tried to initiate connection from a device that does not initiate pairing (Micro:Bit)');
-        connection.sendUTF('This device cannot initiate a pairing', messageType.pairDevice);
+        connection.sendUTF(failedResponse(connection.id.device_type,'This device cannot initiate a pairing', messageType.pairDevice));
         return false;
     }
 
@@ -1097,6 +1096,7 @@ function sendUnpairMessage(connection){
         console.log('Sent successful pairing message to Micro:Bit!');
         return true;
     }
+
     connection.sendUTF(JSON.stringify({
         result: '000',
         message_type: messageType.unpairDevice,
@@ -1138,9 +1138,9 @@ function parseJSON(data) {
     } catch (err) {
         if(err instanceof SyntaxError) {
             console.log('Data was not a parsable JSON. Attempting to parse string instead');
-            console.log(err);
             return parseMicrobitString(data);
         } else {
+            console.log(err);
             throw err;
         }
     }
