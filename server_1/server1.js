@@ -723,7 +723,7 @@ function login(message, connection) {
 
     let body = {
         'room_name': data.room_name,
-        'password': data.password,
+        'password': data.room_pass,
     };
 
     let options = {
@@ -1182,10 +1182,8 @@ function failedJSONResponse(message, msgType) {
  * @return JSON object if successful parsing
  */
 function parseMicrobitString(message) {
-    console.log(message);
     let string = message.toString();
-    console.log(typeof message);
-    console.log('?????');
+
     let parameters = string.split(stringParams.param_delimiter).filter((value) => {
         return value.length > 0;
     });
