@@ -84,8 +84,6 @@ wss.on('request', function (req) {
     connection.webSocketKey = req.httpRequest.headers['sec-websocket-key'];
 
     connection.on('message', function (message) {
-        console.log(message);
-        console.log(message.utf8Data);
         let data = parseJSON(message.utf8Data);
         if (!data) {
             return false;
@@ -116,6 +114,7 @@ wss.on('request', function (req) {
                 console.log(pepperList);
                 break;
             case messageType.action:
+                //send the ENTIRE message, not just the embedded message
                 receivedActionMessage(data, connection);
                 break;
             case messageType.pairDevice:
@@ -505,7 +504,7 @@ function unpairGlobalDevice(roomID, type, deviceID){
             return true;
         }
     }
-    console.log('Unsuccessfully attempted to unpair global device');
+    console.log('!!!!!!!!! Unsuccessfully attempted to unpair global device');
     return false;
 }
 
@@ -612,9 +611,6 @@ function pairLocalDevice(targetID, connection) {
     // register that the targetDevice is now paired to this Pepper with the correct information
     pairGlobalDevice(updateTargetDevice);
 
-    console.log('CHECKING that the map entry is equivalent to the updated connection after pairDevice');
-    console.log(devices_map.get(connection.id.room_id).get(connection.id.device_type).get(connection.id.device_id) === connection);
-
     const pairMessage = new RedisMessage();
     pairMessage.setOrigin(SERVER_ID);
     pairMessage.setMessageType(messageType.pairDevice);
@@ -643,9 +639,6 @@ function pairLocalDevice(targetID, connection) {
             },
             form: body
         };
-
-        console.log('!!!!@#*@!&# ABOUT TO CALL SAVE_PAIR!!! BODY OF SAVE_PAIR REQUEST: ');
-        console.log(options);
 
         request.post(options, function (error, response, body) {
             if (error) {
@@ -961,13 +954,18 @@ function requestAllPeppers(connection){
 
 /**
  * Device sent an 'action message', forward it to paired Device.
- * @param data MicrobitMessage object sent from Micro:Bit, to be forwarded entirely to Pepper
- * @param connection Microbit's registered connection
+ * @param data object sent from Micro:Bit, Pepper, or Browser to their respective pair
+ * @param connection device's registered connection
  */
 function receivedActionMessage(data, connection) {
     if(!connection.id.paired){
         console.log('Device is not paired properly, cannot send an action command');
         connection.sendUTF(failedResponse(connection.id.device_type,'Device is not paired, cannot send an action', messageType.action));
+        return false;
+    }
+
+    if(connection.id.device_type === deviceType.robot && connection.id.paired_type === deviceType.microbit){
+        connection.sendUTF(failedResponse(connection.id.device_type, 'Pepper cannot send an action message to its paired device (a Micro:Bit)', messageType.action));
         return false;
     }
 
@@ -980,7 +978,7 @@ function receivedActionMessage(data, connection) {
         room_id: connection.id.room_id,
         device_id: connection.id.device_id,
         device_type: connection.id.device_type,
-        message: data, //SEND THE ENTIRE THING //TODO: make sure all action messages are ENTIRELY sent??
+        message: createActionMessageObject(connection.id.device_type, data), //SEND THE ENTIRE THING //TODO: make sure all action messages are ENTIRELY sent and/or parse Micro:Bit's action message
         paired_id: connection.id.paired_id,
         paired_type: connection.id.paired_type,
     };
@@ -1218,4 +1216,45 @@ function createMicrobitLoginObject(data) {
     loginObject['user_name'] = data[stringParams.user_name];
     loginObject['message_type'] = messageType.login;
     return loginObject;
+}
+
+
+/**
+ * Create a JSON object from Micro:Bit's parsed action message and return it to something that matches ActionMessage
+ * forwarding capabilities
+ * @param data original Action object of device
+ * @param connection connection object of Micro:Bit that sent the paired message
+ */
+function createActionMessageObject(data, connection) {
+    // Pepper and Browser do not need to refactor the data
+    if(connection.id.device_type !== deviceType.microbit){
+        return data;
+    }
+
+   //TODO: FINALIZE THIS LATER
+   const roboMicrobitSensor = {
+       roboMicrobitTemperature: 0,
+       roboMicrobitLightLevel: 0,
+       roboMicrobitCompassHeading: 0,
+       roboMicrobitAccelerometer: {
+           x: data['x'],
+           y: data['y'],
+           z: data['z'],
+           a: data['a']
+       },
+       roboMicrobitCustomMessage: ''
+   };
+
+   return {
+       room_id: connection.id.room_id,
+       user_id: connection.id.name,
+       robot_id: connection.id.paired_id,
+       device_type: connection.id.device_type,
+       message_type: messageType.action,
+       message: {
+           namespace: connection.id.device_type, //TODO check this
+           event: null, //TODO change this
+           values: roboMicrobitSensor,
+       }
+   };
 }
