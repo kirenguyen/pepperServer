@@ -10,10 +10,10 @@ const stringParams = messageConstants.stringParameters;
 
 // Create WebSocket connection.
 // Server 1
-const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2 (LOCKED DONT TOUCH IT)
-// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
 
@@ -61,23 +61,27 @@ function createBrowser(robotID) {
 }
 
 function createMicrobit(name) {
-    // const loginMessage = new MicrobitMessage();
-    // loginMessage.setRoomName('room1');
-    // loginMessage.setPassword('test1234');   //all joining room 1
-    // loginMessage.setUserName(name);
-    // loginMessage.setMessageType(messageType.login);
-    // let message = loginMessage.toJSON();
-    // // console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
+    const loginMessage = new MicrobitMessage();
+    loginMessage.setRoomName('room1');
+    loginMessage.setPassword('test1234');   //all joining room 1
+    loginMessage.setUserName(name);
+    loginMessage.setMessageType(messageType.login);
+    let message = loginMessage.toJSON();
+    // console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
 
-    const microbitLogin =
-        stringParams.room_name + stringParams.delimiter + 'room1' + stringParams.param_delimiter +
-        stringParams.room_pass + stringParams.delimiter + 'test1235' + stringParams.param_delimiter +
-        stringParams.user_name + stringParams.delimiter + name + stringParams.param_delimiter +
-        stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
-        stringParams.device_type + stringParams.delimiter + deviceType.microbit + stringParams.param_delimiter;
+    // const microbitLogin =
+    //     stringParams.room_name + stringParams.delimiter + 'room1' + stringParams.param_delimiter +
+    //     stringParams.room_pass + stringParams.delimiter + 'kljhsadlkahsfkjhflajdas' + stringParams.param_delimiter +
+    //     stringParams.user_name + stringParams.delimiter + name + stringParams.param_delimiter +
+    //     stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
+    //     stringParams.device_type + stringParams.delimiter + deviceType.microbit + stringParams.param_delimiter;
 
-    socket.send(microbitLogin);
+    // socket.send(microbitLogin);
 }
+
+
+
+
 
 function createPepper(roomNumber) {
     const roboMessage = new RoboMessage();
@@ -321,6 +325,7 @@ class BrowserMessage {
     }
 }
 module.exports = BrowserMessage;
+
 },{"./message-constants":3}],3:[function(require,module,exports){
 const deviceType = Object.freeze({
     robot: 'robot',

@@ -1136,6 +1136,9 @@ function createMicrobitLoginObject(data) {
     loginObject['room_pass'] = data[stringParams.room_pass];
     loginObject['user_name'] = data[stringParams.user_name];
     loginObject['message_type'] = messageType.login;
+
+    console.log("LOGIN OBJECT:");
+    console.log(loginObject);
     return loginObject;
 }
 
