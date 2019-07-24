@@ -711,8 +711,10 @@ function pairGlobalDevice(params) {
  */
 function validateMicrobitLogin(data, connection){
     assertValidLoginParameters(data, connection).then(
-        success => login(data, connection)
-)
+        success => login(data, connection),
+    ).catch(
+        failure => console.log('Message sent from Micro:Bit was improperly formatted')
+    )
 }
 
 /**
