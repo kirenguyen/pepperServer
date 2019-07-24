@@ -99,7 +99,7 @@ wss.on('request', function (req) {
 
         switch (data.message_type) {
             case messageType.login:
-                login(data, connection);
+                validateMicrobitLogin(data, connection);
                 break;
             case messageType.handshake:
                 handshake(data, connection);
@@ -706,14 +706,23 @@ function pairGlobalDevice(params) {
     }
 }
 
+/**
+ * Takes Micro:Bit login object and asserts that it has a correctly formatted
+ */
+function validateMicrobitLogin(data, connection){
+    assertValidLoginParameters(data, connection).then(
+        success => login(data, connection),
+    ).catch(
+        failure => console.log('Message sent from Micro:Bit was improperly formatted')
+    )
+}
 
 /**
  * Handles login attempts of micro:bit, which is a combination of TWO API calls.
- * @param data parsed JSON object of micro:bit's login message
+ * @param loginObject parsed JSON object of micro:bit's login message that has been validated
  * @param connection socket connection object of Pepper logging in
  */
-function login(data, connection) {
-    let loginObject = createMicrobitLoginObject(data);
+function login(loginObject, connection) {
 
     let body = {
         'room_name': loginObject.room_name,
@@ -1130,21 +1139,6 @@ function sendMicrobitLoginResponse(connection, response) {
 }
 
 
-/**
- * Create a JSON object from Micro:Bit's parsed string and return it to something that matches login() functionality
- * @param data parsed JSON object of Micro:Bit's message
- */
-function createMicrobitLoginObject(data) {
-    const loginObject = {};
-    loginObject['room_name'] = data[stringParams.room_name];
-    loginObject['room_pass'] = data[stringParams.room_pass];
-    loginObject['user_name'] = data[stringParams.user_name];
-    loginObject['message_type'] = messageType.login;
-
-    console.log("LOGIN OBJECT:");
-    console.log(loginObject);
-    return loginObject;
-}
 
 
 /**
@@ -1248,6 +1242,25 @@ function failedResponse(type, message, msgType) {
         });
     }
     return failureMessage;
+}
+
+/**
+ * Asserts that a message sent to the server has all necessary parameters for login
+ * @param message the object the connection sent that should contain all necessary parameters for login
+ * @param connection the connection object that sent the login message
+ */
+function assertValidLoginParameters(message, connection){
+    return new Promise(function(resolve, reject) {
+        const paramList = ['room_name', 'room_pass', 'user_name', 'message_type', 'device_type'];
+        paramList.forEach(param => {
+            if (!message.hasOwnProperty(param)) {
+                connection.sendUTF(failedResponse(deviceType.microbit,
+                    'Incorrect login message format', messageType.login));
+                reject('Login message does not contain param: ' + param);
+            }
+        });
+        resolve();
+    });
 }
 
 
