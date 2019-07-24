@@ -29,6 +29,7 @@ subscriber.on('error', function (err) {
     console.log('Subscriber error: ' + String(err));
 });
 
+
 // Peppers and Micro:Bits connected to this server; contains connections where connection.id == DeviceParameter class objects
 const devices_map = new Map();
 
@@ -300,6 +301,7 @@ function registerLocalDevice(roomID, type, connection, deviceName) {
         resolve('done');
     });
 }
+
 
 
 /**
@@ -920,8 +922,9 @@ function requestAllMicrobits(connection, type) {
     return data;
 }
 
+
 /**
- * Acquires list of Peppers from API call to send to Browser that requested it
+ * Acquires list of Peppers from map call to send it to device that requested it
  * @param connection Browser connection that requested this list of Peppers
  */
 function requestAllPeppers(connection){
@@ -947,6 +950,7 @@ function requestAllPeppers(connection){
     }
     return data;
 }
+
 
 /**
  * Device sent an 'action message', forward it to paired Device.
@@ -982,6 +986,8 @@ function receivedActionMessage(data, connection) {
     message.setMessage(messageContents);
     publisher.publish(REDIS_CHANNEL, message.toJSON());
 }
+
+
 /**
  * Handles Redis Published command to forward an Action message to the appropriate Pepper
  * @param data message object pubbed from Micro:Bit.
@@ -1035,6 +1041,7 @@ function forwardActionMessage(data){
     publisher.publish(REDIS_CHANNEL, message.toJSON());
 }
 
+
 /**
  * Finishes the action message process by sending an ACK message to the device that originally sent the
  * action message.
@@ -1055,6 +1062,7 @@ function sendACKMessage(data){
     }
     console.log('Original device that sent the action message not on this server');
 }
+
 
 /**
  * Sends a message to a device that it was paired
@@ -1115,6 +1123,61 @@ function sendMicrobitLoginResponse(connection, response) {
     const message = stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
         stringParams.result + stringParams.delimiter + result + stringParams.param_delimiter;
     connection.sendUTF(message);
+}
+
+
+/**
+ * Create a JSON object from Micro:Bit's parsed string and return it to something that matches login() functionality
+ * @param data parsed JSON object of Micro:Bit's message
+ */
+function createMicrobitLoginObject(data) {
+    const loginObject = {};
+    loginObject['room_name'] = data[stringParams.room_name];
+    loginObject['room_pass'] = data[stringParams.room_pass];
+    loginObject['user_name'] = data[stringParams.user_name];
+    loginObject['message_type'] = messageType.login;
+    return loginObject;
+}
+
+
+/**
+ * Create a JSON object from Micro:Bit's parsed action message and return it to something that matches ActionMessage
+ * forwarding capabilities
+ * @param data original Action object of device
+ * @param connection connection object of Micro:Bit that sent the paired message
+ */
+function createActionMessageObject(data, connection) {
+    // Pepper and Browser do not need to refactor the data
+    if(connection.id.device_type !== deviceType.microbit){
+        return data;
+    }
+
+    //TODO: FINALIZE THIS LATER
+    const roboMicrobitSensor = {
+        roboMicrobitTemperature: 0,
+        roboMicrobitLightLevel: 0,
+        roboMicrobitCompassHeading: 0,
+        roboMicrobitAccelerometer: {
+            x: data['x'],
+            y: data['y'],
+            z: data['z'],
+            a: data['a'],
+        },
+        roboMicrobitCustomMessage: ''
+    };
+
+    return {
+        room_id: connection.id.room_id,
+        user_id: connection.id.name,
+        robot_id: connection.id.paired_id,
+        device_type: connection.id.device_type,
+        message_type: messageType.action,
+        message: {
+            namespace: connection.id.device_type,
+            event: null,
+            values: roboMicrobitSensor,
+        }
+    };
 }
 
 
@@ -1180,6 +1243,7 @@ function failedResponse(type, message, msgType) {
     return failureMessage;
 }
 
+
 /**
  * @param message string of (param, value) pairs, written with messageConstants.stringParameter values
  * and delimiters
@@ -1197,60 +1261,5 @@ function parseMicrobitString(message) {
         [paramName, paramValue] = value.split(stringParams.delimiter);
         parsedObject[paramName] = paramValue;
     });
-
     return parsedObject;
-}
-
-/**
- * Create a JSON object from Micro:Bit's parsed string and return it to something that matches login() functionality
- * @param data parsed JSON object of Micro:Bit's message
- */
-function createMicrobitLoginObject(data) {
-    const loginObject = {};
-    loginObject['room_name'] = data[stringParams.room_name];
-    loginObject['room_pass'] = data[stringParams.room_pass];
-    loginObject['user_name'] = data[stringParams.user_name];
-    loginObject['message_type'] = messageType.login;
-    return loginObject;
-}
-
-
-/**
- * Create a JSON object from Micro:Bit's parsed action message and return it to something that matches ActionMessage
- * forwarding capabilities
- * @param data original Action object of device
- * @param connection connection object of Micro:Bit that sent the paired message
- */
-function createActionMessageObject(data, connection) {
-    // Pepper and Browser do not need to refactor the data
-    if(connection.id.device_type !== deviceType.microbit){
-        return data;
-    }
-
-    //TODO: FINALIZE THIS LATER
-    const roboMicrobitSensor = {
-        roboMicrobitTemperature: 0,
-        roboMicrobitLightLevel: 0,
-        roboMicrobitCompassHeading: 0,
-        roboMicrobitAccelerometer: {
-            x: data['x'],
-            y: data['y'],
-            z: data['z'],
-            a: data['a']
-        },
-        roboMicrobitCustomMessage: ''
-    };
-
-    return {
-        room_id: connection.id.room_id,
-        user_id: connection.id.name,
-        robot_id: connection.id.paired_id,
-        device_type: connection.id.device_type,
-        message_type: messageType.action,
-        message: {
-            namespace: connection.id.device_type,
-            event: null,
-            values: roboMicrobitSensor,
-        }
-    };
 }

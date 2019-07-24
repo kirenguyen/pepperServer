@@ -71,7 +71,7 @@ function createMicrobit(name) {
 
     const microbitLogin =
         stringParams.room_name + stringParams.delimiter + 'room1' + stringParams.param_delimiter +
-        stringParams.room_pass + stringParams.delimiter + 'test1234' + stringParams.param_delimiter +
+        stringParams.room_pass + stringParams.delimiter + 'test1235' + stringParams.param_delimiter +
         stringParams.user_name + stringParams.delimiter + name + stringParams.param_delimiter +
         stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
         stringParams.device_type + stringParams.delimiter + deviceType.microbit + stringParams.param_delimiter;
