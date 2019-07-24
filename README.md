@@ -133,15 +133,9 @@ Failure/失敗:
 
 As Micro:Bit messages are strings, the string formats to send to connect are located on RoboKen at [this link](https://roboken.backlog.jp/wiki/SCRATCH/Wifi+module+message+protocol).
 
-Sample string for sending (to server 2). 
-
+OPTION 1 (string):
 
 ```javascript
-const MicrobitMessage = require('../messages/microbit-message');
-const messageType = messageConstants.messageType;
-const deviceType = messageConstants.deviceType;
-const stringParams = messageConstants.stringParameters;
-
 const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 const microbitLogin =
@@ -151,8 +145,29 @@ const microbitLogin =
         stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
         stringParams.device_type + stringParams.delimiter + deviceType.microbit + stringParams.param_delimiter;
 
-socket.send(jsonMessage);
+socket.send(microbitLogin);
 ```
+
+
+
+OPTION 2 (JSON):
+
+
+```javascript
+const MicrobitMessage = require('../messages/microbit-message');
+const messageType = messageConstants.messageType;
+
+const loginMessage = new MicrobitMessage();
+loginMessage.setRoomName('room1');
+loginMessage.setPassword('test1234');   //all joining room 1
+loginMessage.setUserName(name);
+loginMessage.setMessageType(messageType.login);
+
+let message = loginMessage.toJSON();
+    
+socket.send(message);
+```
+
 
 
 

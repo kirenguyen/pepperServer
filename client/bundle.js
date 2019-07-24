@@ -10,10 +10,10 @@ const stringParams = messageConstants.stringParameters;
 
 // Create WebSocket connection.
 // Server 1
-// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2 (LOCKED DONT TOUCH IT)
-const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
 
@@ -76,7 +76,7 @@ function createMicrobit(name) {
     //     stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
     //     stringParams.device_type + stringParams.delimiter + deviceType.microbit + stringParams.param_delimiter;
 
-    // socket.send(microbitLogin);
+    socket.send(message);
 }
 
 
@@ -337,6 +337,7 @@ const stringParameters = Object.freeze({
     delimiter: '\t',
     param_delimiter: '\n',
 
+    //parameter values MUST BE THE SAME as parameter names across ALL message types
     room_name: 'room_name',
     room_pass: 'room_pass',
     user_name: 'user_name',

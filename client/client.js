@@ -9,10 +9,10 @@ const stringParams = messageConstants.stringParameters;
 
 // Create WebSocket connection.
 // Server 1
-// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2 (LOCKED DONT TOUCH IT)
-const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
 
@@ -75,7 +75,7 @@ function createMicrobit(name) {
     //     stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
     //     stringParams.device_type + stringParams.delimiter + deviceType.microbit + stringParams.param_delimiter;
 
-    // socket.send(microbitLogin);
+    socket.send(message);
 }
 
 

@@ -363,7 +363,8 @@ function unregisterLocalDevice(connection) {
 function unregisterGlobalDevice(params) {
     try {
         secondary_devices.get(params.room_id).get(params.device_type).delete(params.device_id);
-        console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. Updated secondary_map for the server relating to registered device: ');
+        console.log('SUCCESSFULLY UNREGISTERED SECONDARY DEVICE. ' +
+            'Updated secondary_map for the server relating to registered device: ');
         console.log(secondary_devices);
     } catch (error) {
         console.log('Error in trying to remove device from secondary map.');
@@ -385,7 +386,8 @@ function unpairLocalDevice(connection){
     // do not attempt unpairing if both devices are not paired
     if (!checkIfPaired(connection.id.room_id, connection.id.device_type, connection.id.device_id) ||
         !checkIfPaired(connection.id.room_id, oppositeType, oppositeID)){
-        connection.sendUTF(failedResponse(connection.id.device_type, 'This device is not in a valid pairing', messageType.unpairDevice));
+        connection.sendUTF(failedResponse(connection.id.device_type,
+            'This device is not in a valid pairing', messageType.unpairDevice));
         console.log('This device is not in a valid pairing');
         return false;
     }
@@ -960,12 +962,14 @@ function requestAllPeppers(connection){
 function receivedActionMessage(data, connection) {
     if(!connection.id.paired){
         console.log('Device is not paired properly, cannot send an action command');
-        connection.sendUTF(failedResponse(connection.id.device_type,'Device is not paired, cannot send an action', messageType.action));
+        connection.sendUTF(failedResponse(connection.id.device_type,
+            'Device is not paired, cannot send an action', messageType.action));
         return false;
     }
 
     if(connection.id.device_type === deviceType.robot && connection.id.paired_type === deviceType.microbit){
-        connection.sendUTF(failedResponse(connection.id.device_type, 'Pepper cannot send an action message to its paired device (a Micro:Bit)', messageType.action));
+        connection.sendUTF(failedResponse(connection.id.device_type,
+            'Pepper cannot send an action message to its paired device (a Micro:Bit)', messageType.action));
         return false;
     }
 
@@ -978,7 +982,7 @@ function receivedActionMessage(data, connection) {
         room_id: connection.id.room_id,
         device_id: connection.id.device_id,
         device_type: connection.id.device_type,
-        message: createActionMessageObject(data, connection), //SEND THE ENTIRE THING //TODO: make sure all action messages are ENTIRELY sent and/or parse Micro:Bit's action message
+        message: createActionMessageObject(data, connection),//TODO: make sure all action messages are ENTIRELY sent and/or parse Micro:Bit's action message
         paired_id: connection.id.paired_id,
         paired_type: connection.id.paired_type,
     };
@@ -1136,6 +1140,9 @@ function createMicrobitLoginObject(data) {
     loginObject['room_pass'] = data[stringParams.room_pass];
     loginObject['user_name'] = data[stringParams.user_name];
     loginObject['message_type'] = messageType.login;
+
+    console.log("LOGIN OBJECT:");
+    console.log(loginObject);
     return loginObject;
 }
 
@@ -1231,8 +1238,8 @@ function failedResponse(type, message, msgType) {
     let failureMessage;
     if (type === deviceType.microbit){
         failureMessage = stringParams.message_type + stringParams.delimiter + msgType + stringParams.param_delimiter +
-        stringParams.result + stringParams.delimiter + '900' + stringParams.param_delimiter +
-        stringParams.message + stringParams.delimiter + message + stringParams.param_delimiter;
+            stringParams.result + stringParams.delimiter + '900' + stringParams.param_delimiter +
+            stringParams.message + stringParams.delimiter + message + stringParams.param_delimiter;
     } else {
         failureMessage = JSON.stringify({
             result: '900',

@@ -8,6 +8,7 @@ const stringParameters = Object.freeze({
     delimiter: '\t',
     param_delimiter: '\n',
 
+    //parameter values MUST BE THE SAME as parameter names across ALL message types
     room_name: 'room_name',
     room_pass: 'room_pass',
     user_name: 'user_name',
