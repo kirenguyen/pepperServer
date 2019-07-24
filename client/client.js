@@ -9,13 +9,16 @@ const stringParams = messageConstants.stringParameters;
 
 // Create WebSocket connection.
 // Server 1
-const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
+// const socket = new WebSocket('ws://ec2-3-14-134-47.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // Server 2 (LOCKED DONT TOUCH IT)
-// const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
+const socket = new WebSocket('ws://ec2-3-16-66-225.us-east-2.compute.amazonaws.com:3000', 'rb');
 
 // const socket = new WebSocket('ws://roboblocks.xyz:3000', 'rb');
 
+
+//PPD:
+// const socket = new WebSocket('wss://ppd-blocks.softbankrobotics.com/ws');
 
 const command = document.getElementById('command');
 const log = document.getElementById('log');
@@ -60,17 +63,27 @@ function createBrowser(robotID) {
 }
 
 function createMicrobit(name) {
-    const loginMessage = new MicrobitMessage();
-    loginMessage.setRoomName('room1');
-    loginMessage.setPassword('test1234');   //all joining room 1
-    loginMessage.setUserName(name);
-    loginMessage.setMessageType(messageType.login);
-    let message = loginMessage.toJSON();
-    // console.log('MESSAGE TO SEND FROM CLIENT: ' + jsonMessage);
+    // const loginMessage = new MicrobitMessage();
+    // loginMessage.setRoomName('room1');
+    // loginMessage.setPassword('test1234');   //all joining room 1
+    // loginMessage.setUserName(name);
+    // loginMessage.setMessageType(messageType.login);
+    // let message = loginMessage.toJSON();
 
-    // const microbitLogin =
+    const message = JSON.stringify({
+        room_name: 'room1',
+        room_pass: 'test1234',
+        user_name: name,
+        device_type: deviceType.microbit,
+        message_type: messageType.login,
+        message: null,
+    });
+
+
+
+    // const message =
     //     stringParams.room_name + stringParams.delimiter + 'room1' + stringParams.param_delimiter +
-    //     stringParams.room_pass + stringParams.delimiter + 'kljhsadlkahsfkjhflajdas' + stringParams.param_delimiter +
+    //     stringParams.room_pass + stringParams.delimiter + 'test1234' + stringParams.param_delimiter +
     //     stringParams.user_name + stringParams.delimiter + name + stringParams.param_delimiter +
     //     stringParams.message_type + stringParams.delimiter + messageType.login + stringParams.param_delimiter +
     //     stringParams.device_type + stringParams.delimiter + deviceType.microbit + stringParams.param_delimiter;
@@ -205,10 +218,10 @@ connectPepper.addEventListener('click', e => {
 });
 
 connectMicrobit.addEventListener('click', e => {
-    if(command.value === ''){
-        log.value += 'Error: Please enter a name for your Micro:Bit' + newline;
-        return false;
-    }
+    // if(command.value === ''){
+    //     log.value += 'Error: Please enter a name for your Micro:Bit' + newline;
+    //     return false;
+    // }
     createMicrobit(command.value);
     log.value += 'Added microbit ' + command.value + newline;
     command.value = '';

@@ -714,6 +714,7 @@ function pairGlobalDevice(params) {
  */
 function login(data, connection) {
     let loginObject = createMicrobitLoginObject(data);
+    assertValidLoginParameters(loginObject, connection);
 
     let body = {
         'room_name': loginObject.room_name,
@@ -1248,6 +1249,21 @@ function failedResponse(type, message, msgType) {
         });
     }
     return failureMessage;
+}
+
+/**
+ * Asserts that a message sent to the server has all necessary parameters for login
+ * @param message the object the connection sent that should contain all necessary parameters for login
+ * @param connection the connection object that sent the login message
+ */
+function assertValidLoginParameters(message, connection){
+    const paramList = ['room_name', 'room_pass', 'user_name', 'message_type', 'device_type'];
+    paramList.forEach(param => {
+        if(!message.hasOwnProperty(param)){
+            connection.sendUTF(failedResponse(deviceType.microbit,
+                'Incorrect login message format', messageType.login));
+        }
+    })
 }
 
 
