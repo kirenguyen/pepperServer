@@ -543,11 +543,15 @@ function checkIfPaired(roomID, type, deviceID) {
  */
 function checkDeviceExists(roomID, type, deviceID) {
     if(devices_map.has(roomID)) {
+        console.log('room exists');
+        console.log(devices_map.get(roomID));
         if (devices_map.get(roomID).get(type).has(deviceID)){
             return true;
         }
     }
     if(secondary_devices.has(roomID)){
+        console.log('room exists in 2nd map');
+        console.log(secondary_devices.get(roomID));
         if (secondary_devices.get(roomID).get(type).has(deviceID)){
             return true;
         }
@@ -804,10 +808,16 @@ function handshake(data, connection) {
 
     const stringRoomID = data.room_id.toString();
 
-    // check that
+    console.log(data);
+    console.log('----------------');
+
+    // check that the robot the browser wants to connect to is free
     if (data.device_type === deviceType.browser){
-        if( checkIfPaired(stringRoomID, deviceType.robot, data.robot_id) || !checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id)){
-            connection.sendUTF(failedResponse(connection.id.device_type, 'The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
+        let paired = checkIfPaired(stringRoomID, deviceType.robot, data.robot_id);
+        let exists = checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id);
+        if( paired ||!exists ){
+            console.log(paired, exists);
+            connection.sendUTF(failedResponse(deviceType.browser, 'The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
             return false;
         }
     }
@@ -823,7 +833,6 @@ function handshake(data, connection) {
         'robot_id': data.robot_id,
     };
 
-    console.log('!!!!! BEFORE API SAVE_USER CALL');
     console.log(body);
 
     const options = {
@@ -1203,6 +1212,8 @@ function parseJSON(data) {
         }
     }
 }
+
+
 
 
 /**

@@ -66,9 +66,8 @@ function createBrowser(robotID) {
         message: {},
         message_type: "handshake",
         robot_id: robotID,
-        robot_id: robotID,
-        room_id:"1",
-        user_id: "572",
+        room_id:1,
+        user_id: 572,
         user_id_mask: null,
     });
 
