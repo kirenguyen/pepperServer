@@ -809,7 +809,10 @@ function handshake(data, connection) {
 
     // check that the robot the browser wants to connect to is free
     if (data.device_type === deviceType.browser){
-        if( checkIfPaired(stringRoomID, deviceType.robot, data.robot_id) || !checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id)){
+        let paired = checkIfPaired(stringRoomID, deviceType.robot, data.robot_id);
+        let exists = checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id);
+        if( paired ||!exists ){
+            console.log(paired, exists);
             connection.sendUTF(failedResponse(deviceType.browser, 'The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
             return false;
         }
