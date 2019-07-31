@@ -804,7 +804,11 @@ function handshake(data, connection) {
 
     const stringRoomID = data.room_id.toString();
 
-    // check that
+    console.log(data);
+    console.log('----------------');
+
+
+    // check that the robot the browser wants to connect to is free
     if (data.device_type === deviceType.browser){
         if( checkIfPaired(stringRoomID, deviceType.robot, data.robot_id) || !checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id)){
             connection.sendUTF(failedResponse(connection.id.device_type, 'The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
@@ -823,7 +827,6 @@ function handshake(data, connection) {
         'robot_id': data.robot_id,
     };
 
-    console.log('!!!!! BEFORE API SAVE_USER CALL');
     console.log(body);
 
     const options = {
@@ -1203,6 +1206,8 @@ function parseJSON(data) {
         }
     }
 }
+
+
 
 
 /**

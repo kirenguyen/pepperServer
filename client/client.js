@@ -51,13 +51,25 @@ socket.addEventListener('message', function (event) {
 
 
 function createBrowser(robotID) {
-    const browserMessage = new BrowserMessage();
-    browserMessage.setRoomID('1');
-    browserMessage.setUserID(129);
-    browserMessage.setRobotId(robotID);
-    browserMessage.setMessageType(messageType.handshake);
-    browserMessage.setMessage('no message');
-    let jsonMessage = browserMessage.toJSON();
+    // const browserMessage = new BrowserMessage();
+    // browserMessage.setRoomID('1');
+    // browserMessage.setUserID(129);
+    // browserMessage.setRobotId(robotID);
+    // browserMessage.setMessageType(messageType.handshake);
+    // browserMessage.setMessage('no message');
+    // let jsonMessage = browserMessage.toJSON();
+
+
+    let jsonMessage = JSON.stringify({
+        device_type: "browser",
+        message: {},
+        message_type: "handshake",
+        robot_id: robotID,
+        room_id:"2674",
+        user_id: "572",
+        user_id_mask: null,
+    });
+
     socket.send(jsonMessage);
     // console.log('MESSAGE SENT FROM CLIENT: ' + jsonMessage);
 }
