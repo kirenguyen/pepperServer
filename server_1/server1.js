@@ -806,11 +806,6 @@ function handshake(data, connection) {
 
     console.log(data);
     console.log('----------------');
-    console.log(data.device_type);
-    console.log(data.message_type);
-    console.log(data.robot_id);
-    console.log('???????????????');
-
 
     // check that the robot the browser wants to connect to is free
     if (data.device_type === deviceType.browser){
