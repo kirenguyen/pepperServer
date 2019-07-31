@@ -815,7 +815,7 @@ function handshake(data, connection) {
     // check that the robot the browser wants to connect to is free
     if (data.device_type === deviceType.browser){
         if( checkIfPaired(stringRoomID, deviceType.robot, data.robot_id) || !checkDeviceExists(stringRoomID, deviceType.robot, data.robot_id)){
-            connection.sendUTF(failedResponse(connection.id.device_type, 'The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
+            connection.sendUTF(failedResponse(deviceType.browser, 'The Pepper is invalid or already paired. Check robot_id or room_id,'), messageType.handshake);
             return false;
         }
     }
