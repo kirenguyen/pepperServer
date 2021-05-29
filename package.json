@@ -23,7 +23,7 @@
     "request": "^2.88.0",
     "watchify": "^3.11.1",
     "websocket": "^1.0.28",
-    "ws": "^7.0.0"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "eslint": "^5.16.0"
